@@ -10,10 +10,8 @@ from .cv_input_socket import CVInputSocketOne
 from .cv_input_socket import CVInputSocketTwo
 from .cv_output_socket import CVOutputSocketOne
 from .cv_output_socket import CVOutputSocketTwo
-from .pulse_input_socket import PulseInputSocketOne
-from .pulse_input_socket import PulseInputSocketTwo
-from .pulse_output_socket import PulseOutputSocketOne
-from .pulse_output_socket import PulseOutputSocketTwo
+from src.computer.sockets.pulses.pulse_input_socket import PulseInputSocketOne
+from src.computer.sockets.pulses.pulse_input_socket import PulseInputSocketTwo
 
 
 class Socket(object):

@@ -1,4 +1,4 @@
-from . import OutputSocket
+from src.computer.sockets import OutputSocket
 import machine
 
 
