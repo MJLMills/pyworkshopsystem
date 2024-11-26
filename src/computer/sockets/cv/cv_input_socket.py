@@ -1,5 +1,5 @@
 import machine
-from . import InputSocket
+from src.computer.sockets import InputSocket
 
 
 class CVInputSocket(InputSocket):  # should be abstract
