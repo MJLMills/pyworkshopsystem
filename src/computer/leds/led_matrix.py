@@ -1,22 +1,23 @@
 import machine
 
 
+# TODO - replace the pins in this with LED instances
 class LEDMatrix(object):
     """
     Abstracts the six LEDs on the panel as a 2x3 (row-major)
     matrix.
     """
-    led_1 = machine.Pin(PinId.LED_1, machine.Pin.OUT)
-    led_2 = machine.Pin(PinId.LED_2, machine.Pin.OUT)
-    led_3 = machine.Pin(PinId.LED_3, machine.Pin.OUT)
-    led_4 = machine.Pin(PinId.LED_4, machine.Pin.OUT)
-    led_5 = machine.Pin(PinId.LED_5, machine.Pin.OUT)
-    led_6 = machine.Pin(PinId.LED_6, machine.Pin.OUT)
+    led_pin_1 = machine.Pin(10, machine.Pin.OUT)
+    led_pin_2 = machine.Pin(11, machine.Pin.OUT)
+    led_pin_3 = machine.Pin(12, machine.Pin.OUT)
+    led_pin_4 = machine.Pin(13, machine.Pin.OUT)
+    led_pin_5 = machine.Pin(14, machine.Pin.OUT)
+    led_pin_6 = machine.Pin(15, machine.Pin.OUT)
 
-    LEDS = (
-        (led_1, led_2),
-        (led_3, led_4),
-        (led_5, led_6)
+    LED_PINS = (
+        (led_pin_1, led_pin_2),
+        (led_pin_3, led_pin_4),
+        (led_pin_5, led_pin_6)
     )
 
     def __init__(self, start_value=0):
@@ -24,19 +25,19 @@ class LEDMatrix(object):
         if start_value not in {0, 1}:
             start_value = 0
 
-        for led in LEDMatrix.LEDS:
-            led.value(start_value)
+        for led_pin in LEDMatrix.LED_PINS:
+            led_pin.value(start_value)
 
     @staticmethod
     def get(i, j):
-        return LEDMatrix.LEDS[i, j]
+        return LEDMatrix.LED_PINS[i, j]
 
     @staticmethod
     def turn_row_on(index):
         if index not in {0, 1, 2}:
             return  # look up what to do with error raising
 
-        for led in LEDMatrix.LEDS[index]:
+        for led in LEDMatrix.LED_PINS[index]:
             led.value(1)
 
     @staticmethod
@@ -44,7 +45,7 @@ class LEDMatrix(object):
         if index not in {0, 1, 2}:
             return  # look up what to do with error raising
 
-        for led in LEDMatrix.LEDS[index]:
+        for led in LEDMatrix.LED_PINS[index]:
             led.value(0)
 
     @staticmethod
@@ -52,7 +53,7 @@ class LEDMatrix(object):
         if index not in {0, 1}:
             return  # look up what to do with error raising
 
-        for row in LEDMatrix.LEDS:
+        for row in LEDMatrix.LED_PINS:
             row[index].value(1)
 
     @staticmethod
@@ -60,5 +61,5 @@ class LEDMatrix(object):
         if index not in {0, 1}:
             return  # look up what to do with error raising
 
-        for row in LEDMatrix.LEDS:
+        for row in LEDMatrix.LED_PINS:
             row[index].value(1)
