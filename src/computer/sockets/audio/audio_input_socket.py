@@ -1,4 +1,4 @@
-from . import InputSocket
+from src.computer.sockets import InputSocket
 import machine
 # TODO - enable L/R syntax here too
 
