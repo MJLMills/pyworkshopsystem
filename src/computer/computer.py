@@ -159,7 +159,6 @@ class Computer(object):
         self.knob_y = KnobY(multiplexer=self.__MULTIPLEXER)
         self.switch_z = SwitchZ(multiplexer=self.__MULTIPLEXER)
 
-        # reads on the CV input sockets will require the multiplexer
         self.cv_audio_input_socket_one = CVAudioInputSocketOne()
         self.cv_audio_input_socket_two = CVAudioInputSocketTwo()
         self.cv_audio_output_socket_one = CVAudioOutputSocketOne()
