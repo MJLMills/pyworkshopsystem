@@ -13,11 +13,15 @@ class LED(object):
         if index not in range(1, 6):
             raise ValueError()
 
-        self.led = machine.Pin(self.FIRST_LED_INDEX+index,
-                               machine.Pin.OUT)
+        self.led_pin = machine.Pin(self.FIRST_LED_INDEX + index,
+                                   machine.Pin.OUT)
 
-    def on(self):
-        self.led.value(1)
+    @property
+    def pin(self):
+        return self.led_pin
 
-    def off(self):
-        self.led.value(1)
+    def turn_on(self):
+        self.led_pin.value(1)
+
+    def turn_off(self):
+        self.led_pin.value(0)
