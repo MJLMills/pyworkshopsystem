@@ -41,6 +41,17 @@ class Computer(object):
     hiding the complexity of the hardware, while providing access to the micropython
     objects for use where specific functionality is not yet implemented.
     """
+    eeprom_structure = {
+        0: 2,  # magic number = 2001 - if number is present, eeprom has been initialized
+        2: 1,  # version number 0-255
+        3: 1,  # padding
+        4: 1,  # Channel 0 - Number of entries 0-9
+        5: 40,  # 10 x 4 byte blocks: 1 x 4-bit voltage + 4 bits space | 1 x 24 bit setting = 32 bits = 4 bytes
+        45: 1,  # Channel 1 - Number of entries 0-9
+        46: 40,  # 10 x 4-byte blocks: 1x 4-bit voltage + 4 bits space | 1 x 24 bit setting = 32 bits = 4 bytes
+        86: 2  # CRC Check over previous data
+    }
+    """Memory map for 2 x precision PWM voltage outputs = Channels 0 and 1."""
 
     class PinId(Enum):
         """GPIO Pin IDs not assigned to Computer classes.
