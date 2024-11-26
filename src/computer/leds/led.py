@@ -7,21 +7,17 @@ class LED(object):
     1/true = LED is illuminated.
     """
 
-    FIRST_LED_INDEX = 9
+    FIRST_LED_PIN_INDEX = 9
 
-    def __init__(self, index):
-        if index not in range(1, 6):
-            raise ValueError()
+    def __init__(self, led_index):
+        if led_index not in range(1, 6):
+            raise ValueError("Invalid LED index: ", led_index)
 
-        self.led_pin = machine.Pin(self.FIRST_LED_INDEX + index,
-                                   machine.Pin.OUT)
-
-    @property
-    def pin(self):
-        return self.led_pin
+        self.pin = machine.Pin(self.FIRST_LED_PIN_INDEX + led_index,
+                               machine.Pin.OUT)
 
     def turn_on(self):
-        self.led_pin.value(1)
+        self.pin.value(1)
 
     def turn_off(self):
-        self.led_pin.value(0)
+        self.pin.value(0)
