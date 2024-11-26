@@ -3,7 +3,7 @@
 ### A micropython object model for the Music Thing Modular Workshop System Computer module.
 
 This repo contains an initial attempt at an object model for the
-Music Th[README.md](README.md)ing Modular Workshop System's Computer module. In abstracting 
+Music Thing Modular Workshop System's Computer module. In abstracting 
 away much of the micropython specifics, it aims to allow a user to 
 interact directly with the components of the module (knobs, sockets, 
 switches and LEDs) in software.
