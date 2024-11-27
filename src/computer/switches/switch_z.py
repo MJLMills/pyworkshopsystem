@@ -1,7 +1,7 @@
-from multiplexed_source import MultiplexedSource
+from multiplexed_input import MultiplexedInput
 
 
-class SwitchZ(MultiplexedSource):
+class SwitchZ(MultiplexedInput):
 
     @property
     def mux_logic_a_pin_value(self):

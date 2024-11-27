@@ -1,7 +1,7 @@
-from multiplexed_source import MultiplexedSource
+from multiplexed_input import MultiplexedInput
 
 
-class KnobY(MultiplexedSource):
+class KnobY(MultiplexedInput):
 
     @property
     def mux_logic_a_pin_value(self):

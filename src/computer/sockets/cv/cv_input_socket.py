@@ -1,9 +1,9 @@
 from abc import ABC
 import machine
-from multiplexed_source import MultiplexedSource
+from multiplexed_input import MultiplexedInput
 
 
-class CVInputSocket(ABC, MultiplexedSource):
+class CVInputSocket(ABC, MultiplexedInput):
     """
     CV inputs are not inverted.
     -5V reads ~350
