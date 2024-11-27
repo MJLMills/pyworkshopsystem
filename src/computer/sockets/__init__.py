@@ -4,6 +4,7 @@ from src.computer.sockets.audio.audio_output_socket import AudioOutputSocketOne
 from src.computer.sockets.audio.audio_output_socket import AudioOutputSocketTwo
 from src.computer.sockets.cv_audio.cv_audio_input_socket import CVAudioInputSocketOne
 from src.computer.sockets.cv_audio.cv_audio_input_socket import CVAudioInputSocketTwo
+from src.computer.sockets.audio.audio_input_sockets import AudioInputSockets
 from src.computer.sockets.cv_audio.cv_audio_output_socket import CVAudioOutputSocketOne
 from src.computer.sockets.cv_audio.cv_audio_output_socket import CVAudioOutputSocketTwo
 from src.computer.sockets.cv.cv_input_socket import CVInputSocketOne
