@@ -1,7 +1,6 @@
 from src.computer.sockets import InputSocket
 import machine
 # TODO - enable L/R syntax here too
-# TODO - needs a read method
 
 class AudioInputSocket(InputSocket):
     """
