@@ -26,7 +26,7 @@ led_matrix = computer.led_matrix
 
 while True:
     # read the range of values from the left and right CV/audio sockets over n samples
-    left_audio_value, right_audio_value = cv_audio_input_sockets.read_n(n=n_samples_per_iteration)
+    left_audio_value, right_audio_value = cv_audio_input_sockets.read_range(num_samples=n_samples_per_iteration)
 
     # turn off the matrix
     led_matrix.turn_off()
