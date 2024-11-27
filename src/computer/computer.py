@@ -94,88 +94,20 @@ class Computer(object):
         DAC_SDI_MOSI = 19
         DAC_CS_CS = 21
 
-    class Multiplexer(object):
-        """The multiplexer on the Computer.
-
-        This is a 4052 multiplexer with 2x4 channels.
-        The multiplexer has two output pins that are set to
-        determine which analog input will be read via the ADC on
-        the I/O pins. The uC I/O pins are connected to analog inputs
-        2 and 3 from the multiplexer.
-
-        Truth table is as follows:
-
-        A | B | ADC Channel 2 GPIO 28 | ADC Channel 3 GPIO 29
-        --|---|-----------------------|----------------------
-        0 | 0 | Main Knob             | CV 1
-        0 | 1 | X Knob                | CV 2
-        1 | 0 | Y Knob                | CV 1
-        1 | 1 | Z Switch              | CV 2
-        """
-        MUX_LOGIC_A_PIN_ID = 24
-        """The ID of the first multiplexer output pin."""
-        MUX_LOGIC_B_PIN_ID = 25
-        """The ID of the second multiplexer output pin."""
-        MUX_IO_PIN_ONE_ID = 28
-        """The ID of the first multiplexer I/O pin."""
-        MUX_IO_PIN_TWO_ID = 29
-        """The ID of the second multiplexer I/O pin."""
-
-        MUX_LOGIC_A_PIN = machine.Pin(MUX_LOGIC_A_PIN_ID,
-                                      machine.Pin.OUT)
-
-        MUX_LOGIC_B_PIN = machine.Pin(MUX_LOGIC_B_PIN_ID,
-                                      machine.Pin.OUT)
-
-        MUX_IO_ADC_ONE = machine.ADC(MUX_IO_PIN_ONE_ID)
-        MUX_IO_ADC_TWO = machine.ADC(MUX_IO_PIN_TWO_ID)
-
-        def __init__(self):
-            self.mux_logic_pin_a_value = 0
-            self.mux_logic_pin_b_value = 0
-
-        @property
-        def mux_logic_pin_a_value(self):
-            return self.MUX_LOGIC_A_PIN.value()
-
-        @mux_logic_pin_a_value.setter
-        def mux_logic_pin_a_value(self, value):
-            self.MUX_LOGIC_A_PIN.value(value)
-
-        @property
-        def mux_logic_pin_b_value(self):
-            return self.MUX_LOGIC_B_PIN.value()
-
-        @mux_logic_pin_b_value.setter
-        def mux_logic_pin_b_value(self, value):
-            self.MUX_LOGIC_B_PIN.value(value)
-
-        def set_logic_pin_values(self, a, b):
-            """Set the values of the logic pins."""
-            self.mux_logic_pin_a_value = a
-            self.mux_logic_pin_b_value = b
-
-        @staticmethod
-        def read(pin_id):
-            return machine.ADC(pin_id).read_u16()
-
-    __MULTIPLEXER = Multiplexer()
-    """The multiplexer used to read hardware values."""
-
     def __init__(self):
 
-        self.main_knob = MainKnob(multiplexer=self.__MULTIPLEXER)
-        self.knob_x = KnobX(multiplexer=self.__MULTIPLEXER)
-        self.knob_y = KnobY(multiplexer=self.__MULTIPLEXER)
-        self.switch_z = SwitchZ(multiplexer=self.__MULTIPLEXER)
+        self.main_knob = MainKnob()
+        self.knob_x = KnobX()
+        self.knob_y = KnobY()
+        self.switch_z = SwitchZ()
 
         self.cv_audio_input_socket_one = CVAudioInputSocketOne()
         self.cv_audio_input_socket_two = CVAudioInputSocketTwo()
         self.cv_audio_output_socket_one = CVAudioOutputSocketOne()
         self.cv_audio_output_socket_two = CVAudioOutputSocketTwo()
 
-        self.cv_input_socket_one = CVInputSocketOne(multiplexer=self.__MULTIPLEXER)
-        self.cv_input_socket_two = CVInputSocketTwo(multiplexer=self.__MULTIPLEXER)
+        self.cv_input_socket_one = CVInputSocketOne()
+        self.cv_input_socket_two = CVInputSocketTwo()
         self.cv_output_socket_one = CVOutputSocketOne()
         self.cv_output_socket_two = CVOutputSocketTwo()
 
