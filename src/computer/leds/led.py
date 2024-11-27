@@ -2,9 +2,21 @@ import machine
 
 
 class LED(object):
-    """
-    LEDs are driven through an NPN transistor array from the +12V rail.
-    1/true = LED is illuminated.
+    """A light emitting diode on the module.
+
+    If the pin value is set to 1 (i.e. True), the LED is illuminated.
+
+    Methods
+    -------
+    turn_on
+        Turn this LED on.
+    turn_off
+        Turn this LED off.
+
+    Properties
+    ----------
+    value
+        The value of this LED.
     """
 
     FIRST_LED_PIN_INDEX = 9
@@ -21,3 +33,11 @@ class LED(object):
 
     def turn_off(self):
         self.pin.value(0)
+
+    @property
+    def value(self):
+        return self.pin.value()
+
+    @value.setter
+    def value(self, value):
+        self.pin.value(value)
