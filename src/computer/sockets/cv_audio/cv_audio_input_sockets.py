@@ -14,7 +14,7 @@ class CVAudioInputSockets(object):
         return (self.socket_one.read(),
                 self.socket_two.read())
 
-    def read_n(self, n):
+    def read_range(self, n=1):
 
         left_values = array.array(typecode="I") * n
         right_values = array.array(typecode="I") * n
