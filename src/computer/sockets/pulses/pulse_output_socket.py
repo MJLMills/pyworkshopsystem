@@ -18,6 +18,12 @@ class PulseOutputSocket(OutputSocket):
     def pin(self):
         return self._pin
 
+    def turn_on(self):
+        self.pin.value(0)
+
+    def turn_off(self):
+        self.pin.value(1)
+
 
 class PulseOutputSocketOne(PulseOutputSocket):
     """The first (leftmost) pulse input socket."""
