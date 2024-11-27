@@ -11,4 +11,6 @@ switches and LEDs) in software.
 This is a first attempt based on the supplied documentation without the benefit
 of access to a working system for testing and mainly contains the beginnings of
 various class definitions, along with some functionality inspired by the [rwmodular
-computer repo](https://github.com/rwmodular/computer/tree/main).
+computer repo](https://github.com/rwmodular/computer/tree/main). When this repo was started, the author had not seen the existing
+code in the [Hello_Computer repo](https://github.com/TomWhitwell/Hello_Computer/tree/main/Demonstrations%2BHelloWorlds/Micropython)
+working towards similar ends.
