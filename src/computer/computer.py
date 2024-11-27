@@ -104,7 +104,7 @@ class Computer(object):
 
         self.cv_audio_input_socket_one = CVAudioInputSocketOne()
         self.cv_audio_input_socket_two = CVAudioInputSocketTwo()
-        self.
+        self.cv_audio_input_sockets = CVAudioInputSockets()
         self.cv_audio_output_socket_one = CVAudioOutputSocketOne()
         self.cv_audio_output_socket_two = CVAudioOutputSocketTwo()
 
