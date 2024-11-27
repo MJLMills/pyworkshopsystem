@@ -4,6 +4,7 @@ from .knobs import MainKnob, KnobX, KnobY
 from .switches import SwitchZ
 from .sockets import CVAudioInputSocketOne
 from .sockets import CVAudioInputSocketTwo
+from .sockets import CVAudioInputSockets
 from .sockets import CVAudioOutputSocketOne
 from .sockets import CVAudioOutputSocketTwo
 from .sockets import CVInputSocketOne
@@ -103,6 +104,7 @@ class Computer(object):
 
         self.cv_audio_input_socket_one = CVAudioInputSocketOne()
         self.cv_audio_input_socket_two = CVAudioInputSocketTwo()
+        self.
         self.cv_audio_output_socket_one = CVAudioOutputSocketOne()
         self.cv_audio_output_socket_two = CVAudioOutputSocketTwo()
 
