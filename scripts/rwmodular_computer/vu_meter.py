@@ -1,6 +1,7 @@
 """This example uses the LEDs as a VU meter for audio inputs 1 & 2.
 
 This example implies the value of a reusable VU meter class.
+which could have log and lin mappings.
 """
 from computer import Computer
 
