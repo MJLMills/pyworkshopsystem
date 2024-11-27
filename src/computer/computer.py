@@ -18,6 +18,10 @@ from .sockets import PulseOutputSocketTwo
 from .leds import LEDMatrix
 
 
+# NB: if you instantiate the Computer, it currently creates all the controls when
+# you may only want a subset. One way around this is to only instantiate the
+# bits you want. A better option would be "lazy loading" the hardware classes.
+
 
 class Computer(object):
     """Music Thing Modular Workshop System Computer Module.
