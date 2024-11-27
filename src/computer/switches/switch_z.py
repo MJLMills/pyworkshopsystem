@@ -1,12 +1,8 @@
 import machine
+from multiplexed_source import MultiplexedSource
 
 
-class SwitchZ(object):
-
-    MUX_LOGIC_A_PIN_VALUE = 1
-    MUX_LOGIC_B_PIN_VALUE = 1
-
-    PIN_ID = 28
+class SwitchZ(MultiplexedSource):
 
     def __init__(self, multiplexer):
         self.__multiplexer = multiplexer
@@ -23,3 +19,15 @@ class SwitchZ(object):
 
     def is_off(self):
         return not self.is_on()
+
+    @property
+    def mux_logic_a_pin_value(self):
+        return 1
+
+    @property
+    def mux_logic_b_pin_value(self):
+        return 1
+
+    @property
+    def mux_io_pin_id(self):
+        return 28
