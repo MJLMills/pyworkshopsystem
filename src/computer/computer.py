@@ -41,7 +41,7 @@ class Computer(object):
     hiding the complexity of the hardware, while providing access to the micropython
     objects for use where specific functionality is not yet implemented.
     """
-    eeprom_structure = {
+    EEPROM_STRUCTURE = {
         0: 2,  # magic number = 2001 - if number is present, eeprom has been initialized
         2: 1,  # version number 0-255
         3: 1,  # padding
@@ -52,6 +52,12 @@ class Computer(object):
         86: 2  # CRC Check over previous data
     }
     """Memory map for 2 x precision PWM voltage outputs = Channels 0 and 1."""
+
+    KNOWN_BOARD_VERSIONS = {
+        (0, 0, 0): "Proto 1.2",
+        (1, 0, 0): "Proto 2.0, 2.0.1, Rev1"
+    }
+    """Known versions of the Computer board."""
 
     class PinId(Enum):
         """GPIO Pin IDs not assigned to Computer classes.
@@ -176,5 +182,20 @@ class Computer(object):
 
         self.led_matrix = LEDMatrix()
 
-    def get_version(self):
-        raise NotImplementedError()
+    @staticmethod
+    def board_version():
+        """Get the board version encoded in the values of GPIO pins 5, 6 and 7.
+
+        (0, 0, 0) = Proto1.2
+        (1, 0, 0) = Proto 2.0, 2.0.1, Rev1.
+        """
+        pin_a = machine.Pin(Computer.PinId.BOARD_IDENTIFICATION_A, machine.Pin.IN, machine.Pin.PULL_UP)
+        pin_b = machine.Pin(Computer.PinId.BOARD_IDENTIFICATION_B, machine.Pin.IN, machine.Pin.PULL_UP)
+        pin_c = machine.Pin(Computer.PinId.BOARD_IDENTIFICATION_C, machine.Pin.IN, machine.Pin.PULL_UP)
+
+        pin_values = (pin_a.value(), pin_b.value(), pin_c.value())
+
+        try:
+            return Computer.KNOWN_BOARD_VERSIONS[pin_values]
+        except KeyError:
+            return "Unknown board version with pin values: ", pin_values
