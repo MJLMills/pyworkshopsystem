@@ -9,8 +9,8 @@ class SwitchZ(MultiplexedSource):
         self.__adc = machine.ADC(self.__multiplexer.MUX_IO_PIN_ONE_ID)
 
     def read(self):
-        self.__multiplexer.set_logic_pin_values(self.MUX_LOGIC_A_PIN_VALUE,
-                                                self.MUX_LOGIC_B_PIN_VALUE)
+        self.__multiplexer.set_logic_pin_values(self.mux_logic_a_pin_value,
+                                                self.mux_logic_b_pin_value)
 
         return self.__adc.read_u16()
 
