@@ -13,6 +13,11 @@ class LEDMatrix(object):
         LEFT: 0
         RIGHT: 1
 
+    class RowIndices(Enum):
+        TOP: 0
+        MIDDLE: 1
+        BOTTOM: 2
+
     LEDS = (
         (LED(led_index=1), LED(led_index=2)),
         (LED(led_index=3), LED(led_index=4)),
