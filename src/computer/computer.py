@@ -155,6 +155,10 @@ class Computer(object):
             self.mux_logic_pin_a_value = a
             self.mux_logic_pin_b_value = b
 
+        @staticmethod
+        def read(pin_id):
+            return machine.ADC(pin_id).read_u16()
+
     __MULTIPLEXER = Multiplexer()
     """The multiplexer used to read hardware values."""
 
