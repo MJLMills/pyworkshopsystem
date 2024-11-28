@@ -1,6 +1,6 @@
 from src.computer.sockets import InputSocket
 import machine
-# TODO - enable L/R syntax here too
+
 
 class CVAudioInputSocket(InputSocket):
     """
