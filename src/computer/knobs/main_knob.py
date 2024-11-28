@@ -1,6 +1,6 @@
 from multiplexed_input import MultiplexedInput
 
-# TODO - the read scaling belongs in a base class for anything reading via the ADC
+
 class MainKnob(MultiplexedInput):
     """The main (big) knob on the Computer module.
 
