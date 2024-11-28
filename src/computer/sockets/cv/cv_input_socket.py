@@ -12,7 +12,7 @@ class CVInputSocket(ABC, MultiplexedInput):
     """
     @property
     def mux_io_pin_id(self):
-        return 29
+        return 29  # try not to redefine this here as a literal, get from multiplexer by name?
 
 
 class CVInputSocketOne(CVInputSocket):
