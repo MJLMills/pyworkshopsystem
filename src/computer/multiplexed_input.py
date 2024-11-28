@@ -69,6 +69,9 @@ class Multiplexer(object):
         return machine.ADC(pin_id).read_u16()
 
 
+# TODO - below this in the hierarchy should be a class that defines the pin_id,
+# which for multiplexed inputs will be the mux_io_pin_id
+
 class MultiplexedInput(ABC):
     """A multiplexed source of data.
 
