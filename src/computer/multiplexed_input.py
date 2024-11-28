@@ -2,7 +2,6 @@ import machine
 from abc import ABC, abstractmethod
 
 
-# multiplexer should be a module to avoid multiple instances of this class
 class Multiplexer(object):
     """The multiplexer on the Computer.
 
@@ -70,11 +69,12 @@ class Multiplexer(object):
 
 
 class IO(ABC):
-
+    """An object with an associated GPIO pin."""
     @property
     @abstractmethod
     def pin_id(self):
         pass
+
 
 class MultiplexedInput(ABC, IO):
     """A multiplexed source of data.
