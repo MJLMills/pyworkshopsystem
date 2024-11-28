@@ -4,7 +4,8 @@ from multiplexed_input import MultiplexedInput
 
 
 class CVInputSocket(ABC, MultiplexedInput):
-    """
+    """The CV input sockets of the Computer.
+
     CV inputs are not inverted.
     -5V reads ~350
     0V reads ~2030
@@ -16,7 +17,7 @@ class CVInputSocket(ABC, MultiplexedInput):
 
 
 class CVInputSocketOne(CVInputSocket):
-
+    """The first (left-most) CV input socket of the Computer."""
     @property
     def mux_logic_a_pin_value(self):
         return 0
@@ -27,7 +28,7 @@ class CVInputSocketOne(CVInputSocket):
 
 
 class CVInputSocketTwo(CVInputSocket):
-
+    """The second (right-most) CV input socket of the Computer."""
     @property
     def mux_logic_a_pin_value(self):
         return 0
