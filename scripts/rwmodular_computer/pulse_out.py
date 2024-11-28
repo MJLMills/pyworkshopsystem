@@ -1,6 +1,6 @@
 """
 # A lot of this should be the purview of the PulsesOutputSocket class, i.e. a `pulse` method with settable rate and duty cycle
-# look at some examples os square wave classes
+# look at some examples os square wave classes. Probably better if the parameters are in Hz.
 """
 import time
 from computer import Computer
