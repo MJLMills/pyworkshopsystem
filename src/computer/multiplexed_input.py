@@ -72,7 +72,14 @@ class Multiplexer(object):
 # TODO - below this in the hierarchy should be a class that defines the pin_id,
 # which for multiplexed inputs will be the mux_io_pin_id
 
-class MultiplexedInput(ABC):
+class IO(ABC):
+
+    @property
+    @abstractmethod
+    def pin_id(self):
+        pass
+
+class MultiplexedInput(ABC, IO):
     """A multiplexed source of data.
 
     The set of inputs sharing the multiplexer are the main, x and y knobs,
@@ -100,13 +107,8 @@ class MultiplexedInput(ABC):
     def mux_logic_b_pin_value(self):
         pass
 
-    @property
-    @abstractmethod
-    def mux_io_pin_id(self):
-        pass
-
     def read(self):
         self.__multiplexer.set_logic_pin_values(self.mux_logic_a_pin_value,
                                                 self.mux_logic_b_pin_value)
 
-        return self.__multiplexer.read(self.mux_io_pin_id)
+        return self.__multiplexer.read(self.pin_id)

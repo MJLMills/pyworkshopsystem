@@ -39,5 +39,5 @@ class MainKnob(MultiplexedInput):
         return 0
 
     @property
-    def mux_io_pin_id(self):
+    def pin_id(self):
         return 28

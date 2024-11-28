@@ -11,7 +11,7 @@ class CVInputSocket(ABC, MultiplexedInput):
     +5V reads ~3700
     """
     @property
-    def mux_io_pin_id(self):
+    def pin_id(self):
         return 29  # try not to redefine this here as a literal, get from multiplexer by name?
 
 
