@@ -2,6 +2,7 @@ from from abc import ABC, abstractmethod
 from machine import PWM
 from src.computer.sockets import OutputSocket
 
+
 class CVOutputSocket(ABC):
     """
     This should be an abc, the pin_id is an abstract property.
