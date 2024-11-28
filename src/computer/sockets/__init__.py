@@ -13,7 +13,6 @@ from src.computer.sockets.pulses.pulse_output_socket import PulseOutputSocketOne
 from src.computer.sockets.pulses.pulse_output_socket import PulseOutputSocketTwo
 
 
-# TODO - get rid of this hierarchy unless there is a reason for it
 class Socket(object):
     ...
 
