@@ -1,11 +1,10 @@
-from from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod
 from machine import PWM
-from src.computer.sockets import OutputSocket
+from multiplexed_input import IO
 
 
-class CVOutputSocket(ABC):
+class CVOutputSocket(IO, ABC):
     """
-    This should be an abc, the pin_id is an abstract property.
 
     Inverted PWM output.
     Two-pole active filtered. Use 11-bit PWM at 60 kHz.
@@ -14,23 +13,28 @@ class CVOutputSocket(ABC):
     0 = +6V
     Requires firmware calibration for precise values.
     """
+
     @property
     @abstractmethod
     def pin_id(self):
-        return self.PIN_ID
+        pass
 
     def __init__(self):
-        self.pwm = PWM(self.PIN_ID, freq=60000, duty_u16=32768)
+        self.pwm = PWM(self.pin_id, freq=60000, duty_u16=32768)
 
     def write(self, value):
         self.pwm.duty_u16(value)
 
 
-class CVOutputSocketOne(OutputSocket):
-    PIN_ID = 23
-    ...
+class CVOutputSocketOne(CVOutputSocket):
+    """The first CV output socket of the Computer."""
+    @property
+    def pin_id(self):
+        return 23
 
 
-class CVOutputSocketTwo(OutputSocket):
-    PIN_ID = 22
-    ...
+class CVOutputSocketTwo(CVOutputSocket):
+    """The second CV output socket of the Computer."""
+    @property
+    def pin_id(self):
+        return 22
