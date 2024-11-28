@@ -4,7 +4,7 @@ from multiplexed_input import IO
 
 
 class CVOutputSocket(IO, ABC):
-    """
+    """The CV output sockets of the Computer.
 
     Inverted PWM output.
     Two-pole active filtered. Use 11-bit PWM at 60 kHz.
@@ -27,14 +27,14 @@ class CVOutputSocket(IO, ABC):
 
 
 class CVOutputSocketOne(CVOutputSocket):
-    """The first CV output socket of the Computer."""
+    """The first (left-most) CV output socket of the Computer."""
     @property
     def pin_id(self):
         return 23
 
 
 class CVOutputSocketTwo(CVOutputSocket):
-    """The second CV output socket of the Computer."""
+    """The second (right-most) CV output socket of the Computer."""
     @property
     def pin_id(self):
         return 22
