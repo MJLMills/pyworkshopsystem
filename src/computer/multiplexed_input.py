@@ -1,5 +1,6 @@
 import machine
 from abc import ABC, abstractmethod
+from .io import IO
 
 
 class Multiplexer(object):
@@ -66,14 +67,6 @@ class Multiplexer(object):
     @staticmethod
     def read(pin_id):
         return machine.ADC(pin_id).read_u16()
-
-
-class IO(ABC):
-    """An object with an associated GPIO pin."""
-    @property
-    @abstractmethod
-    def pin_id(self):
-        pass
 
 
 class MultiplexedInput(ABC, IO):
