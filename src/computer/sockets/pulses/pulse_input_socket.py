@@ -1,22 +1,19 @@
+from abc import ABC
 import machine
-from src.computer.sockets import InputSocket
+from multiplexed_input import IO
 
 
-class PulseInputSocket(InputSocket):  # should be abstract
+class PulseInputSocket(ABC, IO):  # should be abstract
     """
     Inverted digital input: Low input = High reading.
     For example, use a falling edge to track the start of a pulse.
     NB: Input pin must have the pull-up enabled, this powers the transistor.
     """
-    def __init__(self, pin_id):
+    def __init__(self):
 
-        self._pin = machine.Pin(pin_id,
+        self._pin = machine.Pin(self.pin_id,
                                 machine.Pin.IN,
                                 machine.Pin.PULL_UP)
-
-    @property
-    def pin(self):
-        return self._pin
 
 
 class PulseInputSocketOne(PulseInputSocket):
@@ -25,8 +22,9 @@ class PulseInputSocketOne(PulseInputSocket):
     PIN_ID = 2
     """The ID of the pin carrying the signal from this socket."""
 
-    def __init__(self):
-        super().__init__(pin_id=self.PIN_ID)
+    @property
+    def pin_id(self):
+        return self.PIN_ID
 
 
 class PulseInputSocketTwo(PulseInputSocket):
@@ -35,5 +33,6 @@ class PulseInputSocketTwo(PulseInputSocket):
     PIN_ID = 3
     """The ID of the pin carrying the signal from this socket."""
 
-    def __init__(self):
-        super().__init__(pin_id=self.PIN_ID)
+    @property
+    def pin_id(self):
+        return self.PIN_ID
