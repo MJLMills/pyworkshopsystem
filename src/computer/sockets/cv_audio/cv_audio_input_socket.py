@@ -1,8 +1,9 @@
-from src.computer.sockets import InputSocket
+from abc import ABC
 import machine
+from multiplexed_input import IO
 
 
-class CVAudioInputSocket(InputSocket):
+class CVAudioInputSocket(ABC, IO):
     """
     Inverted bipolar analog input, into 12(?) bit internal ADC.
     +6V = 0
