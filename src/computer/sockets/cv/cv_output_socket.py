@@ -3,7 +3,7 @@ from machine import PWM
 from multiplexed_input import IO
 
 
-class CVOutputSocket(IO, ABC):
+class CVOutputSocket(ABC, IO):
     """The CV output sockets of the Computer.
 
     Inverted PWM output.
