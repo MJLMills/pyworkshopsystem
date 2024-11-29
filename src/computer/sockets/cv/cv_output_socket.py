@@ -13,12 +13,6 @@ class CVOutputSocket(ABC, IO):
     0 = +6V
     Requires firmware calibration for precise values.
     """
-
-    @property
-    @abstractmethod
-    def pin_id(self):
-        pass
-
     def __init__(self):
         self.pwm = PWM(self.pin_id, freq=60000, duty_u16=32768)
 
