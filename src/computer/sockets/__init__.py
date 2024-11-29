@@ -11,15 +11,3 @@ from src.computer.sockets.pulses.pulse_input_socket import PulseInputSocketOne
 from src.computer.sockets.pulses.pulse_input_socket import PulseInputSocketTwo
 from src.computer.sockets.pulses.pulse_output_socket import PulseOutputSocketOne
 from src.computer.sockets.pulses.pulse_output_socket import PulseOutputSocketTwo
-
-
-class Socket(object):
-    ...
-
-class InputSocket(Socket):
-    """An input socket of the Computer."""
-    ...
-
-class OutputSocket(Socket):
-    """An output socket of the Computer."""
-    ...
