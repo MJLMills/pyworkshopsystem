@@ -21,3 +21,8 @@ working towards similar ends.
 [Micropython documentation](https://docs.micropython.org/en/latest/index.html)
 
 [Micropython functionality specific to the RP2040](https://docs.micropython.org/en/latest/library/rp2.html)
+
+[RP2040 python datasheet](https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-python-sdk.pdf)
+
+[pio examples](https://github.com/raspberrypi/pico-micropython-examples/tree/master/pio)
+
