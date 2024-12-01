@@ -1,6 +1,6 @@
 import machine
 from abc import ABC, abstractmethod
-from .io import IO
+from .input_output import IO
 
 
 class Multiplexer(object):
