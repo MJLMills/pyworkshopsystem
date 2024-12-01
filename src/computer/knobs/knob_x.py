@@ -12,5 +12,5 @@ class KnobX(MultiplexedInput):
         return 1
 
     @property
-    def mux_io_pin_id(self):
+    def pin_id(self):
         return 28

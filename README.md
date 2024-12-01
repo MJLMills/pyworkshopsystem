@@ -14,3 +14,15 @@ various class definitions, along with some functionality inspired by the [rwmodu
 computer repo](https://github.com/rwmodular/computer/tree/main). When this repo was started, the author had not seen the existing
 code in the [Hello_Computer repo](https://github.com/TomWhitwell/Hello_Computer/tree/main/Demonstrations%2BHelloWorlds/Micropython)
 working towards similar ends.
+
+
+## Helpful Links
+
+[Micropython documentation](https://docs.micropython.org/en/latest/index.html)
+
+[Micropython functionality specific to the RP2040](https://docs.micropython.org/en/latest/library/rp2.html)
+
+[RP2040 python datasheet](https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-python-sdk.pdf)
+
+[pio examples](https://github.com/raspberrypi/pico-micropython-examples/tree/master/pio)
+
