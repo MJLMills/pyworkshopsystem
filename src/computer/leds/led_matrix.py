@@ -9,14 +9,8 @@ class LEDMatrix(object):
     Abstracts the six LEDs on the panel as a 3x2 (row-major)
     matrix.
     """
-    class ColumnIndices(Enum):
-        LEFT: 0
-        RIGHT: 1
-
-    class RowIndices(Enum):
-        TOP: 0
-        MIDDLE: 1
-        BOTTOM: 2
+    column_indices = {"LEFT": 0, "RIGHT": 1}
+    row_indices = {"TOP": 0, "MIDDLE": 1, "BOTTOM": 2}
 
     LEDS = (
         (LED(led_index=1), LED(led_index=2)),
@@ -42,8 +36,8 @@ class LEDMatrix(object):
     @staticmethod
     def turn_off():
         for led_a, led_b in LEDMatrix.LEDS:
-            led_a.turn_on()
-            led_b.turn_on()
+            led_a.turn_off()
+            led_b.turn_off()
 
     @staticmethod
     def get(row_index, col_index):
@@ -74,12 +68,12 @@ class LEDMatrix(object):
             row[col_index].value = 1
 
     @staticmethod
-    def turn_left_column_on(num_leds):
-        LEDMatrix.turn_column_on(LEDMatrix.ColumnIndices["LEFT"], num_leds)
+    def turn_left_column_on(num_leds=3):
+        LEDMatrix.turn_column_on(LEDMatrix.column_indices["LEFT"], num_leds)
 
     @staticmethod
-    def turn_right_column_on(num_leds):
-        LEDMatrix.turn_column_on(LEDMatrix.ColumnIndices["RIGHT"], num_leds)
+    def turn_right_column_on(num_leds=3):
+        LEDMatrix.turn_column_on(LEDMatrix.column_indices["RIGHT"], num_leds)
 
     @staticmethod
     def turn_column_off(col_index):
@@ -88,3 +82,11 @@ class LEDMatrix(object):
 
         for row in LEDMatrix.LEDS:
             row[col_index].value = 1
+
+    @staticmethod
+    def turn_left_column_off(num_leds=3):
+        LEDMatrix.turn_column_off(LEDMatrix.column_indices["LEFT"], num_leds)
+
+    @staticmethod
+    def turn_right_column_off(num_leds=3):
+        LEDMatrix.turn_column_off(LEDMatrix.column_indices["RIGHT"], num_leds)
