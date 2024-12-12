@@ -1,6 +1,5 @@
 import machine
 from .led import LED
-from enum import Enum
 
 
 class LEDMatrix(object):
@@ -44,23 +43,47 @@ class LEDMatrix(object):
         return LEDMatrix.LEDS[row_index][col_index]
 
     @staticmethod
-    def turn_row_on(row_index):
+    def turn_row_on(row_index, num_leds=2):
         if row_index not in {0, 1, 2}:
             raise ValueError("Invalid LED row index: ", row_index)
 
-        for led in LEDMatrix.LEDS[row_index]:
+        for led in LEDMatrix.LEDS[row_index][0:num_leds]:
             led.value = 1
 
     @staticmethod
-    def turn_row_off(row_index):
+    def turn_top_row_on(num_leds=2):
+        LEDMatrix.turn_row_on(LEDMatrix.row_indices["TOP"], num_leds)
+
+    @staticmethod
+    def turn_middle_row_on(num_leds=2):
+        LEDMatrix.turn_row_on(LEDMatrix.row_indices["MIDDLE"], num_leds)
+
+    @staticmethod
+    def turn_bottom_row_on(num_leds=2):
+        LEDMatrix.turn_row_on(LEDMatrix.row_indices["BOTTOM"], num_leds)
+
+    @staticmethod
+    def turn_row_off(row_index, num_leds=2):
         if row_index not in {0, 1, 2}:
             raise ValueError("Invalid LED row index: ", row_index)
 
-        for led in LEDMatrix.LEDS[row_index]:
+        for led in LEDMatrix.LEDS[row_index][0:num_leds]:
             led.value = 0
 
     @staticmethod
-    def turn_column_on(col_index, num_leds):
+    def turn_top_row_off(num_leds=2):
+        LEDMatrix.turn_row_off(LEDMatrix.row_indices["TOP"], num_leds)
+
+    @staticmethod
+    def turn_middle_row_off(num_leds=2):
+        LEDMatrix.turn_row_off(LEDMatrix.row_indices["MIDDLE"], num_leds)
+
+    @staticmethod
+    def turn_bottom_row_off(num_leds=2):
+        LEDMatrix.turn_row_off(LEDMatrix.row_indices["BOTTOM"], num_leds)
+
+    @staticmethod
+    def turn_column_on(col_index, num_leds=3):
         if col_index not in {0, 1}:
             raise ValueError("Invalid LED column index: ", col_index)
 
@@ -76,12 +99,12 @@ class LEDMatrix(object):
         LEDMatrix.turn_column_on(LEDMatrix.column_indices["RIGHT"], num_leds)
 
     @staticmethod
-    def turn_column_off(col_index):
+    def turn_column_off(col_index, num_leds=3):
         if col_index not in {0, 1}:
             raise ValueError("Invalid LED column index: ", col_index)
 
-        for row in LEDMatrix.LEDS:
-            row[col_index].value = 1
+        for row in LEDMatrix.LEDS[0:num_leds]:
+            row[col_index].value = 0
 
     @staticmethod
     def turn_left_column_off(num_leds=3):
