@@ -1,9 +1,8 @@
-from abc import ABC, abstractmethod
 from machine import PWM
 from multiplexed_input import IO
 
 
-class CVOutputSocket(ABC, IO):
+class CVOutputSocket(IO):
     """The CV output sockets of the Computer.
 
     Inverted PWM output.
@@ -13,11 +12,21 @@ class CVOutputSocket(ABC, IO):
     0 = +6V
     Requires firmware calibration for precise values.
     """
+    DUTY_U16 = 32768
+
     def __init__(self):
-        self.pwm = PWM(self.pin_id, freq=60000, duty_u16=32768)
+        self.pwm = PWM(self.pin_id,
+                       freq=60000,
+                       duty_u16=CVOutputSocket.DUTY_U16)
 
     def write(self, value):
         self.pwm.duty_u16(value)
+
+    def write_norm_value(self, value):
+        if 0.0 <= value <= 1.0:
+            raise ValueError
+        
+        self.write(value * CVOutputSocket.DUTY_U16)
 
 
 class CVOutputSocketOne(CVOutputSocket):
