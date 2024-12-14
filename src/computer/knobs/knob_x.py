@@ -14,3 +14,7 @@ class KnobX(MultiplexedInput):
     @property
     def pin_id(self):
         return 28
+
+    def read(self):
+        value = super().read()
+        return value
