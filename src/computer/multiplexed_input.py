@@ -1,5 +1,4 @@
 import machine
-from abc import ABC, abstractmethod
 from .input_output import IO
 
 
@@ -69,7 +68,7 @@ class Multiplexer(object):
         return machine.ADC(pin_id).read_u16()
 
 
-class MultiplexedInput(ABC, IO):
+class MultiplexedInput(IO):
     """A multiplexed source of data.
 
     The set of inputs sharing the multiplexer are the main, x and y knobs,
@@ -86,16 +85,13 @@ class MultiplexedInput(ABC, IO):
         super().__init__()
         self.__multiplexer = Multiplexer()
 
-
     @property
-    @abstractmethod
     def mux_logic_a_pin_value(self):
-        pass
+        raise NotImplementedError
 
     @property
-    @abstractmethod
     def mux_logic_b_pin_value(self):
-        pass
+        raise NotImplementedError
 
     def read(self):
         self.__multiplexer.set_logic_pin_values(self.mux_logic_a_pin_value,
