@@ -8,7 +8,7 @@ class PulseOutputSocket(IO):
 
     Inverted digital output: 1/true = low, 0/false=high.
     Scaled via a transistor.
-    Pin should be input, no pullup.
+    Pin should be input, no pullup. TODO - what?
     """
 
     def __init__(self, pin_id):
