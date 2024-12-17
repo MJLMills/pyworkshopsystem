@@ -5,7 +5,7 @@ from multiplexed_input import MultiplexedInput
 class CVInputSocket(MultiplexedInput):
     """The CV input sockets of the Computer.
 
-    CV inputs are not inverted.
+    CV inputs are not inverted. TODO - check these on a multimeter
     -5V reads ~350
     0V reads ~2030
     +5V reads ~3700
