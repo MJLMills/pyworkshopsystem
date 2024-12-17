@@ -27,3 +27,5 @@ working towards similar ends.
 [RP2040 python datasheet](https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-python-sdk.pdf)
 
 [pio examples](https://github.com/raspberrypi/pico-micropython-examples/tree/master/pio)
+
+[Micropython SPI documentation](https://docs.micropython.org/en/latest/library/machine.SPI.html#machine-spi)
