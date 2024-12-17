@@ -17,6 +17,16 @@ class LEDMatrix(object):
         (LED(led_index=5), LED(led_index=6))
     )
 
+    index_to_subscripts = {
+        1: (0, 0),
+        2: (0, 1),
+        3: (1, 0),
+        4: (1, 1),
+        5: (2, 0),
+        6: (2, 1)
+    }
+    """Hard-coded conversion from running index to matrix subscripts."""
+
     def __init__(self, start_value=0):
 
         if start_value not in {0, 1}:
@@ -27,16 +37,27 @@ class LEDMatrix(object):
             led_b.value = start_value
 
     @staticmethod
-    def turn_on():
-        for led_a, led_b in LEDMatrix.LEDS:
-            led_a.turn_on()
-            led_b.turn_on()
+    def turn_on(index: int = None):
+        if index:
+
+            row_index = LEDMatrix.index_to_subscripts[index][0]
+            column_index = LEDMatrix.index_to_subscripts[index][1]
+            LEDMatrix.LEDS[row_index][column_index].turn_on()
+        else:
+            for led_a, led_b in LEDMatrix.LEDS:
+                led_a.turn_on()
+                led_b.turn_on()
 
     @staticmethod
-    def turn_off():
-        for led_a, led_b in LEDMatrix.LEDS:
-            led_a.turn_off()
-            led_b.turn_off()
+    def turn_off(index: int = None):
+        if index:
+            row_index = LEDMatrix.index_to_subscripts[index][0]
+            column_index = LEDMatrix.index_to_subscripts[index][1]
+            LEDMatrix.LEDS[row_index][column_index].turn_off()
+        else:
+            for led_a, led_b in LEDMatrix.LEDS:
+                led_a.turn_off()
+                led_b.turn_off()
 
     @staticmethod
     def get(row_index, col_index):
