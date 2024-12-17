@@ -1,16 +1,17 @@
-from src.computer.sockets import OutputSocket
 import machine
+import time
+from multiplexed_input import IO
 
 
-class PulseOutputSocket(OutputSocket):
+class PulseOutputSocket(IO):
     """An output socket of the computer, sending pulses.
 
     Inverted digital output: 1/true = low, 0/false=high.
     Scaled via a transistor.
     Pin should be input, no pullup.
     """
-    def __init__(self, pin_id):
 
+    def __init__(self, pin_id):
         self._pin = machine.Pin(pin_id,
                                 machine.Pin.OUT)
 
@@ -29,6 +30,11 @@ class PulseOutputSocket(OutputSocket):
 
     def is_off(self):
         return not self.is_on()
+
+    def pulse(self, duration):
+        self.turn_on()
+        time.sleep(duration)
+        self.turn_off()
 
 
 class PulseOutputSocketOne(PulseOutputSocket):
