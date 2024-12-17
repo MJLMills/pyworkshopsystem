@@ -2,7 +2,14 @@ from multiplexed_input import MultiplexedInput
 
 
 class SwitchZ(MultiplexedInput):
+    """The Z-switch.
 
+    The switch has three states:
+
+    Up - latching, high value on read.
+    Middle - latching, medium value on read.
+    Down - momentary, low value on read.
+    """
     @property
     def mux_logic_a_pin_value(self):
         return 1
@@ -12,11 +19,17 @@ class SwitchZ(MultiplexedInput):
         return 1
 
     @property
-    def pin_id(self):
+    def pin_id(self) -> int:
         return 28
 
-    def is_on(self):
-        return self.read() == 1
+    def is_up(self) -> bool:
+        return self.read() > 50
 
-    def is_off(self):
-        return not self.is_on()
+    def is_down(self) -> bool:
+        return self.read() < 10
+
+    def is_middle(self) -> bool:
+        if not self.is_up() and not self.is_down():
+            return True
+        else:
+            return False
