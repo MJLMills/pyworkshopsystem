@@ -21,7 +21,6 @@ class CVOutputSocket(IO):
     FREQUENCY_KHZ = 60000
 
     def __init__(self, duty_cycle: int = 32768):
-
         self.pwm = PWM(self.pin_id,
                        freq=60000,
                        duty_u16=duty_cycle)
@@ -32,8 +31,8 @@ class CVOutputSocket(IO):
     def write_norm_value(self, value):
         if not (0.0 <= value <= 1.0):
             print("Normalized input exceeded range:", value)
-        
-        self.write((1.0 - value) * CVOutputSocket.DEFAULT_DUTY_CYCLE)
+
+        self.write(int((1.0 - value) * 65535))
 
 
 class CVOutputSocketOne(CVOutputSocket):
