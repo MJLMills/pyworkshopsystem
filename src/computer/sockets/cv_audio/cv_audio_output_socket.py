@@ -1,54 +1,75 @@
-from machine import Pin, SPI
-from multiplexed_input import IO
+import machine
 
 
-class CVAudioOutputSocket(IO):
+class CVAudioOutputSocket(object):
+    """A CV/Audio output socket.
+
+    https://docs.micropython.org/en/latest/library/machine.SPI.html#machine-spi
+    """
 
     __SCK_PIN_ID = 18
-    """Clock signal from the RP2040 to the DAC."""
+    """Pin ID for clock signal from the RP2040 to the DAC."""
 
-    SDI_MOSI_PIN_ID = 19
-    """serial data from RP2040, most-significant bit first."""
+    __SDI_MOSI_PIN_ID = 19
+    """Pin ID for serial data from RP2040 to the DAC, most-significant bit first."""
 
-    CS_PIN_ID = 21
-    """Active-low chip select signal from RP2040 to enable communication with the DAC.
-    
-    CS (Chip Select), to select a particular device on a bus with which communication takes place. Management of a CS signal should happen in user code (via machine.Pin class)."""
+    __CS_PIN_ID = 21
+    """Active-low chip select signal from RP2040 to enable communication with the DAC."""
+
+    __BAUD_RATE_HZ = 20_000_000
+    """The max SCK clock rate (in Hz) from the MCP4822 datasheet. Equal to 20 MHz"""
+
+    __BITS = 16
+    """The width in bits of each transfer."""
 
     def __init__(self):
+        # create a chip select on the documented SPI CS pin
+        self.__chip_select_pin = machine.Pin(self.__CS_PIN_ID, mode=machine.Pin.OUT, value=1)
 
-        self.__spi = SPI(
+        self.__chip_select_pin(0)  # select peripheral
+
+        self.__spi = machine.SPI(
             id=0,
-            baudrate=80_000_000,  # in Hz, how should these be set? This is the SCK clock rate.
+            baudrate=self.__BAUD_RATE_HZ,
             polarity=0,
             phase=0,
-            bits=16,
-            firstbit=SPI.MSB,
+            bits=self.__BITS,
+            firstbit=machine.SPI.MSB,
             sck=self.__SCK_PIN_ID,
-            mosi=self.SDI_MOSI_PIN_ID,
-            miso=None
+            mosi=self.__SDI_MOSI_PIN_ID,
         )
 
-    def write(self, value: bytes):
+    def write(self, value: int):
         """
         Writes to the DAC are 16-bit words.
+
+        The bytes object (immutable) is 16-bits where:
+
+        15 : DAC_SELECTION_BIT in {0, 1}
+        14 : IGNORED
+        13 : Output gain selection bit, probably hard-coded in {0, 1}
+        12 : Output Shutdown Control bit in {0, 1}, hard-coded to 1
+        11-0 : the data value to write to the DAC
         """
-        self.__spi.write(bytes)  # write input bytes on MOSI (to output)
+        value_u12 = int((value / 65535) * 4095)
+
+        value_u12_bytes = value_u12.to_bytes(12, "little")
+        # print(value_u12, int.from_bytes(value_u12_bytes, "little"), value_u12_bytes)
+
+        # value_bytes = value_u12_bytes + b"\x01\x01\x01" + self.DAC_SELECTION_BIT
+        value_bytes = self.DAC_SELECTION_BIT + b"\x00\x01\x01" + value_u12_bytes
+
+        self.__spi.write(value_bytes)  # write input bytes on MOSI (to output)
+
+    def __str__(self):
+        print(self.__spi)
 
 
 class CVAudioOutputSocketOne(CVAudioOutputSocket):
-
-    DAC_SELECTION_BIT = b'1'
-
-    @property
-    def pin_id(self):
-        return None
+    DAC_SELECTION_BIT = b'\x00'
 
 
 class CVAudioOutputSocketTwo(CVAudioOutputSocket):
+    DAC_SELECTION_BIT = b'\x01'
 
-    DAC_SELECTION_BIT = b'0'
 
-    @property
-    def pin_id(self):
-        return None
