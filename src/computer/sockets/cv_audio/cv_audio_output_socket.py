@@ -53,7 +53,7 @@ class CVAudioOutputSocket(object):
         """
         value_u12 = int((value / 65535) * 4095)
 
-        value_u12_bytes = value_u12.to_bytes(12, "little")
+        value_u12_bytes = value_u12.to_bytes(12, "big")
         # print(value_u12, int.from_bytes(value_u12_bytes, "little"), value_u12_bytes)
 
         # value_bytes = value_u12_bytes + b"\x01\x01\x01" + self.DAC_SELECTION_BIT
