@@ -64,7 +64,7 @@ class Multiplexer(object):
         self.mux_logic_pin_b_value = b
 
     @staticmethod
-    def read(pin_id):
+    def read(pin_id):  # TODO - cache the per-pin ADCs
         return machine.ADC(pin_id).read_u16()
 
 
