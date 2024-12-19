@@ -5,6 +5,24 @@ class CVAudioOutputSocket(object):
     """A CV/Audio output socket.
 
     https://docs.micropython.org/en/latest/library/machine.SPI.html#machine-spi
+
+    1) How do you write to the outputs?
+
+    The CV/Audio outputs are bipolar (inverted) and DC-coupled.
+    Outputs must go through a MCP4822 (2-input-channel) DAC to the sockets.
+
+    "Communication with the device is accomplished via a simple serial interface using SPI protocols."
+
+    Pins 18, 19 and 21 are specified for control of the MCP4822.
+    Pin 18 is labeled DAC_SCK / SCK - clock signal from main
+    Pin 19 is labeled DAC_SDI / MOSI - serial data from main, most-significant bit first
+    Pin 21 is labeled DAC_CS / CS - active-low chip select signal from main to enable communication with a specific sub device.
+    MISO is not included as the DAC (sub) does not output to main (the Pi)
+
+    Looks like you setup a connection with the SPI class and write through it.
+    There are two analog outputs on the DAC that are going to the sockets
+    Each 16-bit word written to the DAC over SPI has a flag on byte 15 for which DAC you want to write to.
+    The datasheet has the rest, but there are 12 bits for the value.
     """
 
     __SCK_PIN_ID = 18
