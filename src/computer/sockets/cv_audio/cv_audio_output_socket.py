@@ -37,14 +37,12 @@ class CVAudioOutputSocket(object):
     __BAUD_RATE_HZ = 20_000_000
     """The max SCK clock rate (in Hz) from the MCP4822 datasheet. Equal to 20 MHz"""
 
-    __BITS = 16
+    __BITS = 8
     """The width in bits of each transfer."""
 
     def __init__(self):
         # create a chip select on the documented SPI CS pin
-        self.__chip_select_pin = machine.Pin(self.__CS_PIN_ID, mode=machine.Pin.OUT, value=1)
-
-        self.__chip_select_pin(0)  # select peripheral
+        self.__chip_select_pin = machine.Pin(self.__CS_PIN_ID, mode=machine.Pin.OUT, value=0)
 
         self.__spi = machine.SPI(
             id=0,
@@ -69,25 +67,25 @@ class CVAudioOutputSocket(object):
         12 : Output Shutdown Control bit in {0, 1}, hard-coded to 1
         11-0 : the data value to write to the DAC
         """
-        value_u12 = int((value / 65535) * 4095)
 
-        value_u12_bytes = value_u12.to_bytes(12, "big")
-        # print(value_u12, int.from_bytes(value_u12_bytes, "little"), value_u12_bytes)
+        value = int((value / 65535) * 4095)
 
-        # value_bytes = value_u12_bytes + b"\x01\x01\x01" + self.DAC_SELECTION_BIT
-        value_bytes = self.DAC_SELECTION_BIT + b"\x00\x01\x01" + value_u12_bytes
+        DAC_data = self.DAC_STRING | (value & 0xFFF)
 
-        self.__spi.write(value_bytes)  # write input bytes on MOSI (to output)
+        try:
+            self.__chip_select_pin.value(0)
+            bytes_value = bytes((DAC_data >> 8, DAC_data & 0xFF))
+            self.__spi.write(bytes((DAC_data >> 8, DAC_data & 0xFF)))
+        finally:
+            self.__chip_select_pin.value(1)
 
     def __str__(self):
         print(self.__spi)
 
 
 class CVAudioOutputSocketOne(CVAudioOutputSocket):
-    DAC_SELECTION_BIT = b'\x00'
+    DAC_STRING = 0b0011000000000000
 
 
 class CVAudioOutputSocketTwo(CVAudioOutputSocket):
-    DAC_SELECTION_BIT = b'\x01'
-
-
+    DAC_STRING = 0b1011000000000000
