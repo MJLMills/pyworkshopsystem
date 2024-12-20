@@ -42,7 +42,7 @@ class CVAudioOutputSocket(object):
 
     def __init__(self):
         # create a chip select on the documented SPI CS pin
-        self.__chip_select_pin = machine.Pin(self.__CS_PIN_ID, mode=machine.Pin.OUT, value=0)
+        self.__chip_select_pin = machine.Pin(self.__CS_PIN_ID, mode=machine.Pin.OUT, value=1)
 
         self.__spi = machine.SPI(
             id=0,
@@ -70,12 +70,11 @@ class CVAudioOutputSocket(object):
 
         value = int((value / 65535) * 4095)
 
-        DAC_data = self.DAC_STRING | (value & 0xFFF)
+        dac_data = self.__DAC_STRING | (value & 0xFFF)
 
         try:
             self.__chip_select_pin.value(0)
-            bytes_value = bytes((DAC_data >> 8, DAC_data & 0xFF))
-            self.__spi.write(bytes((DAC_data >> 8, DAC_data & 0xFF)))
+            self.__spi.write(bytes((dac_data >> 8, dac_data & 0xFF)))
         finally:
             self.__chip_select_pin.value(1)
 
@@ -84,8 +83,8 @@ class CVAudioOutputSocket(object):
 
 
 class CVAudioOutputSocketOne(CVAudioOutputSocket):
-    DAC_STRING = 0b0011000000000000
+    __DAC_STRING = 0b0011000000000000
 
 
 class CVAudioOutputSocketTwo(CVAudioOutputSocket):
-    DAC_STRING = 0b1011000000000000
+    __DAC_STRING = 0b1011000000000000
