@@ -37,7 +37,7 @@ class CVAudioInputSocketOne(CVAudioInputSocket):
     """The left CV/Audio input socket."""
     @property
     def pin_id(self):
-        return 26
+        return 27
 
 
 class CVAudioInputSocketTwo(CVAudioInputSocket):
@@ -45,4 +45,4 @@ class CVAudioInputSocketTwo(CVAudioInputSocket):
 
     @property
     def pin_id(self):
-        return 27
+        return 26
