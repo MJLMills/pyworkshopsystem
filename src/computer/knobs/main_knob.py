@@ -18,13 +18,14 @@ class MainKnob(MultiplexedInput):
             self._max_value = max_value
 
         if min_value is None:
-            self._min_value = 0
+            self._min_value = 224
         else:
             self._min_value = min_value
 
     def read(self):
         value = super().read()
-        return int((value - self._min_value) / (self._max_value - self._min_value))
+        normalized_value = (value - self._min_value) / (self._max_value - self._min_value)
+        return self._min_value + (int(normalized_value * self._max_value))
 
     @property
     def max_value(self):

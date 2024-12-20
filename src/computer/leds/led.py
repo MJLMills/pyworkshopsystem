@@ -20,13 +20,13 @@ class LED(IO):
         The value of this LED.
     """
 
-    FIRST_LED_PIN_INDEX = 9
+    FIRST_LED_PIN_INDEX = 10
 
     def __init__(self, led_index):
-        if led_index not in range(1, 6):
+        if led_index not in range(1, 7):
             raise ValueError("Invalid LED index: ", led_index)
 
-        self._pin_id = self.FIRST_LED_PIN_INDEX + led_index
+        self._pin_id = self.FIRST_LED_PIN_INDEX + (led_index - 1)
         self.pin = machine.Pin(self.pin_id,
                                machine.Pin.OUT)
 

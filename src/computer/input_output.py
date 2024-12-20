@@ -1,7 +1,4 @@
-from abc import ABC, abstractmethod
-
-
-class IO(ABC):
+class IO(object):
     """An object with an associated GPIO pin.
 
     All hardware objects have a single associated GPIO pin,
@@ -9,6 +6,5 @@ class IO(ABC):
     the multiplexer (in which case the GPIO pin may be shared).
     """
     @property
-    @abstractmethod
     def pin_id(self):
-        pass
+        raise NotImplementedError
