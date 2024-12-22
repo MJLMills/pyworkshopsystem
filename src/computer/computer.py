@@ -1,4 +1,3 @@
-from enum import Enum
 import machine
 from .knobs import MainKnob, KnobX, KnobY
 from .switches import SwitchZ
@@ -64,40 +63,36 @@ class Computer(object):
     }
     """Known versions of the Computer board."""
 
-    class PinId(Enum):
-        """GPIO Pin IDs not assigned to Computer classes.
+    PIN_IDS = {
+        "UART0_TX": 0,
+        "UART0_RX": 1,
+        "NORMALIZATION_PROBE": 4,
+        "BOARD_IDENTIFICATION_A": 5,
+        "BOARD_IDENTIFICATION_B": 6,
+        "BOARD_IDENTIFICATION_C": 7,
+        "EEPROM_SDA": 16,
+        "EEPROM_SCL": 17,
+    }
+    """GPIO Pin IDs not assigned to Computer classes.
 
-        NB: GPIO pin 20 is not connected.
+    NB: GPIO pin 20 is not connected.
 
-        UART0_TX, UART0_RX
-            From unpopulated headers next to LEDs.
-        NORMALIZATION_PROBE
-            Connected to the switch inputs on all the inputs via a BAT45 protection diode.
-            Toggle this pin to identify which sockets have plugs in them.
-            The normalization probe high reads ~2600.
-        BOARD_IDENTIFICATION
-            GPIO Pins 5, 6, 7 = binary bits
-            0 0 0 = Proto1.2 (all pins floating)
-            1 0 0 = Proto 2.0, 2.0.1, Rev1.
-        EEPROM_SDA, EEPROM_SCL
-            Connects to Zetta ZD24C08A EEPROM, clone of 24C0* chips.
-            Contains 8 kbits (1024 x 8).
-            SDA & SCL lines have 2.2k pullups.
-            Data is stored in 8 x 1024 pages addresses 0x50 to 0x5B.
-        DAC_SCK_SCK, DAC_SDI_MOSI, DAC_CS_CS
-            MCP4822 Control.
-        """
-        UART0_TX = 0
-        UART0_RX = 1
-        NORMALIZATION_PROBE = 4
-        BOARD_IDENTIFICATION_A = 5
-        BOARD_IDENTIFICATION_B = 6
-        BOARD_IDENTIFICATION_C = 7
-        EEPROM_SDA = 16
-        EEPROM_SCL = 17
-        DAC_SCK_SCK = 18
-        DAC_SDI_MOSI = 19
-        DAC_CS_CS = 21
+    UART0_TX, UART0_RX
+        From unpopulated headers next to LEDs.
+    NORMALIZATION_PROBE
+        Connected to the switch inputs on all the inputs via a BAT45 protection diode.
+        Toggle this pin to identify which sockets have plugs in them.
+        The normalization probe high reads ~2600.
+    BOARD_IDENTIFICATION
+        GPIO Pins 5, 6, 7 = binary bits
+        0 0 0 = Proto1.2 (all pins floating)
+        1 0 0 = Proto 2.0, 2.0.1, Rev1.
+    EEPROM_SDA, EEPROM_SCL
+        Connects to Zetta ZD24C08A EEPROM, clone of 24C0* chips.
+        Contains 8 kbits (1024 x 8).
+        SDA & SCL lines have 2.2k pullups.
+        Data is stored in 8 x 1024 pages addresses 0x50 to 0x5B.
+    """
 
     def __init__(self):
 
