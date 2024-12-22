@@ -22,10 +22,13 @@ class MainKnob(MultiplexedInput):
         else:
             self._min_value = min_value
 
+        self._range = self._max_value - self._min_value
+
     def read(self):
-        value = super().read()
-        normalized_value = (value - self._min_value) / (self._max_value - self._min_value)
-        return self._min_value + (int(normalized_value * self._max_value))
+        return super().read()
+
+    def read_norm(self):
+        return (self.read() - self._min_value) / self._range
 
     @property
     def max_value(self):
