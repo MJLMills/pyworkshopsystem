@@ -20,6 +20,8 @@ working towards similar ends.
 
 [Micropython documentation](https://docs.micropython.org/en/latest/index.html)
 
+[Micropython samples](https://github.com/peterhinch/micropython-samples/blob/master/encoders/encoder_portable.py)
+
 [Micropython functionality specific to the RP2040](https://docs.micropython.org/en/latest/library/rp2.html)
 
 [Micropython RP2xxx quick reference](https://docs.micropython.org/en/latest/rp2/quickref.html)
