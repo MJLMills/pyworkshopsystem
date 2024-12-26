@@ -30,6 +30,11 @@ class LED(IO):
         self.pin = machine.Pin(self.pin_id,
                                machine.Pin.OUT)
 
+    @property
+    def pin_id(self):
+        """The unique identifier of the GPIO pin used by this class."""
+        return self._pin_id
+
     def turn_on(self):
         self.pin.value(1)
 
@@ -43,7 +48,3 @@ class LED(IO):
     @value.setter
     def value(self, value):
         self.pin.value(value)
-
-    @property
-    def pin_id(self):
-        return self._pin_id
