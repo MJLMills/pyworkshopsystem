@@ -46,25 +46,17 @@ class PulseInputSocketOne(PulseInputSocket):
 
     def __init__(self):
         super().__init__()
-        self.set_irq(self.handler)  # TODO- trigger is hard-coded
-
-    def handler(self):
-        ...
-
-    PIN_ID = 2
-    """The ID of the pin carrying the signal from this socket."""
 
     @property
     def pin_id(self):
-        return self.PIN_ID
+        """The unique identifier of the GPIO pin used by this class."""
+        return 2
 
 
 class PulseInputSocketTwo(PulseInputSocket):
     """The second (rightmost) pulse input socket."""
 
-    PIN_ID = 3
-    """The ID of the pin carrying the signal from this socket."""
-
     @property
     def pin_id(self):
-        return self.PIN_ID
+        """The unique identifier of the GPIO pin used by this class."""
+        return 3
