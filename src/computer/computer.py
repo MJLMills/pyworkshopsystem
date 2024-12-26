@@ -20,15 +20,16 @@ from .leds import LEDMatrix
 # NB: if you instantiate the Computer, it currently creates all the controls when
 # you may only want a subset. One way around this is to only instantiate the
 # bits you want. A better option would be "lazy loading" the hardware classes.
-
+# TODO - this lazy loading to minimize startup time.
 
 class Computer(object):
     """Music Thing Modular Workshop System Computer Module.
 
     This class abstracts the Computer module in order to make interacting with
-    its controls as direct as possible. The package uses micropython for interaction
-    with the hardware.
-    The module provides the following set of controls (top-to-bottom, left-to-right):
+    its controls as direct as possible. The package uses micropython for
+    interaction with the hardware.
+    The module provides the following set of controls (top-to-bottom,
+    left-to-right):
 
     A "main knob" - a potentiometer with a large dial.
     X and Y knobs - trimmer potentiometers.
@@ -42,18 +43,24 @@ class Computer(object):
     Six LEDs (arranged in a 3x2 matrix)
 
     Each of these is modeled with a dedicated class, minimizing re-use and
-    hiding the complexity of the hardware, while providing access to the micropython
-    objects for use where specific functionality is not yet implemented.
+    hiding the complexity of the hardware, while providing access to the
+    micropython objects for use where specific functionality is not yet
+     implemented.
     """
     EEPROM_STRUCTURE = {
-        0: 2,  # magic number = 2001 - if number is present, eeprom has been initialized
-        2: 1,  # version number 0-255
-        3: 1,  # padding
-        4: 1,  # Channel 0 - Number of entries 0-9
-        5: 40,  # 10 x 4 byte blocks: 1 x 4-bit voltage + 4 bits space | 1 x 24 bit setting = 32 bits = 4 bytes
+        0: 2,   # magic number = 2001
+                # if number is present, eeprom has been initialized
+        2: 1,   # version number 0-255
+        3: 1,   # padding
+        4: 1,   # Channel 0 - Number of entries 0-9
+        5: 40,  # 10 x 4 byte blocks:
+                # 1 x 4-bit voltage + 4 bits space |
+                # 1 x 24 bit setting = 32 bits = 4 bytes
         45: 1,  # Channel 1 - Number of entries 0-9
-        46: 40,  # 10 x 4-byte blocks: 1x 4-bit voltage + 4 bits space | 1 x 24 bit setting = 32 bits = 4 bytes
-        86: 2  # CRC Check over previous data
+        46: 40, # 10 x 4-byte blocks:
+                # 1x 4-bit voltage + 4 bits space |
+                # 1 x 24 bit setting = 32 bits = 4 bytes
+        86: 2   # CRC Check over previous data
     }
     """Memory map for 2 x precision PWM voltage outputs = Channels 0 and 1."""
 
@@ -80,8 +87,8 @@ class Computer(object):
     UART0_TX, UART0_RX
         From unpopulated headers next to LEDs.
     NORMALIZATION_PROBE
-        Connected to the switch inputs on all the inputs via a BAT45 protection diode.
-        Toggle this pin to identify which sockets have plugs in them.
+        Connected to the switch inputs on all the inputs via a BAT45 protection
+        diode. Toggle this pin to identify which sockets have plugs in them.
         The normalization probe high reads ~2600.
     BOARD_IDENTIFICATION
         GPIO Pins 5, 6, 7 = binary bits
@@ -120,19 +127,29 @@ class Computer(object):
         self.led_matrix = LEDMatrix()
 
     @staticmethod
-    def board_version():
+    def board_version() -> str:
         """Get the board version encoded in the values of GPIO pins 5, 6 and 7.
 
         (0, 0, 0) = Proto1.2
         (1, 0, 0) = Proto 2.0, 2.0.1, Rev1.
         """
-        pin_a = machine.Pin(Computer.PinId.BOARD_IDENTIFICATION_A, machine.Pin.IN, machine.Pin.PULL_UP)
-        pin_b = machine.Pin(Computer.PinId.BOARD_IDENTIFICATION_B, machine.Pin.IN, machine.Pin.PULL_UP)
-        pin_c = machine.Pin(Computer.PinId.BOARD_IDENTIFICATION_C, machine.Pin.IN, machine.Pin.PULL_UP)
+        pin_a = machine.Pin(Computer.PIN_IDS["BOARD_IDENTIFICATION_A"],
+                            machine.Pin.IN,
+                            machine.Pin.PULL_UP)
+
+        pin_b = machine.Pin(Computer.PIN_IDS["BOARD_IDENTIFICATION_B"],
+                            machine.Pin.IN,
+                            machine.Pin.PULL_UP)
+
+        pin_c = machine.Pin(Computer.PIN_IDS["BOARD_IDENTIFICATION_C"],
+                            machine.Pin.IN,
+                            machine.Pin.PULL_UP)
 
         pin_values = (pin_a.value(), pin_b.value(), pin_c.value())
 
         try:
             return Computer.KNOWN_BOARD_VERSIONS[pin_values]
         except KeyError:
-            return "Unknown board version with pin values: ", pin_values
+            raise ValueError(
+                "Unknown board version with pin values: ", pin_values
+            )
