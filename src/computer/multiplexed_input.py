@@ -3,12 +3,13 @@ from .input_output import IO
 
 
 class Multiplexer(object):
-    """The multiplexer on the Computer.
+    """The multiplexer attached to the Computer.
 
-    This is a 4052 multiplexer with 2x4 channels. The multiplexer has two
-    digital output pins (IDs 24 and 25) that are set to specify which analog
-    input will be read via the ADC on the GPIO pins (28 and 29). The GPIO
-    input pins are connected to analog inputs 2 and 3 on the ADC.
+    The hardware is a 4052 multiplexer with 2 (ADC pins) by 4 (digitally
+    selectable analog input pins) for 8 total channels. The multiplexer has
+    two digital output pins (IDs 24 and 25) that are set to specify which
+    analog input will be read via the ADC on the GPIO pins (28 and 29). The
+    GPIO input pins are connected to analog inputs 2 and 3 on the ADC.
 
     The truth table is as follows:
 
@@ -18,54 +19,74 @@ class Multiplexer(object):
     1 | 0 | X Knob                | CV 2
     0 | 1 | Y Knob                | CV 1
     1 | 1 | Z Switch              | CV 2
+
+    By default, the multiplexer digital output is set to (0, 0) so reads on pin
+    one will return the main knob value and pin two will return the CV 1 input
+    value.
     """
     __MUX_LOGIC_A_PIN_ID = 24
     """The ID of the first multiplexer output pin."""
     __MUX_LOGIC_B_PIN_ID = 25
     """The ID of the second multiplexer output pin."""
     MUX_IO_PIN_ONE_ID = 28
-    """The ID of the first multiplexer I/O pin."""
+    """The ID of the multiplexer's first digital output pin."""
     MUX_IO_PIN_TWO_ID = 29
-    """The ID of the second multiplexer I/O pin."""
+    """The ID of the multiplexer's second digital output pin."""
 
     __MUX_LOGIC_A_PIN = machine.Pin(__MUX_LOGIC_A_PIN_ID,
                                     machine.Pin.OUT)
-    """The digital output pin connected to the first multiplexer output."""
+    """The first digital output pin connected to the multiplexer."""
 
     __MUX_LOGIC_B_PIN = machine.Pin(__MUX_LOGIC_B_PIN_ID,
                                     machine.Pin.OUT)
-    """The digital output pin connected to the second multiplexer output."""
+    """The second digital output pin connected to the multiplexer."""
 
     __MUX_IO_ADC_ONE = machine.ADC(MUX_IO_PIN_ONE_ID)
+    """The ADC connected to the first multiplexer analog output."""
+
     __MUX_IO_ADC_TWO = machine.ADC(MUX_IO_PIN_TWO_ID)
+    """The ADC connected to the second multiplexer analog output."""
 
     def __init__(self):
         self.mux_logic_pin_a_value = False
         self.mux_logic_pin_b_value = False
 
     @property
-    def mux_logic_pin_a_value(self):
+    def mux_logic_pin_a_value(self) -> bool:
+        """The value at the first mux logic digital output pin."""
         return self.__MUX_LOGIC_A_PIN.value()
 
     @mux_logic_pin_a_value.setter
-    def mux_logic_pin_a_value(self, value):
+    def mux_logic_pin_a_value(self, value) -> None:
+        """Set the value at the first mux logic digital output pin."""
         self.__MUX_LOGIC_A_PIN.value(value)
 
     @property
-    def mux_logic_pin_b_value(self):
+    def mux_logic_pin_b_value(self) -> bool:
+        """The value at the second mux logic digital output pin."""
         return self.__MUX_LOGIC_B_PIN.value()
 
     @mux_logic_pin_b_value.setter
-    def mux_logic_pin_b_value(self, value):
+    def mux_logic_pin_b_value(self, value) -> None:
+        """Set the value at the second mux logic digital output pin."""
         self.__MUX_LOGIC_B_PIN.value(value)
 
-    def set_logic_pin_values(self, a: bool, b: bool):
-        """Set the values of the multiplexer logic pins."""
-        self.mux_logic_pin_a_value = a
-        self.mux_logic_pin_b_value = b
+    def set_logic_pin_values(self, value_a: bool, value_b: bool) -> None:
+        """Set the values of the multiplexer logic pins.
+
+        Parameters
+        ----------
+        value_a
+            The value to which to set the first multiplexer logic pin.
+        value_b
+            The value to which to set the second multiplexer logic pin.
+        """
+        self.mux_logic_pin_a_value = value_a
+        self.mux_logic_pin_b_value = value_b
 
     @staticmethod
-    def read(pin_id):  # TODO - cache the per-pin ADCs
+    def read(pin_id) -> int:  # TODO - cache the per-pin ADCs
+        """Read the value at the currently selected analog input."""
         return machine.ADC(pin_id).read_u16()
 
 
@@ -92,12 +113,14 @@ class MultiplexedInput(IO):
     mux_logic_b_pin_value -> bool
         The value of the second multiplexer login pin for this input.
     """
-    def __init__(self):
+    def __init__(self):  # TODO - grab a reference to the correct ADC from the mux class
         super().__init__()
         self.__multiplexer = Multiplexer()
+#        self._adc = None  HERE
 
     @property
     def mux_logic_a_pin_value(self) -> bool:
+        """The value of the first multiplexer login pin for this input."""
         raise NotImplementedError(
             self.__class__.__name__ + \
             " does not implement mux_logic_a_pin_value."
@@ -105,6 +128,7 @@ class MultiplexedInput(IO):
 
     @property
     def mux_logic_b_pin_value(self) -> bool:
+        """The value of the second multiplexer login pin for this input."""
         raise NotImplementedError(
             self.__class__.__name__ + \
             " does not implement mux_logic_b_pin_value."
