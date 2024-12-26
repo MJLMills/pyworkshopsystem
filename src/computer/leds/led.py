@@ -31,7 +31,7 @@ class LED(IO):
                                machine.Pin.OUT)
 
     @property
-    def pin_id(self):
+    def pin_id(self) -> int:
         """The unique identifier of the GPIO pin used by this class."""
         return self._pin_id
 
