@@ -10,5 +10,5 @@ class IO(object):
     def pin_id(self) -> int:
         """The unique identifier of the GPIO pin used by this class."""
         raise NotImplementedError(
-            self.__class__.__name__ + " does not implement pin_id property."
+            self.__class__.__name__ + " does not implement pin_id."
         )
