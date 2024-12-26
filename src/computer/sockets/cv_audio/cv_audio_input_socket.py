@@ -36,7 +36,8 @@ class CVAudioInputSocket(IO):
 class CVAudioInputSocketOne(CVAudioInputSocket):
     """The left CV/Audio input socket."""
     @property
-    def pin_id(self):
+    def pin_id(self) -> int:
+        """The unique identifier of the GPIO pin used by this class."""
         return 27
 
 
@@ -44,5 +45,6 @@ class CVAudioInputSocketTwo(CVAudioInputSocket):
     """The right CV/Audio input socket."""
 
     @property
-    def pin_id(self):
+    def pin_id(self) -> int:
+        """The unique identifier of the GPIO pin used by this class."""
         return 26
