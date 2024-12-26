@@ -9,7 +9,6 @@ class MainKnob(MultiplexedInput):
     values into a range specified by the user, defaulting to the
     full range of the 16-bit unsigned integer.
     """
-
     def __init__(self, max_value=None, min_value=None):
         super().__init__()
         if max_value is None:
@@ -24,24 +23,26 @@ class MainKnob(MultiplexedInput):
 
         self._range = self._max_value - self._min_value
 
-    def read(self):
-        return super().read()
+    @property
+    def pin_id(self) -> int:
+        """The unique identifier of the GPIO pin used by this class."""
+        return 28
 
+    @property
+    def mux_logic_a_pin_value(self) -> bool:
+        """The value of the first multiplexer login pin for this input."""
+        return 0
+
+    @property
+    def mux_logic_b_pin_value(self) -> bool:
+        """The value of the second multiplexer login pin for this input."""
+        return 0
+
+    # TODO - transfer this to all the analog ins
+    # they will all need some kind of calibration.
     def read_norm(self):
         return (self.read() - self._min_value) / self._range
 
     @property
     def max_value(self):
         return self._max_value
-
-    @property
-    def mux_logic_a_pin_value(self):
-        return 0
-
-    @property
-    def mux_logic_b_pin_value(self):
-        return 0
-
-    @property
-    def pin_id(self):
-        return 28
