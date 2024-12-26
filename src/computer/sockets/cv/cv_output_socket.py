@@ -38,12 +38,14 @@ class CVOutputSocket(IO):
 class CVOutputSocketOne(CVOutputSocket):
     """The first (left-most) CV output socket of the Computer."""
     @property
-    def pin_id(self):
+    def pin_id(self) -> int:
+        """The unique identifier of the GPIO pin used by this class."""
         return 23
 
 
 class CVOutputSocketTwo(CVOutputSocket):
     """The second (right-most) CV output socket of the Computer."""
     @property
-    def pin_id(self):
+    def pin_id(self) -> int:
+        """The unique identifier of the GPIO pin used by this class."""
         return 22
