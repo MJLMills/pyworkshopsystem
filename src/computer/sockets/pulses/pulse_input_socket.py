@@ -19,15 +19,6 @@ class PulseInputSocket(IO):
                                 machine.Pin.IN,
                                 machine.Pin.PULL_UP)
 
-        # the IRQ gets set on the pin instance, need to provide a handler
-        # the handler will need to turn the looper on, which implies needing a
-        # ref to the looping class which we don't have here.
-
-        # so maybe can provide the IRQ from outside and pass a class method instead?
-        # this may be how stuff gets implemented in the actual Computer program in the end
-        # if this can just set a bool to be consumed by something in a loop that might help.
-        # but then why not just poll the value? - figure this out.
-        # see set_irq below:
     def set_irq(self, handler):
         self._pin.irq(handler=handler, trigger=machine.Pin.IRQ_FALLING)
 
@@ -43,9 +34,6 @@ class PulseInputSocket(IO):
 
 class PulseInputSocketOne(PulseInputSocket):
     """The first (leftmost) pulse input socket."""
-
-    def __init__(self):
-        super().__init__()
 
     @property
     def pin_id(self):
