@@ -27,8 +27,12 @@ class LED(IO):
             raise ValueError("Invalid LED index: ", led_index)
 
         self._pin_id = self.FIRST_LED_PIN_INDEX + (led_index - 1)
-        self.pin = machine.Pin(self.pin_id,
-                               machine.Pin.OUT)
+        self._pin = machine.Pin(self.pin_id,
+                                machine.Pin.OUT)
+
+    @property
+    def pin(self):
+        return self._pin
 
     @property
     def pin_id(self) -> int:
