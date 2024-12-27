@@ -28,12 +28,12 @@ class KnobY(MultiplexedInput):
     @property
     def mux_logic_a_pin_value(self) -> bool:
         """The value of the first multiplexer login pin for this input."""
-        return 0
+        return False
 
     @property
     def mux_logic_b_pin_value(self) -> bool:
         """The value of the second multiplexer login pin for this input."""
-        return 1
+        return True
 
     def read_norm(self):
         return (self.read() - self._min_value) / self._range
