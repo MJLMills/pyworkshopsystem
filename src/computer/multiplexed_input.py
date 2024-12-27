@@ -1,5 +1,5 @@
 import machine
-from .input_output import IO
+from .input_output import AnalogInput
 
 
 class Multiplexer(object):
@@ -29,9 +29,9 @@ class Multiplexer(object):
     __MUX_LOGIC_B_PIN_ID = 25
     """The ID of the second multiplexer output pin."""
     MUX_IO_PIN_ONE_ID = 28
-    """The ID of the multiplexer's first digital output pin."""
+    """The ID of the multiplexer's first analog input pin."""
     MUX_IO_PIN_TWO_ID = 29
-    """The ID of the multiplexer's second digital output pin."""
+    """The ID of the multiplexer's second analog input pin."""
 
     __MUX_LOGIC_A_PIN = machine.Pin(__MUX_LOGIC_A_PIN_ID,
                                     machine.Pin.OUT)
@@ -84,13 +84,18 @@ class Multiplexer(object):
         self.mux_logic_pin_a_value = value_a
         self.mux_logic_pin_b_value = value_b
 
-    @staticmethod
-    def read(pin_id) -> int:
-        """Read the value at the currently selected analog input."""
-        return machine.ADC(pin_id).read_u16()
+    def get_adc(self, pin_id) -> machine.ADC:
+        if pin_id == self.MUX_IO_PIN_ONE_ID:
+            return self.__MUX_IO_ADC_ONE
+        elif pin_id == self.MUX_IO_PIN_TWO_ID:
+            return self.__MUX_IO_ADC_TWO
+        else:
+            raise ValueError(
+                "Supplied pin ID not connected to multiplexer: ", pin_id
+            )
 
 
-class MultiplexedInput(IO):
+class MultiplexedInput(AnalogInput):
     """A multiplexed analog input source.
 
     The set of analog inputs sharing the multiplexer are the main, x and y
@@ -112,11 +117,18 @@ class MultiplexedInput(IO):
         The value of the first multiplexer login pin for this input.
     mux_logic_b_pin_value -> bool
         The value of the second multiplexer login pin for this input.
+    adc -> machine.ADC
+        The analog-to-digital converter attached to this input.
     """
     def __init__(self):
         super().__init__()
         self.__multiplexer = Multiplexer()
-#        self._adc = None  HERE
+        self._adc = self.__multiplexer.get_adc(self.pin_id)
+
+    @property
+    def adc(self):
+        """The analog-to-digital converter attached to this input."""
+        return self._adc
 
     @property
     def mux_logic_a_pin_value(self) -> bool:
@@ -139,4 +151,4 @@ class MultiplexedInput(IO):
         self.__multiplexer.set_logic_pin_values(self.mux_logic_a_pin_value,
                                                 self.mux_logic_b_pin_value)
 
-        return self.__multiplexer.read(self.pin_id)
+        return super().read()

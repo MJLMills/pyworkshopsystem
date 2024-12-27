@@ -1,8 +1,8 @@
 import machine
-from input_output import IO
+from input_output import AnalogInput
 
 
-class CVAudioInputSocket(IO):
+class CVAudioInputSocket(AnalogInput):
     """The CV/Audio input sockets of the computer.
 
     The CV/Audio analog inputs are bipolar (inverted) and DC-coupled.
@@ -26,8 +26,9 @@ class CVAudioInputSocket(IO):
     def __init__(self):
         self._adc = machine.ADC(self.pin_id)
 
-    def read(self):
-        return self._adc.read_u16()
+    @property
+    def adc(self):
+        return self._adc
 
     def read_norm(self):
         return self.read() / 65535
