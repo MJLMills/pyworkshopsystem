@@ -79,7 +79,8 @@ class Computer(object):
         From unpopulated headers next to LEDs.
     NORMALIZATION_PROBE
         Connected to the switch inputs on all the inputs via a BAT45 protection
-        diode. Toggle this pin to identify which sockets have plugs in them.
+        diode. Toggle this pin to identify which input (CV/Audio, CV and pulse)
+        sockets have plugs in them.
         The normalization probe high reads ~2600.
     EEPROM_SDA, EEPROM_SCL
         Connects to Zetta ZD24C08A EEPROM, clone of 24C0* chips.
