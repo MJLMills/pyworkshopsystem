@@ -31,12 +31,12 @@ class MainKnob(MultiplexedInput):
     @property
     def mux_logic_a_pin_value(self) -> bool:
         """The value of the first multiplexer login pin for this input."""
-        return 0
+        return False
 
     @property
     def mux_logic_b_pin_value(self) -> bool:
         """The value of the second multiplexer login pin for this input."""
-        return 0
+        return False
 
     # TODO - transfer this to all the analog ins
     # they will all need some kind of calibration.
