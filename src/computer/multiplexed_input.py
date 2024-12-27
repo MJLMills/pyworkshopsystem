@@ -113,7 +113,7 @@ class MultiplexedInput(IO):
     mux_logic_b_pin_value -> bool
         The value of the second multiplexer login pin for this input.
     """
-    def __init__(self):  # TODO - grab a reference to the correct ADC from the mux class
+    def __init__(self):
         super().__init__()
         self.__multiplexer = Multiplexer()
 #        self._adc = None  HERE
