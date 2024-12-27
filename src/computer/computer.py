@@ -59,6 +59,8 @@ class Computer(object):
 
     UART0_TX, UART0_RX
         From unpopulated headers next to LEDs.
+        There are two UARTS on the RP2040, UART0 and UART1.
+        In this case, UART0 has been mapped to GPIO pins 0/1.
     NORMALIZATION_PROBE
         Connected to the switch inputs on all the inputs via a BAT45 protection
         diode. Toggle this pin to identify which input (CV/Audio, CV and pulse)
@@ -70,6 +72,7 @@ class Computer(object):
         self._board_version = None
         self._board_version_name = None
         self._eeprom = None
+        self._uart0 = None
 
         self._main_knob = None
         self._knob_x = None
@@ -99,6 +102,19 @@ class Computer(object):
             self._eeprom = Eeprom()
 
         return self._eeprom
+
+    @property
+    def uart(self):
+        if self._uart0 is None:
+            self._uart0 = machine.UART(
+                0,
+                baudrate=9600,  # check value
+                tx=machine.Pin(Computer.PIN_IDS["UART0_TX"]),
+                rx=machine.Pin(Computer.PIN_IDS["UART0_RX"])
+            )
+
+        return self._uart0
+
 
     @property
     def main_knob(self):
