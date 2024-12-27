@@ -12,9 +12,9 @@ class KnobX(MultiplexedInput):
     @property
     def mux_logic_a_pin_value(self) -> bool:
         """The value of the first multiplexer login pin for this input."""
-        return 0
+        return 1
 
     @property
     def mux_logic_b_pin_value(self) -> bool:
         """The value of the second multiplexer login pin for this input."""
-        return 1
+        return 0
