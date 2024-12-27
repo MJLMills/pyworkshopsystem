@@ -21,14 +21,14 @@ class SwitchZ(MultiplexedInput):
         return 28
 
     @property
-    def mux_logic_a_pin_value(self) -> int:
+    def mux_logic_a_pin_value(self) -> bool:
         """The value of the first multiplexer login pin for this input."""
-        return 1
+        return True
 
     @property
-    def mux_logic_b_pin_value(self) -> int:
+    def mux_logic_b_pin_value(self) -> bool:
         """The value of the second multiplexer login pin for this input."""
-        return 1
+        return True
 
     def is_down(self) -> bool:
         """Determine whether the switch is down."""
