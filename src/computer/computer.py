@@ -14,6 +14,7 @@ from .sockets import PulseInputSocketTwo
 from .sockets import PulseOutputSocketOne
 from .sockets import PulseOutputSocketTwo
 from .leds import LEDMatrix
+from .eeprom import Eeprom
 
 
 class Computer(object):
@@ -64,11 +65,11 @@ class Computer(object):
         sockets have plugs in them.
         The normalization probe high reads ~2600.
     """
-
     def __init__(self):
 
         self._board_version = None
         self._board_version_name = None
+        self._eeprom = None
 
         self._main_knob = None
         self._knob_x = None
@@ -91,6 +92,13 @@ class Computer(object):
         self._pulses_output_socket_two = None
 
         self._led_matrix = None
+
+    @property
+    def eeprom(self):
+        if self._eeprom is None:
+            self._eeprom = Eeprom()
+
+        return self._eeprom
 
     @property
     def main_knob(self):
