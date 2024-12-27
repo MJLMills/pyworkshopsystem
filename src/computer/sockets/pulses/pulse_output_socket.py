@@ -8,11 +8,10 @@ class PulseOutputSocket(IO):
 
     Inverted digital output: 1/true = low, 0/false=high.
     Scaled via a transistor.
-    Pin should be input, no pullup. TODO - what?
+    Pin should be output, no pullup.
     """
-
-    def __init__(self, pin_id):
-        self._pin = machine.Pin(pin_id,
+    def __init__(self):
+        self._pin = machine.Pin(self.pin_id,
                                 machine.Pin.OUT)
 
     @property
@@ -40,18 +39,15 @@ class PulseOutputSocket(IO):
 class PulseOutputSocketOne(PulseOutputSocket):
     """The first (leftmost) pulse input socket."""
 
-    PIN_ID = 8
-    """The ID of the pin carrying the signal from this socket."""
-
-    def __init__(self):
-        super().__init__(pin_id=self.PIN_ID)
-
+    @property
+    def pin_id(self) -> int:
+        """The unique identifier of the GPIO pin used by this class."""
+        return 8
 
 class PulseOutputSocketTwo(PulseOutputSocket):
     """The second (rightmost) pulse input socket."""
 
-    PIN_ID = 9
-    """The ID of the pin carrying the signal from this socket."""
-
-    def __init__(self):
-        super().__init__(pin_id=self.PIN_ID)
+    @property
+    def pin_id(self) -> int:
+        """The unique identifier of the GPIO pin used by this class."""
+        return 9
