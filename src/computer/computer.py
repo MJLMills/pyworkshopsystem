@@ -41,23 +41,6 @@ class Computer(object):
     micropython objects for use where specific functionality is not yet
      implemented.
     """
-    EEPROM_STRUCTURE = {
-        0: 2,   # magic number = 2001
-                # if number is present, eeprom has been initialized
-        2: 1,   # version number 0-255
-        3: 1,   # padding
-        4: 1,   # Channel 0 - Number of entries 0-9
-        5: 40,  # 10 x 4 byte blocks:
-                # 1 x 4-bit voltage + 4 bits space |
-                # 1 x 24 bit setting = 32 bits = 4 bytes
-        45: 1,  # Channel 1 - Number of entries 0-9
-        46: 40, # 10 x 4-byte blocks:
-                # 1x 4-bit voltage + 4 bits space |
-                # 1 x 24 bit setting = 32 bits = 4 bytes
-        86: 2   # CRC Check over previous data
-    }
-    """Memory map for 2 x precision PWM voltage outputs = Channels 0 and 1."""
-
     KNOWN_BOARD_VERSION_NAMES = {
         (False, False, False): "Proto 1.2",
         (True, False, False): "Proto 2.0, 2.0.1, Rev1"
@@ -68,8 +51,6 @@ class Computer(object):
         "UART0_TX": 0,
         "UART0_RX": 1,
         "NORMALIZATION_PROBE": 4,
-        "EEPROM_SDA": 16,
-        "EEPROM_SCL": 17,
     }
     """GPIO Pin IDs not assigned to Computer classes.
 
@@ -82,11 +63,6 @@ class Computer(object):
         diode. Toggle this pin to identify which input (CV/Audio, CV and pulse)
         sockets have plugs in them.
         The normalization probe high reads ~2600.
-    EEPROM_SDA, EEPROM_SCL
-        Connects to Zetta ZD24C08A EEPROM, clone of 24C0* chips.
-        Contains 8 kbits (1024 x 8).
-        SDA & SCL lines have 2.2k pullups.
-        Data is stored in 8 x 1024 pages addresses 0x50 to 0x5B.
     """
 
     def __init__(self):
