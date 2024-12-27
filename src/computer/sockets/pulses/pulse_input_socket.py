@@ -19,6 +19,10 @@ class PulseInputSocket(IO):
                                 machine.Pin.IN,
                                 machine.Pin.PULL_UP)
 
+    @property
+    def pin(self):
+        return self._pin
+
     def set_irq(self, handler):
         self._pin.irq(handler=handler, trigger=machine.Pin.IRQ_FALLING)
 
