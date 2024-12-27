@@ -3,7 +3,6 @@ from .knobs import MainKnob, KnobX, KnobY
 from .switches import SwitchZ
 from .sockets import CVAudioInputSocketOne
 from .sockets import CVAudioInputSocketTwo
-from .sockets import CVAudioInputSockets
 from .sockets import CVAudioOutputSocketOne
 from .sockets import CVAudioOutputSocketTwo
 from .sockets import CVInputSocketOne
