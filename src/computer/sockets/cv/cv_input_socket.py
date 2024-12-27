@@ -24,25 +24,25 @@ class CVInputSocketOne(CVInputSocket):
     """The first (left-most) CV input socket of the Computer."""
 
     @property
-    def mux_logic_a_pin_value(self):
+    def mux_logic_a_pin_value(self) -> bool:
         """The value of the first multiplexer login pin for this input."""
-        return 0
+        return False
 
     @property
-    def mux_logic_b_pin_value(self):
+    def mux_logic_b_pin_value(self) -> bool:
         """The value of the second multiplexer login pin for this input."""
-        return 0
+        return False
 
 
 class CVInputSocketTwo(CVInputSocket):
     """The second (right-most) CV input socket of the Computer."""
 
     @property
-    def mux_logic_a_pin_value(self):
+    def mux_logic_a_pin_value(self) -> bool:
         """The value of the first multiplexer login pin for this input."""
-        return 0
+        return False
 
     @property
     def mux_logic_b_pin_value(self):
         """The value of the second multiplexer login pin for this input."""
-        return 1
+        return True
