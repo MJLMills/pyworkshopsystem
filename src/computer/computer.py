@@ -16,11 +16,6 @@ from .sockets import PulseOutputSocketTwo
 from .leds import LEDMatrix
 
 
-# NB: if you instantiate the Computer, it currently creates all the controls when
-# you may only want a subset. One way around this is to only instantiate the
-# bits you want. A better option would be "lazy loading" the hardware classes.
-# TODO - this lazy loading to minimize startup time.
-
 class Computer(object):
     """Music Thing Modular Workshop System Computer Module.
 
@@ -98,27 +93,148 @@ class Computer(object):
         self._board_version = None
         self._board_version_name = None
 
-        self.main_knob = MainKnob()
-        self.knob_x = KnobX()
-        self.knob_y = KnobY()
-        self.switch_z = SwitchZ()
+        self._main_knob = None
+        self._knob_x = None
+        self._knob_y = None
+        self._switch_z = None
 
-        self.cv_audio_input_socket_one = CVAudioInputSocketOne()
-        self.cv_audio_input_socket_two = CVAudioInputSocketTwo()
-        self.cv_audio_output_socket_one = CVAudioOutputSocketOne()
-        self.cv_audio_output_socket_two = CVAudioOutputSocketTwo()
+        self._cv_audio_input_socket_one = None
+        self._cv_audio_input_socket_two = None
+        self._cv_audio_output_socket_one = None
+        self._cv_audio_output_socket_two = None
 
-        self.cv_input_socket_one = CVInputSocketOne()
-        self.cv_input_socket_two = CVInputSocketTwo()
-        self.cv_output_socket_one = CVOutputSocketOne()
-        self.cv_output_socket_two = CVOutputSocketTwo()
+        self._cv_input_socket_one = None
+        self._cv_input_socket_two = None
+        self._cv_output_socket_one = None
+        self._cv_output_socket_two = None
 
-        self.pulses_input_socket_one = PulseInputSocketOne()
-        self.pulses_input_socket_two = PulseInputSocketTwo()
-        self.pulses_output_socket_one = PulseOutputSocketOne()
-        self.pulses_output_socket_two = PulseOutputSocketTwo()
+        self._pulses_input_socket_one = None
+        self._pulses_input_socket_two = None
+        self._pulses_output_socket_one = None
+        self._pulses_output_socket_two = None
 
-        self.led_matrix = LEDMatrix()
+        self._led_matrix = None
+
+    @property
+    def main_knob(self):
+        if self._main_knob is None:
+            self._main_knob = MainKnob()
+
+        return self._main_knob
+
+    @property
+    def knob_x(self):
+        if self._knob_x is None:
+            self._knob_x = KnobX()
+
+        return self._knob_x
+
+    @property
+    def knob_y(self):
+        if self._knob_y is None:
+            self._knob_y = KnobY()
+
+        return self._knob_y
+
+    @property
+    def switch_z(self):
+        if self._switch_z is None:
+            self._switch_z = SwitchZ()
+
+        return self._switch_z
+
+    @property
+    def cv_input_socket_one(self):
+        if self._cv_input_socket_one is None:
+            self._cv_input_socket_one = CVInputSocketOne()
+
+        return self._cv_input_socket_one
+
+    @property
+    def cv_input_socket_two(self):
+        if self._cv_input_socket_two is None:
+            self._cv_input_socket_two = CVInputSocketTwo()
+
+        return self._cv_input_socket_one
+
+    @property
+    def cv_output_socket_one(self):
+        if self._cv_output_socket_one is None:
+            self._cv_output_socket_one = CVOutputSocketOne()
+
+        return self._cv_output_socket_one
+
+    @property
+    def cv_output_socket_two(self):
+        if self._cv_output_socket_two is None:
+            self._cv_output_socket_two = CVOutputSocketTwo()
+
+        return self._cv_output_socket_one
+
+    @property
+    def cv_audio_input_socket_one(self):
+        """The left CV/Audio input socket on the Computer."""
+        if self._cv_audio_input_socket_one is None:
+            self._cv_audio_input_socket_one = CVAudioInputSocketOne()
+
+        return self._cv_audio_input_socket_one
+
+    @property
+    def cv_audio_input_socket_two(self):
+        """The right CV/Audio input socket on the Computer."""
+        if self._cv_audio_input_socket_two is None:
+            self._cv_audio_input_socket_two = CVAudioInputSocketTwo()
+
+        return self._cv_audio_input_socket_two
+
+    @property
+    def cv_audio_output_socket_one(self):
+        if self._cv_audio_output_socket_one is None:
+            self._cv_audio_output_socket_one = CVAudioOutputSocketOne()
+
+        return self._cv_audio_output_socket_one
+
+    @property
+    def cv_audio_output_socket_two(self):
+        if self._cv_audio_output_socket_two is None:
+            self._cv_audio_output_socket_two = CVAudioOutputSocketTwo()
+
+        return self._cv_audio_output_socket_two
+
+    @property
+    def pulses_input_socket_one(self):
+        if self._pulses_input_socket_one is None:
+            self._pulses_input_socket_one = PulseInputSocketOne()
+
+        return self._pulses_input_socket_one
+
+    @property
+    def pulses_input_socket_two(self):
+        if self._pulses_input_socket_two is None:
+            self._pulses_input_socket_two = PulseInputSocketTwo()
+
+        return self._pulses_input_socket_two
+
+    @property
+    def pulses_output_socket_one(self):
+        if self._pulses_output_socket_one is None:
+            self._pulses_output_socket_one = PulseOutputSocketOne()
+
+        return self._pulses_output_socket_one
+
+    @property
+    def pulses_output_socket_two(self):
+        if self._pulses_output_socket_two is None:
+            self._pulses_output_socket_two = PulseOutputSocketTwo()
+
+        return self._pulses_output_socket_two
+
+    @property
+    def led_matrix(self):
+        if self._led_matrix is None:
+            self._led_matrix = LEDMatrix()
+
+        return self._led_matrix
 
     @property
     def board_version(self) -> tuple:
