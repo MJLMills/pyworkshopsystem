@@ -63,9 +63,9 @@ class Computer(object):
     }
     """Memory map for 2 x precision PWM voltage outputs = Channels 0 and 1."""
 
-    KNOWN_BOARD_VERSIONS = {
-        (0, 0, 0): "Proto 1.2",
-        (1, 0, 0): "Proto 2.0, 2.0.1, Rev1"
+    KNOWN_BOARD_VERSION_NAMES = {
+        (False, False, False): "Proto 1.2",
+        (True, False, False): "Proto 2.0, 2.0.1, Rev1"
     }
     """Known versions of the Computer board."""
 
@@ -73,9 +73,6 @@ class Computer(object):
         "UART0_TX": 0,
         "UART0_RX": 1,
         "NORMALIZATION_PROBE": 4,
-        "BOARD_IDENTIFICATION_A": 5,
-        "BOARD_IDENTIFICATION_B": 6,
-        "BOARD_IDENTIFICATION_C": 7,
         "EEPROM_SDA": 16,
         "EEPROM_SCL": 17,
     }
@@ -89,10 +86,6 @@ class Computer(object):
         Connected to the switch inputs on all the inputs via a BAT45 protection
         diode. Toggle this pin to identify which sockets have plugs in them.
         The normalization probe high reads ~2600.
-    BOARD_IDENTIFICATION
-        GPIO Pins 5, 6, 7 = binary bits
-        0 0 0 = Proto1.2 (all pins floating)
-        1 0 0 = Proto 2.0, 2.0.1, Rev1.
     EEPROM_SDA, EEPROM_SCL
         Connects to Zetta ZD24C08A EEPROM, clone of 24C0* chips.
         Contains 8 kbits (1024 x 8).
@@ -101,6 +94,9 @@ class Computer(object):
     """
 
     def __init__(self):
+
+        self._board_version = None
+        self._board_version_name = None
 
         self.main_knob = MainKnob()
         self.knob_x = KnobX()
@@ -124,30 +120,68 @@ class Computer(object):
 
         self.led_matrix = LEDMatrix()
 
-    @staticmethod
-    def board_version() -> str:
-        """Get the board version encoded in the values of GPIO pins 5, 6 and 7.
+    @property
+    def board_version(self) -> tuple:
+        """The version of the Computer board.
 
-        (0, 0, 0) = Proto1.2
-        (1, 0, 0) = Proto 2.0, 2.0.1, Rev1.
-        """
-        pin_a = machine.Pin(Computer.PIN_IDS["BOARD_IDENTIFICATION_A"],
-                            machine.Pin.IN,
-                            machine.Pin.PULL_UP)
+        Returns
+        -------
+        tuple of bool
+            The three Boolean values identifying the board version."""
+        if self._board_version is None:
+            self._board_version = self.__read_board_version()
 
-        pin_b = machine.Pin(Computer.PIN_IDS["BOARD_IDENTIFICATION_B"],
-                            machine.Pin.IN,
-                            machine.Pin.PULL_UP)
+        return self._board_version
 
-        pin_c = machine.Pin(Computer.PIN_IDS["BOARD_IDENTIFICATION_C"],
-                            machine.Pin.IN,
-                            machine.Pin.PULL_UP)
-
-        pin_values = (pin_a.value(), pin_b.value(), pin_c.value())
+    @property
+    def board_version_name(self) -> str:
+        """The name of this board version."""
 
         try:
-            return Computer.KNOWN_BOARD_VERSIONS[pin_values]
+            return Computer.KNOWN_BOARD_VERSION_NAMES[self.board_version]
         except KeyError:
             raise ValueError(
-                "Unknown board version with pin values: ", pin_values
+                "Unknown board version with pin values: ", self.board_version
             )
+
+    @staticmethod
+    def __read_board_version() -> tuple:
+        """Read the board version ID.
+
+        The board version is stored in three bits that are read from GPIO
+        digital input pins with IDs 5, 6 and 7. The following table shows the
+        mapping between board version IDs and names provided in the Computer
+        documentation:
+
+        (False, False, False) = Proto1.2
+        (True, False, False) = Proto 2.0, 2.0.1, Rev1.
+
+        Note that this method (and any code that relies on the board version
+        being Proto1.2) is untested due to lack of access to the appropriate
+        physical board. Proto 2.0.1 and Rev1 are identical.
+
+        See Also
+        --------
+        For information on the changes across different board types, see the
+        Computer documentation.
+
+        Returns
+        -------
+        tuple of bool
+            The three Boolean values identifying the board version.
+        """
+        pin_a = machine.Pin(5,
+                            machine.Pin.IN,
+                            machine.Pin.PULL_UP)
+
+        pin_b = machine.Pin(6,
+                            machine.Pin.IN,
+                            machine.Pin.PULL_UP)
+
+        pin_c = machine.Pin(7,
+                            machine.Pin.IN,
+                            machine.Pin.PULL_UP)
+
+        return (bool(pin_a.value()),
+                bool(pin_b.value()),
+                bool(pin_c.value()))
