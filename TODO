@@ -5,9 +5,10 @@
     The multiplexed inputs also need a way to pick the multiplexer pin to read
     from that isn't inefficient.
 
-* analog inputs now share a superclass AnalogInput that requires them to
-define an ADC object, so now they can utilize shared read methods and maybe
-calibration setups.
+* The LEDs and pulse outputs are both digital output pins so may share some
+behaviour that could be pulled into a subclass.
+
+* The LEDs must be fadeable via PWM?
 
 * pull the calibration info out of the knobs into a superclass
     or, if feasible move it to a calibration class that
@@ -31,9 +32,10 @@ calibration setups.
 
 _Computer-Related Missing Features_
 
-* understand how to read/write the EEPROM
+* understand how to read/write the EEPROM - I2C, started basic implementation.
 
 * use the normalization probe to check which input jacks are plugged in or not
 https://github.com/TomWhitwell/Workshop_Computer/blob/main/Demonstrations%2BHelloWorlds/PicoSDK/ComputerCard/ComputerCard.h#L188
 
-* Understand how one might make use of the UART pins
+* Understand how one might make use of the UART pins, connecting them at least
+seems straightforward, though I have no idea how to use them.
