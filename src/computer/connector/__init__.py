@@ -8,10 +8,13 @@
 # subclassing this guy seems to be the best option.
 # the output does not have to be hardware - can be some object whose state is to change
 class IRQConnector(object):
-    """Connect an IRQ source to an output."""
+    """Connect an IRQ source to an output.
 
-    def __init__(self, irq_source, output, trigger):
-        self.output = output
+    For pins on which an IRQ can be set
+    """
+
+    def __init__(self, irq_source, outputs, trigger):
+        self._outputs = outputs
         irq_source.pin.irq(handler=self.callback,
                            trigger=trigger)
 
@@ -24,10 +27,10 @@ class LEDFlasher(IRQConnector):
 
     def callback(self, irq_source_pin):
         """Turn the LED on and off."""
-        if self.output.pin.value():
-            self.output.pin.value(0)
+        if self._outputs[0].pin.value():
+            self._outputs[0].pin.value(0)
         else:
-            self.output.pin.value(1)
+            self._outputs[0].pin.value(1)
 
         # the IRQ gets set on the pin instance, need to provide a handler
         # the handler will need to turn the looper on, which implies needing a

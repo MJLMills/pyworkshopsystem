@@ -25,13 +25,11 @@ class CVAudioInputSocket(AnalogInput):
     """
     def __init__(self):
         self._adc = machine.ADC(self.pin_id)
+        super().__init__()
 
     @property
     def adc(self):
         return self._adc
-
-    def read_norm(self):
-        return self.read() / 65535
 
 
 class CVAudioInputSocketOne(CVAudioInputSocket):

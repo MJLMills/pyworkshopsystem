@@ -147,7 +147,7 @@ class MultiplexedInput(AnalogInput):
         )
 
     def read(self) -> int:
-        """Set up the multiplexer and read the value."""
+        """Set up the multiplexer before reading the value from the ADC."""
         self.__multiplexer.set_logic_pin_values(self.mux_logic_a_pin_value,
                                                 self.mux_logic_b_pin_value)
 

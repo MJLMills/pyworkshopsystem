@@ -9,15 +9,14 @@ class CVInputSocket(MultiplexedInput):
     -5V reads ~350
     0V reads ~2030
     +5V reads ~3700
+    (these are from the docs and are hinting at calibration from the uint12
+    values to actual voltages)
     """
 
     @property
     def pin_id(self):
         """The unique identifier of the GPIO pin used by this class."""
         return 29  # try not to redefine this here as a literal, get from multiplexer by name?
-
-    def read_norm(self):
-        return self.read() / 65535
 
 
 class CVInputSocketOne(CVInputSocket):
