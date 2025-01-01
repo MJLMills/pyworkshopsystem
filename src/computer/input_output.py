@@ -34,6 +34,18 @@ class AnalogInput(IO):
             self.__class__.__name__ + " does not implement adc."
         )
 
+    @property
+    def min_value(self) -> int:
+        raise NotImplementedError(
+            self.__class__.__name__ + " does not implement min_value."
+        )
+
+    @property
+    def max_value(self) -> int:
+        raise NotImplementedError(
+            self.__class__.__name__ + " does not implement ax_value."
+        )
+
     def read(self) -> int:
         """Read a 12-bit uint value from the RP2040's ADC.
 
@@ -54,7 +66,6 @@ class AnalogInput(IO):
         u12 = u16 >> 4
         """
         return self.adc.read_u16() >> 4
-        # TODO - how do you calibrate this avoiding remapping with floats?
 
     def update_latest_value(self):
         """Update the latest value of this analog input."""
