@@ -9,22 +9,16 @@ class MainKnob(MultiplexedInput):
     values into a range specified by the user, defaulting to the
     full range of the 16-bit unsigned integer.
     """
-    def __init__(self, max_value=None, min_value=None):
-
+    def __init__(self):
         super().__init__()
 
-        if max_value is None:
-            self._max_value = 65535
-        else:
-            self._max_value = max_value
+    @property
+    def min_value(self) -> int:
+        return 224
 
-        if min_value is None:
-            self._min_value = 224
-        else:
-            self._min_value = min_value
-
-        self._range = self._max_value - self._min_value
-        self._latest_value = 0
+    @property
+    def max_value(self) -> int:
+        return 65535
 
     @property
     def pin_id(self) -> int:
@@ -40,7 +34,3 @@ class MainKnob(MultiplexedInput):
     def mux_logic_b_pin_value(self) -> bool:
         """The value of the second multiplexer login pin for this input."""
         return False
-
-    @property
-    def max_value(self):
-        return self._max_value

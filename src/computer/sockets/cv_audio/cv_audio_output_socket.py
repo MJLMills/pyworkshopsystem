@@ -57,14 +57,22 @@ class CVAudioOutputSocket(object):
 
     def write(self, value: int):
         """
+
+        Parameters
+        ----------
+        value
+            Currently this is a 16-bit uint, hence the conversion.
+            This could be anything though, tbh.
+
         Writes to the DAC are 16-bit words.
+        The value to write to the DAC is a 12-bit unsigned integer.
 
         The bytes object (immutable) is 16-bits where:
 
         15 : DAC_SELECTION_BIT in {0, 1}
         14 : IGNORED
-        13 : Output gain selection bit, probably hard-coded in {0, 1}
-        12 : Output Shutdown Control bit in {0, 1}, hard-coded to 1
+        13 : Output gain selection bit hard-coded to 1
+        12 : Output Shutdown Control bit, hard-coded to 1
         11-0 : the data value to write to the DAC
         """
 

@@ -18,6 +18,13 @@ class CVInputSocket(MultiplexedInput):
         """The unique identifier of the GPIO pin used by this class."""
         return 29  # try not to redefine this here as a literal, get from multiplexer by name?
 
+    @property
+    def min_value(self) -> int:
+        return 0
+
+    @property
+    def max_value(self) -> int:
+        return 65535
 
 class CVInputSocketOne(CVInputSocket):
     """The first (left-most) CV input socket of the Computer."""

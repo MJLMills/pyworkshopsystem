@@ -30,14 +30,22 @@ class SwitchZ(MultiplexedInput):
         """The value of the second multiplexer login pin for this input."""
         return True
 
+    @property
+    def min_value(self) -> int:
+        return 0
+
+    @property
+    def max_value(self) -> int:
+        return 65535
+
     def is_down(self) -> bool:
         """Determine whether the switch is down."""
-        return 0 <= self.read() < SwitchZ.DOWN_MID_BOUNDARY
+        return 0 <= self.latest_value < SwitchZ.DOWN_MID_BOUNDARY
 
     def is_middle(self) -> bool:
         """Determine whether the switch is in the middle."""
-        return SwitchZ.DOWN_MID_BOUNDARY <= self.read() < SwitchZ.MID_UP_BOUNDARY
+        return SwitchZ.DOWN_MID_BOUNDARY <= self.latest_value < SwitchZ.MID_UP_BOUNDARY
 
     def is_up(self) -> bool:
         """Determine whether the switch is up."""
-        return SwitchZ.MID_UP_BOUNDARY <= self.read() <= SwitchZ.UP_MAX
+        return SwitchZ.MID_UP_BOUNDARY <= self.latest_value <= SwitchZ.UP_MAX

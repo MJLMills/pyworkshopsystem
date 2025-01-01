@@ -25,10 +25,12 @@ class CVOutputSocket(IO):
                        freq=60000,
                        duty_u16=duty_cycle)
 
-    def write(self, value):
-        self.pwm.duty_u16(65535 - value)
+    def write(self, value: int):
+        """Set the PWM duty cycle equal to the provided unsigned 16-bit int value."""
+        self.pwm.duty_u16(65535 - value)  # TODO - invert this in the PWM initializer instead?
 
-    def write_norm_value(self, value):
+    def write_norm_value(self, value: float):
+        """Set the PWM duty cycle equal to the given float (range 0, 1) """
         if not (0.0 <= value <= 1.0):
             print("Normalized input exceeded range:", value)
 
