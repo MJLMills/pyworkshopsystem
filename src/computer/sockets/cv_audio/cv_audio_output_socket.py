@@ -61,8 +61,7 @@ class CVAudioOutputSocket(object):
         Parameters
         ----------
         value
-            Currently this is a 16-bit uint, hence the conversion.
-            This could be anything though, tbh.
+            The 12-bit uint (a python int ranging 0 to 4095) to write.
 
         Writes to the DAC are 16-bit words.
         The value to write to the DAC is a 12-bit unsigned integer.
@@ -71,12 +70,12 @@ class CVAudioOutputSocket(object):
 
         15 : DAC_SELECTION_BIT in {0, 1}
         14 : IGNORED
-        13 : Output gain selection bit hard-coded to 1
+        13 : Output gain selection bit, hard-coded to 1
         12 : Output Shutdown Control bit, hard-coded to 1
         11-0 : the data value to write to the DAC
         """
 
-        value = int((value / 65535) * 4095)
+        #value = int((value / 65535) * 4095)
 
         dac_data = self.__DAC_STRING | (value & 0xFFF)
 
