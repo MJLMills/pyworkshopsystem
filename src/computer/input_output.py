@@ -43,7 +43,7 @@ class AnalogInput(IO):
     @property
     def max_value(self) -> int:
         raise NotImplementedError(
-            self.__class__.__name__ + " does not implement ax_value."
+            self.__class__.__name__ + " does not implement max_value."
         )
 
     def read(self) -> int:
