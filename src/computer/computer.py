@@ -115,7 +115,6 @@ class Computer(object):
 
         return self._uart0
 
-
     @property
     def main_knob(self):
         if self._main_knob is None:
@@ -236,6 +235,32 @@ class Computer(object):
             self._led_matrix = LEDMatrix()
 
         return self._led_matrix
+
+    def update_analog_inputs(self):
+        """Update the current raw values of all of the analog inputs."""
+        if self._main_knob is not None:
+            self.main_knob.update_latest_value()
+
+        if self._knob_x is not None:
+            self.knob_x.update_latest_value()
+
+        if self._knob_y is not None:
+            self.knob_y.update_latest_value()
+
+        if self._switch_z is not None:
+            self.switch_z.update_latest_value()
+
+        if self._cv_audio_input_socket_one is not None:
+            self.cv_audio_input_socket_one.update_latest_value()
+
+        if self._cv_audio_input_socket_two is not None:
+            self.cv_audio_input_socket_two.update_latest_value()
+
+        if self._cv_input_socket_one is not None:
+            self.cv_input_socket_one.update_latest_value()
+
+        if self._cv_input_socket_two is not None:
+            self.cv_input_socket_two.update_latest_value()
 
     @property
     def board_version(self) -> tuple:
