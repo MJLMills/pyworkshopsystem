@@ -14,11 +14,11 @@ class MainKnob(MultiplexedInput):
 
     @property
     def min_value(self) -> int:
-        return 224
+        return 14
 
     @property
     def max_value(self) -> int:
-        return 65535
+        return 4095
 
     @property
     def pin_id(self) -> int:
