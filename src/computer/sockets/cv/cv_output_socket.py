@@ -1,8 +1,8 @@
-from machine import PWM
-from multiplexed_input import IO
+import machine
+from input_output import AnalogOutput
 
 
-class CVOutputSocket(IO):
+class CVOutputSocket(AnalogOutput):
     """The CV output sockets of the Computer.
 
     These sockets use PWM output
@@ -21,20 +21,23 @@ class CVOutputSocket(IO):
     FREQUENCY_KHZ = 60000
 
     def __init__(self, duty_cycle: int = 32768):
-        self.pwm = PWM(self.pin_id,
-                       freq=60000,
-                       duty_u16=duty_cycle)
+        super().__init__()
+
+        self.pwm = machine.PWM(self.pin_id,
+                               freq=60000,
+                               duty_u16=duty_cycle,
+                               invert=True)
+    @property
+    def min_value(self) -> int:
+        return 0
+
+    @property
+    def max_value(self) -> int:
+        return 65535
 
     def write(self, value: int):
         """Set the PWM duty cycle equal to the provided unsigned 16-bit int value."""
-        self.pwm.duty_u16(65535 - value)  # TODO - invert this in the PWM initializer instead?
-
-    def write_norm_value(self, value: float):
-        """Set the PWM duty cycle equal to the given float (range 0, 1) """
-        if not (0.0 <= value <= 1.0):
-            print("Normalized input exceeded range:", value)
-
-        self.write(int((1.0 - value) * 65535))
+        self.pwm.duty_u16(int(value))
 
 
 class CVOutputSocketOne(CVOutputSocket):
