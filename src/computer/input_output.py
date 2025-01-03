@@ -1,6 +1,29 @@
 import machine
 
 
+class RangedValue:
+    def __init__(self, min_value, max_value):
+        self._value = None
+        self._min_value = min_value
+        self._max_value = max_value
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value):
+        self._value = value
+
+    @property
+    def min_value(self):
+        return self._min_value
+
+    @property
+    def max_value(self):
+        return self._max_value
+
+
 class IO(object):
     """An abstract class for a hardware object with an associated GPIO pin.
 
@@ -15,6 +38,27 @@ class IO(object):
         raise NotImplementedError(
             self.__class__.__name__ + " does not implement pin_id."
         )
+
+
+class AnalogOutput(IO):  # TODO - right now this _is_ a RangedValue - it implements the API of that class
+    """"""
+    @property
+    def min_value(self) -> int:
+        raise NotImplementedError(
+            self.__class__.__name__ + " does not implement min_value."
+        )
+
+    @property
+    def max_value(self) -> int:
+        raise NotImplementedError(
+            self.__class__.__name__ + " does not implement max_value."
+        )
+
+    def write(self, value):
+        raise NotImplementedError(
+            self.__class__.__name__ + " does not implement write."
+        )
+
 
 class AnalogInput(IO):
     """An abstract class for an analog input hardware object.
