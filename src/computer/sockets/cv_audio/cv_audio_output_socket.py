@@ -1,7 +1,8 @@
 import machine
+from input_output import AnalogOutput
 
 
-class CVAudioOutputSocket(object):
+class CVAudioOutputSocket(AnalogOutput):
     """A CV/Audio output socket.
 
     https://docs.micropython.org/en/latest/library/machine.SPI.html#machine-spi
@@ -41,6 +42,7 @@ class CVAudioOutputSocket(object):
     """The width in bits of each transfer."""
 
     def __init__(self):
+        super().__init__()
         # create a chip select on the documented SPI CS pin
         self.__chip_select_pin = machine.Pin(self.__CS_PIN_ID, mode=machine.Pin.OUT, value=1)
 
@@ -55,8 +57,16 @@ class CVAudioOutputSocket(object):
             mosi=self.__SDI_MOSI_PIN_ID,
         )
 
+    @property
+    def min_value(self) -> int:
+        return 0
+
+    @property
+    def max_value(self) -> int:
+        return 4095
+
     def write(self, value: int):
-        """
+        """Write the given value to the DAC.
 
         Parameters
         ----------
