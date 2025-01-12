@@ -75,9 +75,9 @@ class Computer(object):
         self._uart0 = None
 
         self._main_knob = None
-        self._knob_x = None
-        self._knob_y = None
-        self._switch_z = None
+        self._knob_x = None  # TODO alias this to x_knob
+        self._knob_y = None  # TODO alias this to y_knob
+        self._switch_z = None  # TODO alias this to z_switch
 
         self._cv_audio_input_socket_one = None
         self._cv_audio_input_socket_two = None
