@@ -1,9 +1,9 @@
 import time
 import machine
-from input_output import HardwareComponent
+from input_output import DigitalOutput
 
 
-class LED(HardwareComponent):
+class LED(DigitalOutput):
     """A light emitting diode on the module.
 
     If the pin value is set to 1 (i.e. True), the LED is illuminated.
@@ -28,8 +28,7 @@ class LED(HardwareComponent):
             raise ValueError("Invalid LED index: ", led_index)
 
         self._pin_id = self.FIRST_LED_PIN_INDEX + (led_index - 1)
-        self._pin = machine.Pin(self.pin_id,
-                                machine.Pin.OUT)
+        super().__init__()
 
     @property
     def pin(self):
