@@ -1,6 +1,6 @@
 import machine
 import time
-from multiplexed_input import IO
+from input_output import HardwareComponent
 
 
 class PulseOutputSocket(HardwareComponent):
