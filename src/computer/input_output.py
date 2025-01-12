@@ -115,6 +115,7 @@ class AnalogInput(HardwareComponent):
     """
     def __init__(self):  # input_value property should be a ranged variable instance - this may be true of every IO object?
         self._latest_value = None
+        # self.value_changed = Signal()
 
     @property
     def adc(self) -> machine.ADC:
@@ -161,8 +162,36 @@ class AnalogInput(HardwareComponent):
     def update_latest_value(self):
         """Update the latest value of this analog input."""
         self._latest_value = self.read()
+        # for signals and slots, this will emit a signal if the value changes
+        # containing the new value and range allowing mapping to outputs
+        # value = self.read()
+        # if value != self._latest_value:
+        #    self._latest_value = value
+        #    self.value_changed.emit(self._latest_value)
 
     @property
     def latest_value(self) -> int:
         """The pot value in the range 0, 4095."""
         return self._latest_value
+
+class DigitalOutput(HardwareComponent):
+    """A hardware digital output.
+
+    See Also
+    --------
+    PulseOutputSocket
+    LED
+    """
+    def __init__(self):
+        super().__init__()
+        self._pin = machine.Pin(self.pin_id,
+                                machine.Pin.OUT)
+
+    @property  # anything with a pin_id has a pin
+    def pin(self):
+        return self._pin
+
+    @property
+    def pin_id(self) -> int:
+        """The unique identifier of the GPIO pin used by this class."""
+        raise NotImplementedError
