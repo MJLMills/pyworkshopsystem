@@ -1,8 +1,8 @@
 import machine
-from input_output import IO
+from input_output import HardwareComponent
 
 
-class PulseInputSocket(IO):
+class PulseInputSocket(HardwareComponent):
     """
     Inverted digital input: Low input = High reading.
     For example, use a falling edge to track the start of a pulse.

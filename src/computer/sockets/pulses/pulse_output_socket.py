@@ -3,13 +3,14 @@ import time
 from multiplexed_input import IO
 
 
-class PulseOutputSocket(IO):
+class PulseOutputSocket(HardwareComponent):
     """An output socket of the computer, sending pulses.
 
     Inverted digital output: 1/true = low, 0/false=high.
     Scaled via a transistor.
     Pin should be output, no pullup.
     """
+
     def __init__(self):
         self._pin = machine.Pin(self.pin_id,
                                 machine.Pin.OUT)
@@ -35,6 +36,9 @@ class PulseOutputSocket(IO):
         time.sleep(duration)
         self.turn_off()
 
+    def set_value(self, value):
+        self.pin.value(value)
+
 
 class PulseOutputSocketOne(PulseOutputSocket):
     """The first (leftmost) pulse input socket."""
@@ -43,6 +47,7 @@ class PulseOutputSocketOne(PulseOutputSocket):
     def pin_id(self) -> int:
         """The unique identifier of the GPIO pin used by this class."""
         return 8
+
 
 class PulseOutputSocketTwo(PulseOutputSocket):
     """The second (rightmost) pulse input socket."""
