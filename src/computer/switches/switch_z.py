@@ -11,9 +11,9 @@ class SwitchZ(MultiplexedInput):
     Down - momentary, low value on read - ranges 176 to 272 over 200 secs (converged after 4 secs)
     """
     # TODO - update these to 12-bit values
-    DOWN_MID_BOUNDARY = 16292 >> 4
-    MID_UP_BOUNDARY = 48971 >> 4
-    UP_MAX = 65535 >> 4
+    DOWN_MID_BOUNDARY = 16292 #>> 4
+    MID_UP_BOUNDARY = 48971 #>> 4
+    UP_MAX = 65535 #>> 4
 
     @property
     def pin_id(self) -> int:
