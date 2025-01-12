@@ -1,36 +1,36 @@
 import machine
 
 
-class RangedValue:
-    def __init__(self, min_value, max_value):
-        self._value = None
-        self._min_value = min_value
-        self._max_value = max_value
-
-    @property
-    def value(self):
-        return self._value
-
-    @value.setter
-    def value(self, value):
-        self._value = value
-
-    @property
-    def min_value(self):
-        return self._min_value
-
-    @property
-    def max_value(self):
-        return self._max_value
-
-
-class IO(object):
+class HardwareComponent(object):
     """An abstract class for a hardware object with an associated GPIO pin.
 
     All hardware objects (other than the CV/Audio output sockets) have a single
     associated GPIO pin, regardless of whether they use that pin directly or
     through the multiplexer (in which case the GPIO pin may be shared). This
     pin has a unique integer identifier.
+
+    # i'm fairly convinced there's no way to change the ranges on inputs
+    # that's because the read will always return a value in the hardware range
+    # that then can be mapped elsewhere. If you e.g. set the min to 1000, the read
+    # method will still carry on reading whatever is at the pin. You would have to map
+    # the hardware reads to another range, which you're going to be doing anyway so
+    # it's a waste of time.
+    # the min/max values then are a form of calibration if they might differ for
+    # each specific workshop system.
+
+    main knob - its ranged variable is the u16 read at the multiplexer, range is fixed by hardware constraints
+    x knob - same
+    y knob - same
+    z switch - same (but really is mapped to one of three states at any given instant)
+
+    CV input (1,2) - same
+    CV/Audio input (1,2) - u16 read straight from pin
+
+    # these you may want to control the range of, because to write a limited range you
+    # literally have to change the range of the hardware output because the value is computed
+    # by mapping whatever input to the output based on that range.
+    CV output (1,2) - PWM output
+    CV/Audio output (1,2) - SPI/DAC output
     """
     @property
     def pin_id(self) -> int:
@@ -40,8 +40,22 @@ class IO(object):
         )
 
 
-class AnalogOutput(IO):  # TODO - right now this _is_ a RangedValue - it implements the API of that class
-    """"""
+class AnalogOutput(HardwareComponent):
+    # TODO - is this a ranged variable, or does it have a ranged variable?
+    """A hardware analog output.
+
+    There are four analog outputs on the Computer, each of which is a socket.
+    Two are dedicated to CV and are written to using PWM. The other two may be
+    used for CV or audio, and are written to through the Computer's DAC.
+
+    See Also
+    --------
+    CVAudioOutputSocket
+        The CV/Audio output sockets of the Computer.
+    CVOutputSocket
+        The CV output sockets of the Computer.
+    """
+
     @property
     def min_value(self) -> int:
         raise NotImplementedError(
@@ -54,22 +68,52 @@ class AnalogOutput(IO):  # TODO - right now this _is_ a RangedValue - it impleme
             self.__class__.__name__ + " does not implement max_value."
         )
 
+    @property
+    def hardware_min(self) -> int:
+        raise NotImplementedError(
+            self.__class__.__name__ + " does not implement max_value."
+        )
+
+    @property
+    def hardware_max(self) -> int:
+        raise NotImplementedError(
+            self.__class__.__name__ + " does not implement max_value."
+        )
+
     def write(self, value):
         raise NotImplementedError(
             self.__class__.__name__ + " does not implement write."
         )
 
 
-class AnalogInput(IO):
+class AnalogInput(HardwareComponent):
+    # TODO - is this a ranged variable, or does it have a ranged variable?
     """An abstract class for an analog input hardware object.
 
     There are eight analog inputs on the Computer. The main, X and Y knobs,
     the Z-switch and two pairs of CV and CV/Audio inputs. Excepting the
     CV/Audio inputs, all reach the Computer via a multiplexer, so there are in
     total four unique micropython ADC objects attached to GPIO pins with IDs
-    26, 27, 28 and 29.
+    26, 27, 28 and 29. The GPIO pins with IDs 28 and 29 are connected to the
+    multiplexer to provide values from the 6 selectable inputs. The GPIO pins
+    with IDs 26 and 27 are directly connected to the CV/Audio inputs.
+
+    See Also
+    --------
+    MainKnob
+        The main (big) knob on the Computer module.
+    KnobX
+        The knob marked X.
+    KnobY
+        The knob marked Y.
+    SwitchZ
+        The Z-switch.
+    CVInputSocket
+        The CV input sockets of the Computer.
+    CVAudioInputSocket
+        The CV/Audio input sockets of the computer.
     """
-    def __init__(self):
+    def __init__(self):  # input_value property should be a ranged variable instance - this may be true of every IO object?
         self._latest_value = None
 
     @property
@@ -108,8 +152,11 @@ class AnalogInput(IO):
         or shift bits 4 positions to the right, effectively discarding the four
         least significant bits.
         u12 = u16 >> 4
+        Neither of these seems strictly necessary on read since the mappings take
+        care of converting to the right ranges, and either way python is storing these
+        as integers, 12-bit or 16-bit it doesn't care.
         """
-        return self.adc.read_u16() >> 4
+        return self.adc.read_u16()
 
     def update_latest_value(self):
         """Update the latest value of this analog input."""
