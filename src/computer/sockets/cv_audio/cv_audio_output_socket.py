@@ -3,7 +3,7 @@ from input_output import AnalogOutput
 
 
 class CVAudioOutputSocket(AnalogOutput):
-    """A CV/Audio output socket.
+    """The CV/Audio output sockets of the Computer.
 
     https://docs.micropython.org/en/latest/library/machine.SPI.html#machine-spi
 
@@ -44,7 +44,8 @@ class CVAudioOutputSocket(AnalogOutput):
     def __init__(self):
         super().__init__()
         # create a chip select on the documented SPI CS pin
-        self.__chip_select_pin = machine.Pin(self.__CS_PIN_ID, mode=machine.Pin.OUT, value=1)
+        self.__chip_select_pin = machine.Pin(self.__CS_PIN_ID,
+                                             mode=machine.Pin.OUT, value=1)
 
         self.__spi = machine.SPI(
             id=0,
@@ -57,13 +58,43 @@ class CVAudioOutputSocket(AnalogOutput):
             mosi=self.__SDI_MOSI_PIN_ID,
         )
 
+        self._ranged_min_value = RangedVariable(
+            min_value=self.hardware_max / 2,
+            max_value=0,
+            value=0)
+
+        self._ranged_max_value = RangedVariable(
+            min_value=self.hardware_max / 2,
+            max_value=self.hardware_max,
+            value=self.hardware_max)
+
     @property
-    def min_value(self) -> int:
+    def hardware_min(self) -> int:
         return 0
 
     @property
-    def max_value(self) -> int:
+    def hardware_max(self) -> int:
         return 4095
+
+    @property
+    def min_value(self) -> int:
+        """The minimum value of the analog output."""
+        return self._ranged_min_value.value
+
+    @min_value.setter
+    def min_value(self, min_value: int) -> None:
+        """Set the minimum value of the analog output."""
+        self._ranged_min_value.value = int(min_value)
+
+    @property
+    def max_value(self) -> int:
+        """The maximum value of the analog output."""
+        return self._ranged_max_value.value
+
+    @max_value.setter
+    def max_value(self, max_value: int) -> None:
+        """Set the maximum value of the analog output."""
+        self._ranged_max_value.value = int(max_value)
 
     def write(self, value: int):
         """Write the given value to the DAC.
@@ -85,9 +116,9 @@ class CVAudioOutputSocket(AnalogOutput):
         11-0 : the data value to write to the DAC
         """
 
-        #value = int((value / 65535) * 4095)
+        # value = int((value / 65535) * 4095)
 
-        dac_data = self.__DAC_STRING | (value & 0xFFF)
+        dac_data = self.__DAC_STRING | (int(value) & 0xFFF)
 
         try:
             self.__chip_select_pin.value(0)
@@ -96,7 +127,8 @@ class CVAudioOutputSocket(AnalogOutput):
             self.__chip_select_pin.value(1)
 
     def __str__(self):
-        print(self.__spi)
+        return self.__class__.__name__ + ": (min = " + str(
+            self.min_value) + ", max = " + str(self.max_value) + ")"
 
 
 class CVAudioOutputSocketOne(CVAudioOutputSocket):
