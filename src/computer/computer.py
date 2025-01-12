@@ -75,9 +75,9 @@ class Computer(object):
         self._uart0 = None
 
         self._main_knob = None
-        self._knob_x = None  # TODO alias this to x_knob
-        self._knob_y = None  # TODO alias this to y_knob
-        self._switch_z = None  # TODO alias this to z_switch
+        self._knob_x = None
+        self._knob_y = None
+        self._switch_z = None
 
         self._cv_audio_input_socket_one = None
         self._cv_audio_input_socket_two = None
@@ -169,7 +169,7 @@ class Computer(object):
         if self._cv_output_socket_two is None:
             self._cv_output_socket_two = CVOutputSocketTwo()
 
-        return self._cv_output_socket_one
+        return self._cv_output_socket_two
 
     @property
     def cv_audio_input_socket_one(self):
@@ -236,31 +236,33 @@ class Computer(object):
 
         return self._led_matrix
 
-    def update_analog_inputs(self):
+    #@timed_function
+    def update_analog_inputs(self):  # may be able to speed this up by setting multiplexer pins here
+        # each update of the two multiplexer pins takes ~0.15 ms and we're doing it 8 times each time this is called (should be 4 max)
         """Update the current raw values of all of the analog inputs."""
         if self._main_knob is not None:
-            self.main_knob.update_latest_value()
-
-        if self._knob_x is not None:
-            self.knob_x.update_latest_value()
-
-        if self._knob_y is not None:
-            self.knob_y.update_latest_value()
-
-        if self._switch_z is not None:
-            self.switch_z.update_latest_value()
-
-        if self._cv_audio_input_socket_one is not None:
-            self.cv_audio_input_socket_one.update_latest_value()
-
-        if self._cv_audio_input_socket_two is not None:
-            self.cv_audio_input_socket_two.update_latest_value()
+            self._main_knob.update_latest_value()
 
         if self._cv_input_socket_one is not None:
-            self.cv_input_socket_one.update_latest_value()
+            self._cv_input_socket_one.update_latest_value()
+
+        if self._knob_x is not None:
+            self._knob_x.update_latest_value()
+
+        if self._knob_y is not None:
+            self._knob_y.update_latest_value()
+
+        if self._switch_z is not None:
+            self._switch_z.update_latest_value()
 
         if self._cv_input_socket_two is not None:
-            self.cv_input_socket_two.update_latest_value()
+            self._cv_input_socket_two.update_latest_value()
+
+        if self._cv_audio_input_socket_one is not None:
+            self._cv_audio_input_socket_one.update_latest_value()
+
+        if self._cv_audio_input_socket_two is not None:
+            self._cv_audio_input_socket_two.update_latest_value()
 
     @property
     def board_version(self) -> tuple:
