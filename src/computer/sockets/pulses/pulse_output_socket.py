@@ -1,19 +1,15 @@
 import machine
 import time
-from input_output import HardwareComponent
+from input_output import DigitalOutput
 
 
-class PulseOutputSocket(HardwareComponent):
+class PulseOutputSocket(DigitalOutput):
     """An output socket of the computer, sending pulses.
 
     Inverted digital output: 1/true = low, 0/false=high.
     Scaled via a transistor.
     Pin should be output, no pullup.
     """
-
-    def __init__(self):
-        self._pin = machine.Pin(self.pin_id,
-                                machine.Pin.OUT)
 
     @property
     def pin(self):
