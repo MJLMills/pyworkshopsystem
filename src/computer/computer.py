@@ -236,33 +236,33 @@ class Computer(object):
 
         return self._led_matrix
 
-    #@timed_function
-    def update_analog_inputs(self):  # may be able to speed this up by setting multiplexer pins here
+    def update_analog_inputs(self):
+        # may be able to speed this up by setting multiplexer pins here
         # each update of the two multiplexer pins takes ~0.15 ms and we're doing it 8 times each time this is called (should be 4 max)
         """Update the current raw values of all of the analog inputs."""
         if self._main_knob is not None:
-            self._main_knob.update_latest_value()
+            self._main_knob.read()
 
         if self._cv_input_socket_one is not None:
-            self._cv_input_socket_one.update_latest_value()
+            self._cv_input_socket_one.read()
 
         if self._knob_x is not None:
-            self._knob_x.update_latest_value()
+            self._knob_x.read()
 
         if self._knob_y is not None:
-            self._knob_y.update_latest_value()
+            self._knob_y.read()
 
         if self._switch_z is not None:
-            self._switch_z.update_latest_value()
+            self._switch_z.read()
 
         if self._cv_input_socket_two is not None:
-            self._cv_input_socket_two.update_latest_value()
+            self._cv_input_socket_two.read()
 
         if self._cv_audio_input_socket_one is not None:
-            self._cv_audio_input_socket_one.update_latest_value()
+            self._cv_audio_input_socket_one.read()
 
         if self._cv_audio_input_socket_two is not None:
-            self._cv_audio_input_socket_two.update_latest_value()
+            self._cv_audio_input_socket_two.read()
 
     @property
     def board_version(self) -> tuple:
