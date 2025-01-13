@@ -1,4 +1,4 @@
-from multiplexed_input import MultiplexedInput
+from base.multiplexed_input import MultiplexedInput
 
 
 class SwitchZ(MultiplexedInput):

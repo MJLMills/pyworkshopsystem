@@ -154,4 +154,3 @@ class MultiplexedInput(AnalogInput):
                                                     self.mux_logic_b_pin_value)
 
         return super().read()
-
