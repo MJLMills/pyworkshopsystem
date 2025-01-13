@@ -236,10 +236,10 @@ class Computer(object):
 
         return self._led_matrix
 
-    def update_analog_inputs(self):
+    def read_analog_inputs(self):
         # may be able to speed this up by setting multiplexer pins here
         # each update of the two multiplexer pins takes ~0.15 ms and we're doing it 8 times each time this is called (should be 4 max)
-        """Update the current raw values of all of the analog inputs."""
+        """Update the current raw values of all the analog inputs."""
         if self._main_knob is not None:
             self._main_knob.read()
 
