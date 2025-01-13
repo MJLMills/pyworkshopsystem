@@ -35,9 +35,3 @@ class HardwareComponent(object):
         raise NotImplementedError(
             self.__class__.__name__ + " does not implement pin_id."
         )
-
-    @property
-    def pin(self):
-        raise NotImplementedError(
-            self.__class__.__name__ + " does not implement pin."
-        )

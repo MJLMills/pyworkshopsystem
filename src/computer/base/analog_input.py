@@ -1,5 +1,7 @@
+import machine
 from base.hardware_component import HardwareComponent
 from src.connect.ranged_variable import RangedVariable
+from src.connect.signal import Signal
 
 
 class AnalogInput(HardwareComponent):
@@ -28,14 +30,14 @@ class AnalogInput(HardwareComponent):
     CVAudioInputSocket
         The CV/Audio input sockets of the computer.
     """
-    def __init__(self):  # input_value property should be a ranged variable instance - this may be true of every IO object?
-        self._latest_value = None
+    def __init__(self):
+
         self.ranged_variable = RangedVariable(
             value=self.min_value,
             minimum=self.min_value,
             maximum=self.max_value
         )
-        # self.value_changed = Signal()
+        self.value_changed = Signal()
 
     @property
     def adc(self) -> machine.ADC:
@@ -77,20 +79,24 @@ class AnalogInput(HardwareComponent):
         care of converting to the right ranges, and either way python is storing these
         as integers, 12-bit or 16-bit it doesn't care.
         """
+        value = self.ranged_variable.value
         self.ranged_variable.value = self.adc.read_u16()
 
-    # TODO - get rid of this? duplicates value of ranged variable
-    def update_latest_value(self):
-        """Update the latest value of this analog input."""
-        self._latest_value = self.read()
-        # for signals and slots, this will emit a signal if the value changes
-        # containing the new value and range allowing mapping to outputs
-        # value = self.read()
-        # if value != self._latest_value:
-        #    self._latest_value = value
-        #    self.value_changed.emit(self._latest_value)
+        if self.ranged_variable.value != value:
+            self.value_changed.emit()
 
-    @property
-    def latest_value(self) -> int:
-        """The pot value in the range 0, 4095."""
-        return self.ranged_variable.value
+    # # TODO - get rid of this? duplicates value of ranged variable
+    # def update_latest_value(self):
+    #     """Update the latest value of this analog input."""
+    #     self._latest_value = self.read()
+    #     # for signals and slots, this will emit a signal if the value changes
+    #     # containing the new value and range allowing mapping to outputs
+    #     # value = self.read()
+    #     # if value != self._latest_value:
+    #     #    self._latest_value = value
+    #     #    self.value_changed.emit(self._latest_value)
+    #
+    # @property
+    # def latest_value(self) -> int:
+    #     """The pot value in the range 0, 4095."""
+    #     return self.ranged_variable.value

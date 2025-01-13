@@ -48,6 +48,7 @@ class Multiplexer(object):
     """The ADC connected to the second multiplexer analog output."""
 
     def __init__(self):
+
         self.mux_logic_pin_a_value = False
         self.mux_logic_pin_b_value = False
 
@@ -71,7 +72,6 @@ class Multiplexer(object):
         """Set the value at the second mux logic digital output pin."""
         self.__MUX_LOGIC_B_PIN.value(value)
 
-    #@timed_function
     def set_logic_pin_values(self, value_a: bool, value_b: bool) -> None:
         """Set the values of the multiplexer logic pins.
 
@@ -147,10 +147,10 @@ class MultiplexedInput(AnalogInput):
             " does not implement mux_logic_b_pin_value."
         )
 
-    def read(self, set_logic=True) -> int:
+    def read(self, set_logic=True) -> None:
         """Set up the multiplexer before reading the value from the ADC."""
         if set_logic:
             self.__multiplexer.set_logic_pin_values(self.mux_logic_a_pin_value,
                                                     self.mux_logic_b_pin_value)
 
-        return super().read()
+        super().read()
