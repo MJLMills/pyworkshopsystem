@@ -1,5 +1,5 @@
 import time
-from base.input_output import DigitalOutput
+from base.digital_output import DigitalOutput
 
 
 class PulseOutputSocket(DigitalOutput):

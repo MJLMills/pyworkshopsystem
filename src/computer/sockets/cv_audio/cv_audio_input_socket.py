@@ -1,5 +1,5 @@
 import machine
-from base.input_output import AnalogInput
+from base.analog_input import AnalogInput
 
 
 class CVAudioInputSocket(AnalogInput):

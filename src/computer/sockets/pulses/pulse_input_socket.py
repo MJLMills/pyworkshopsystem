@@ -1,5 +1,5 @@
 import machine
-from base.input_output import HardwareComponent
+from base.hardware_component import HardwareComponent
 
 
 class PulseInputSocket(HardwareComponent):
