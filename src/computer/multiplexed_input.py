@@ -1,5 +1,5 @@
 import machine
-from .input_output import AnalogInput
+from base.input_output import AnalogInput
 
 
 class Multiplexer(object):

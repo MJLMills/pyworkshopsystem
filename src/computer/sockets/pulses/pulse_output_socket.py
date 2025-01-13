@@ -1,6 +1,5 @@
-import machine
 import time
-from input_output import DigitalOutput
+from base.input_output import DigitalOutput
 
 
 class PulseOutputSocket(DigitalOutput):
@@ -10,19 +9,21 @@ class PulseOutputSocket(DigitalOutput):
     Scaled via a transistor.
     Pin should be output, no pullup.
     """
+    ON_VALUE = 0
+    OFF_VALUE = 1
 
     @property
     def pin(self):
         return self._pin
 
     def turn_on(self):
-        self.pin.value(0)
+        self.pin.value(PulseOutputSocket.ON_VALUE)
 
     def turn_off(self):
-        self.pin.value(1)
+        self.pin.value(PulseOutputSocket.OFF_VALUE)
 
     def is_on(self):
-        return self.pin.value() == 0
+        return self.pin.value() == PulseOutputSocket.ON_VALUE
 
     def is_off(self):
         return not self.is_on()

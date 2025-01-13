@@ -1,6 +1,5 @@
 import time
-import machine
-from input_output import DigitalOutput
+from base.input_output import DigitalOutput
 
 
 class LED(DigitalOutput):

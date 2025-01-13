@@ -1,4 +1,6 @@
 import machine
+from src.connect.ranged_variable import RangedVariable
+from src.connect.signal import Signal
 
 
 class HardwareComponent(object):
@@ -39,9 +41,13 @@ class HardwareComponent(object):
             self.__class__.__name__ + " does not implement pin_id."
         )
 
+    @property
+    def pin(self):
+        raise NotImplementedError(
+            self.__class__.__name__ + " does not implement pin."
+        )
 
 class AnalogOutput(HardwareComponent):
-    # TODO - is this a ranged variable, or does it have a ranged variable?
     """A hardware analog output.
 
     There are four analog outputs on the Computer, each of which is a socket.
@@ -55,6 +61,12 @@ class AnalogOutput(HardwareComponent):
     CVOutputSocket
         The CV output sockets of the Computer.
     """
+    def __init__(self):
+        self.ranged_variable = RangedVariable(
+            value=self.min_value,
+            minimum=self.min_value,
+            maximum=self.max_value
+        )
 
     @property
     def min_value(self) -> int:
@@ -115,6 +127,11 @@ class AnalogInput(HardwareComponent):
     """
     def __init__(self):  # input_value property should be a ranged variable instance - this may be true of every IO object?
         self._latest_value = None
+        self.ranged_variable = RangedVariable(
+            value=self.min_value,
+            minimum=self.min_value,
+            maximum=self.max_value
+        )
         # self.value_changed = Signal()
 
     @property
@@ -135,7 +152,7 @@ class AnalogInput(HardwareComponent):
             self.__class__.__name__ + " does not implement max_value."
         )
 
-    def read(self) -> int:
+    def read(self) -> None:
         """Read a 12-bit uint value from the RP2040's ADC.
 
         The micropython ADC class provides a single read method, which takes an
@@ -157,8 +174,9 @@ class AnalogInput(HardwareComponent):
         care of converting to the right ranges, and either way python is storing these
         as integers, 12-bit or 16-bit it doesn't care.
         """
-        return self.adc.read_u16()
+        self.ranged_variable.value = self.adc.read_u16()
 
+    # TODO - get rid of this? duplicates value of ranged variable
     def update_latest_value(self):
         """Update the latest value of this analog input."""
         self._latest_value = self.read()
@@ -172,7 +190,8 @@ class AnalogInput(HardwareComponent):
     @property
     def latest_value(self) -> int:
         """The pot value in the range 0, 4095."""
-        return self._latest_value
+        return self.ranged_variable.value
+
 
 class DigitalOutput(HardwareComponent):
     """A hardware digital output.
@@ -186,10 +205,6 @@ class DigitalOutput(HardwareComponent):
         super().__init__()
         self._pin = machine.Pin(self.pin_id,
                                 machine.Pin.OUT)
-
-    @property  # anything with a pin_id has a pin
-    def pin(self):
-        return self._pin
 
     @property
     def pin_id(self) -> int:

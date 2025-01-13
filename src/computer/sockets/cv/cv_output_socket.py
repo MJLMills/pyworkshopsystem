@@ -1,5 +1,5 @@
 import machine
-from input_output import AnalogOutput
+from base.input_output import AnalogOutput
 
 
 class CVOutputSocket(AnalogOutput):  # both AnalogOutput classes have settable ranges to limit output when needed.
