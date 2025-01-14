@@ -28,15 +28,15 @@ class CVOutputSocket(AnalogOutput):  # both AnalogOutput classes have settable r
                                duty_u16=duty_cycle,
                                invert=True)
 
-        self._ranged_min_value = RangedVariable(
-            min_value=self.hardware_max / 2,
-            max_value=0,
-            value=0)
+        #self._ranged_min_value = RangedVariable(
+        #    min_value=self.hardware_max / 2,
+        #    max_value=0,
+        #    value=0)
 
-        self._ranged_max_value = RangedVariable(
-            min_value=self.hardware_max / 2,
-            max_value=self.hardware_max,
-            value=self.hardware_max)
+        #self._ranged_max_value = RangedVariable(
+        #    min_value=self.hardware_max / 2,
+        #    max_value=self.hardware_max,
+        #    value=self.hardware_max)
 
     @property
     def hardware_min(self) -> int:
@@ -49,7 +49,8 @@ class CVOutputSocket(AnalogOutput):  # both AnalogOutput classes have settable r
     @property
     def min_value(self) -> int:
         """The minimum value of the analog output."""
-        return self._ranged_min_value.value
+        return self.hardware_min
+        #return self._ranged_min_value.value
 
     @min_value.setter
     def min_value(self, min_value: int) -> None:
@@ -59,7 +60,8 @@ class CVOutputSocket(AnalogOutput):  # both AnalogOutput classes have settable r
     @property
     def max_value(self) -> int:
         """The maximum value of the analog output."""
-        return self._ranged_max_value.value
+        return self.hardware_max
+        #return self._ranged_max_value.value
 
     @max_value.setter
     def max_value(self, max_value: int) -> None:
@@ -69,7 +71,6 @@ class CVOutputSocket(AnalogOutput):  # both AnalogOutput classes have settable r
     def write(self, value: int):
         """Set the PWM duty cycle equal to the provided unsigned 16-bit int value."""
         self.pwm.duty_u16(int(value))
-
 
 class CVOutputSocketOne(CVOutputSocket):
     """The first (left-most) CV output socket of the Computer."""

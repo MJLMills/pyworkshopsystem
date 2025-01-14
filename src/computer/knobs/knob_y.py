@@ -4,7 +4,7 @@ from base.multiplexed_input import MultiplexedInput
 class KnobY(MultiplexedInput):
     """The knob marked Y."""
     __IO_PIN_ID = 28
-    __MIN_VALUE_U16 = 224
+    __MIN_VALUE_U16 = 192
     __MAX_VALUE_U16 = 65535
     __MUX_LOGIC_A_PIN_VALUE = False
     __MUX_LOGIC_B_PIN_VALUE = True

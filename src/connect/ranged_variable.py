@@ -14,8 +14,8 @@ class RangedVariable(object):
     Parameters
     ----------
     value : int or float
-    mininum : int or float or RangedVariable
-    maxinum : int or float or RangedVariable
+    minimum : int or float or RangedVariable
+    maximum : int or float or RangedVariable
     """
 
     def __init__(self,
@@ -45,11 +45,10 @@ class RangedVariable(object):
         ----------
         value : int or float
         """
-        if self.minimum_value <= value <= self.maximum_value:
-            self._value = value
-        else:
-            raise ValueError(
-                f"Value outside range: {value}, {self._minimum}, {self._maximum}")
+        # if self.minimum_value <= value <= self.maximum_value:
+        self._value = value
+        # else:
+        #    raise ValueError(f"Value outside range: {value}, {self._minimum}, {self._maximum}")
 
     @property
     def minimum_value(self):
@@ -104,6 +103,10 @@ class RangedVariable(object):
         else:
             self._maximum = maximum
 
+    @property
+    def value_range(self):
+        return self.maximum_value - self.minimum_value
+
     def map_value(self, ranged_variable):
         """Update the value of this ranged variable.
 
@@ -117,8 +120,7 @@ class RangedVariable(object):
         ----------
         ranged_variable : RangedVariable
         """
-        slope = (self.maximum_value - self.minimum_value) / (
-                    ranged_variable.maximum_value - ranged_variable.minimum_value)
+        slope = self.value_range / ranged_variable.value_range
         self.value = self.minimum_value + (slope * (
                     ranged_variable.value - ranged_variable.minimum_value))
 

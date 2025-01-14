@@ -58,15 +58,15 @@ class CVAudioOutputSocket(AnalogOutput):
             mosi=self.__SDI_MOSI_PIN_ID,
         )
 
-        self._ranged_min_value = RangedVariable(
-            min_value=self.hardware_max / 2,
-            max_value=0,
-            value=0)
+        #self._ranged_min_value = RangedVariable(
+        #    min_value=self.hardware_max / 2,
+        #    max_value=0,
+        #    value=0)
 
-        self._ranged_max_value = RangedVariable(
-            min_value=self.hardware_max / 2,
-            max_value=self.hardware_max,
-            value=self.hardware_max)
+        #self._ranged_max_value = RangedVariable(
+        #    min_value=self.hardware_max / 2,
+        #    max_value=self.hardware_max,
+        #    value=self.hardware_max)
 
     @property
     def hardware_min(self) -> int:
@@ -79,7 +79,8 @@ class CVAudioOutputSocket(AnalogOutput):
     @property
     def min_value(self) -> int:
         """The minimum value of the analog output."""
-        return self._ranged_min_value.value
+        return self.hardware_min
+        #return self._ranged_min_value.value
 
     @min_value.setter
     def min_value(self, min_value: int) -> None:
@@ -89,7 +90,8 @@ class CVAudioOutputSocket(AnalogOutput):
     @property
     def max_value(self) -> int:
         """The maximum value of the analog output."""
-        return self._ranged_max_value.value
+        return self.hardware_max
+        #return self._ranged_max_value.value
 
     @max_value.setter
     def max_value(self, max_value: int) -> None:
@@ -118,7 +120,7 @@ class CVAudioOutputSocket(AnalogOutput):
 
         # value = int((value / 65535) * 4095)
 
-        dac_data = self.__DAC_STRING | (int(value) & 0xFFF)
+        dac_data = self.__DAC_STRING | (int(self.max_value - value) & 0xFFF)
 
         try:
             self.__chip_select_pin.value(0)

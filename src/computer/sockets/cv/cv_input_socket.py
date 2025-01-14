@@ -47,8 +47,8 @@ class CVInputSocketOne(CVInputSocket):
 
 class CVInputSocketTwo(CVInputSocket):
     """The second (right-most) CV input socket of the Computer."""
-    __MUX_LOGIC_A_PIN_VALUE = False
-    __MUX_LOGIC_B_PIN_VALUE = True
+    __MUX_LOGIC_A_PIN_VALUE = True
+    __MUX_LOGIC_B_PIN_VALUE = False
 
     @property
     def mux_logic_a_pin_value(self) -> bool:
