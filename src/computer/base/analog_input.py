@@ -82,8 +82,8 @@ class AnalogInput(HardwareComponent):
         value = self.ranged_variable.value
         self.ranged_variable.value = self.adc.read_u16()
 
-        if self.ranged_variable.value != value:
-            self.value_changed.emit()
+        if abs(self.ranged_variable.value - value) > 32:
+            self.value_changed.emit(ranged_variable=self.ranged_variable)
 
     # # TODO - get rid of this? duplicates value of ranged variable
     # def update_latest_value(self):
