@@ -16,24 +16,38 @@ class AnalogOutput(HardwareComponent):
     CVOutputSocket
         The CV output sockets of the Computer.
     """
+
     def __init__(self):
+
+        # TODO - this is attenuating behaviour, add attenuversion
+        # user should not set min_value.minimum or maximum
+        self.min_value = RangedVariable(
+            minimum=0,
+            maximum=self.hardware_max / 2,  # touchy
+            value=0
+        )
+
+        self.max_value = RangedVariable(
+            minimum=self.hardware_max / 2,
+            maximum=self.hardware_max,
+            value=0
+        )
+
         self.ranged_variable = RangedVariable(
-            value=self.min_value,
+            value=self.min_value.value,
             minimum=self.min_value,
             maximum=self.max_value
         )
 
-    @property
-    def min_value(self) -> int:
-        raise NotImplementedError(
-            self.__class__.__name__ + " does not implement min_value."
-        )
+    def map_min_value(self, ranged_variable):
+        self.min_value.map_value(ranged_variable)
 
-    @property
-    def max_value(self) -> int:
-        raise NotImplementedError(
-            self.__class__.__name__ + " does not implement max_value."
-        )
+    def map_max_value(self, ranged_variable):
+        self.max_value.map_value(ranged_variable)
+
+    def map_range(self, ranged_variable):
+        self.min_value.map_value(ranged_variable)
+        self.max_value.map_value(ranged_variable)
 
     @property
     def hardware_min(self) -> int:
@@ -51,3 +65,7 @@ class AnalogOutput(HardwareComponent):
         raise NotImplementedError(
             self.__class__.__name__ + " does not implement write."
         )
+
+    def map_and_write_value(self, ranged_variable):
+        self.ranged_variable.map_value(ranged_variable)
+        self.write(self.ranged_variable.value)
