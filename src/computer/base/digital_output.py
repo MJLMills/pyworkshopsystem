@@ -14,6 +14,8 @@ class DigitalOutput(HardwareComponent):
         self.pin = machine.Pin(self.pin_id,
                                machine.Pin.OUT)
 
+        self.timer = machine.Timer(-1)
+
     @property
     def on_value(self) -> int:
         """The value used to represent "on" for this digital output."""
@@ -48,8 +50,7 @@ class DigitalOutput(HardwareComponent):
 
     def pulse(self):
         self.turn_on()
-        timer = machine.Timer(-1)
 
-        timer.init(mode=machine.Timer.ONE_SHOT,
-                   period=500,
-                   callback=self.turn_off)
+        self.timer.init(mode=machine.Timer.ONE_SHOT,
+                        period=500,
+                        callback=self.turn_off)
