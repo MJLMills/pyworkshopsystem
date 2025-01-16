@@ -9,7 +9,6 @@ class MainKnob(MultiplexedInput):
     values into a range specified by the user, defaulting to the
     full range of the 16-bit unsigned integer.
 
-
     """
     __IO_PIN_ID = 28
     __MIN_VALUE_U16 = 224
