@@ -19,23 +19,25 @@ class CVOutputSocket(AnalogOutput):  # both AnalogOutput classes have settable r
 
     Requires firmware calibration for precise values.
     """
-    FREQUENCY_KHZ = 60000
+    _FREQUENCY_KHZ = 60000
+    __HARDWARE_MIN = 0
+    __HARDWARE_MAX = 65535
 
     def __init__(self, duty_cycle: int = 32768):
         super().__init__()
 
         self.pwm = machine.PWM(self.io_pin_id,
-                               freq=60000,
+                               freq=self._FREQUENCY_KHZ,
                                duty_u16=duty_cycle,
                                invert=True)
 
     @property
     def hardware_min(self) -> int:
-        return 0
+        return self.__HARDWARE_MIN
 
     @property
     def hardware_max(self) -> int:
-        return 65535
+        return self.__HARDWARE_MAX
 
     def write(self, value: int):
         """Set the PWM duty cycle equal to the provided unsigned 16-bit int value."""
@@ -44,17 +46,19 @@ class CVOutputSocket(AnalogOutput):  # both AnalogOutput classes have settable r
 
 class CVOutputSocketOne(CVOutputSocket):
     """The first (left-most) CV output socket of the Computer."""
+    __IO_PIN_ID = 23
 
     @property
     def io_pin_id(self) -> int:
         """The unique identifier of the GPIO pin used by this class."""
-        return 23
+        return self.__IO_PIN_ID
 
 
 class CVOutputSocketTwo(CVOutputSocket):
     """The second (right-most) CV output socket of the Computer."""
+    __IO_PIN_ID = 22
 
     @property
     def io_pin_id(self) -> int:
         """The unique identifier of the GPIO pin used by this class."""
-        return 22
+        return self.__IO_PIN_ID
