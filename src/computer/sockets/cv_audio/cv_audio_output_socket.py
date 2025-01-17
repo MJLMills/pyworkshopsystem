@@ -86,8 +86,6 @@ class CVAudioOutputSocket(AnalogOutput):
         11-0 : the data value to write to the DAC
         """
 
-        # value = int((value / 65535) * 4095)
-
         dac_data = self.__DAC_STRING | (int(self.max_value - value) & 0xFFF)
 
         try:
