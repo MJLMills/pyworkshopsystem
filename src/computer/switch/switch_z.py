@@ -30,10 +30,11 @@ class SwitchZ(MultiplexedInput):
         super().__init__()
 
         self.switched_up = Signal()
-        self.switched_middle = Signal()
+        self.switched_up_to_middle = Signal()
+        self.switched_down_to_middle = Signal()
         self.switched_down = Signal()
 
-        self.state = None
+        self.__set_state()
 
     @property
     def io_pin_id(self) -> int:
@@ -58,11 +59,18 @@ class SwitchZ(MultiplexedInput):
         """The value of the second multiplexer login pin for this input."""
         return self.__MUX_LOGIC_B_PIN_VALUE
 
-    def read(self, set_logic=True) -> None:
-        """Read the switch and emit appropriate signals."""
+    def is_up(self):
+        return self.state == self.__UP
+
+    def is_middle(self):
+        return self.state == self.__MIDDLE
+
+    def is_down(self):
+        return self.state == self.__DOWN
+
+    def __set_state(self):
         super().read()
 
-        previous_state = self.state
         value = self.ranged_variable.value
         if 0 <= value < SwitchZ.__DOWN_MID_BOUNDARY:
             self.state = SwitchZ.__DOWN
@@ -71,13 +79,18 @@ class SwitchZ(MultiplexedInput):
         else: # SwitchZ.__MID_UP_BOUNDARY <= value <= SwitchZ.__UP_MAX:
             self.state = SwitchZ.__UP
 
+    def read(self, set_logic=True) -> None:
+        """Read the switch and emit appropriate signals."""
+        previous_state = self.state
+        self.__set_state()
+
         state = self.state
         if previous_state == SwitchZ.__UP and state == SwitchZ.__MIDDLE:
-            self.switched_middle.emit()
+            self.switched_up_to_middle.emit()
             return
 
         if previous_state == SwitchZ.__DOWN and state == SwitchZ.__MIDDLE:
-            self.switched_middle.emit()
+            self.switched_down_to_middle.emit()
             return
 
         if previous_state == SwitchZ.__MIDDLE and state == SwitchZ.__UP:
