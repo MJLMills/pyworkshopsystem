@@ -18,15 +18,15 @@ class LED(DigitalOutput):
     value
         The value of this LED.
     """
-    ON_VALUE = 1
-    OFF_VALUE = 0
-    FIRST_LED_PIN_INDEX = 10
+    __ON_VALUE = 1
+    __OFF_VALUE = 0
+    __FIRST_LED_PIN_INDEX = 10
 
     def __init__(self, led_index):
         if led_index not in range(1, 7):
             raise ValueError("Invalid LED index: ", led_index)
 
-        self._pin_id = self.FIRST_LED_PIN_INDEX + (led_index - 1)
+        self._pin_id = self.__FIRST_LED_PIN_INDEX + (led_index - 1)
         super().__init__()
 
     @property
@@ -37,9 +37,9 @@ class LED(DigitalOutput):
     @property
     def on_value(self) -> int:
         """The value used to represent "on" for this digital output."""
-        return self.ON_VALUE
+        return self.__ON_VALUE
 
     @property
     def off_value(self) -> int:
         """The value used to represent "off" for this digital output."""
-        return self.OFF_VALUE
+        return self.__OFF_VALUE
