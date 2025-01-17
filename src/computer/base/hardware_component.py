@@ -30,8 +30,8 @@ class HardwareComponent(object):
     CV/Audio output (1,2) - SPI/DAC output
     """
     @property
-    def pin_id(self) -> int:
+    def io_pin_id(self) -> int:
         """The unique identifier of the GPIO pin used by this class."""
         raise NotImplementedError(
-            self.__class__.__name__ + " does not implement pin_id."
+            self.__class__.__name__ + " does not implement io_pin_id."
         )

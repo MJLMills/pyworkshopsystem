@@ -24,7 +24,7 @@ class CVOutputSocket(AnalogOutput):  # both AnalogOutput classes have settable r
     def __init__(self, duty_cycle: int = 32768):
         super().__init__()
 
-        self.pwm = machine.PWM(self.pin_id,
+        self.pwm = machine.PWM(self.io_pin_id,
                                freq=60000,
                                duty_u16=duty_cycle,
                                invert=True)
@@ -46,7 +46,7 @@ class CVOutputSocketOne(CVOutputSocket):
     """The first (left-most) CV output socket of the Computer."""
 
     @property
-    def pin_id(self) -> int:
+    def io_pin_id(self) -> int:
         """The unique identifier of the GPIO pin used by this class."""
         return 23
 
@@ -55,6 +55,6 @@ class CVOutputSocketTwo(CVOutputSocket):
     """The second (right-most) CV output socket of the Computer."""
 
     @property
-    def pin_id(self) -> int:
+    def io_pin_id(self) -> int:
         """The unique identifier of the GPIO pin used by this class."""
         return 22

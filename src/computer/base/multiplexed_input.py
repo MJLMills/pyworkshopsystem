@@ -124,7 +124,7 @@ class MultiplexedInput(AnalogInput):
     def __init__(self):
         super().__init__()
         self.__multiplexer = Multiplexer()
-        self._adc = self.__multiplexer.get_adc(self.pin_id)
+        self._adc = self.__multiplexer.get_adc(self.io_pin_id)
 
     @property
     def adc(self):

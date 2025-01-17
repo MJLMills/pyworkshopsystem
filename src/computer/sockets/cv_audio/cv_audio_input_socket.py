@@ -27,7 +27,7 @@ class CVAudioInputSocket(AnalogInput):
     __MAX_VALUE_U16 = 65535
 
     def __init__(self):
-        self._adc = machine.ADC(self.pin_id)
+        self._adc = machine.ADC(self.io_pin_id)
         super().__init__()
 
     @property
@@ -48,7 +48,7 @@ class CVAudioInputSocketOne(CVAudioInputSocket):
     __IO_PIN_ID = 27
 
     @property
-    def pin_id(self) -> int:
+    def io_pin_id(self) -> int:
         """The unique identifier of the GPIO pin used by this class."""
         return self.__IO_PIN_ID
 
@@ -58,6 +58,6 @@ class CVAudioInputSocketTwo(CVAudioInputSocket):
     __IO_PIN_ID = 26
 
     @property
-    def pin_id(self) -> int:
+    def io_pin_id(self) -> int:
         """The unique identifier of the GPIO pin used by this class."""
         return self.__IO_PIN_ID

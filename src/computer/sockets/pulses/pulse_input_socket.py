@@ -12,7 +12,7 @@ class PulseInputSocket(HardwareComponent):
     """
     def __init__(self):
 
-        self._pin = machine.Pin(self.pin_id,
+        self._pin = machine.Pin(self.io_pin_id,
                                 machine.Pin.IN,
                                 machine.Pin.PULL_UP)
 
@@ -37,7 +37,7 @@ class PulseInputSocketOne(PulseInputSocket):
     """The first (leftmost) pulse input socket."""
 
     @property
-    def pin_id(self):
+    def io_pin_id(self):
         """The unique identifier of the GPIO pin used by this class."""
         return 2
 
@@ -46,6 +46,6 @@ class PulseInputSocketTwo(PulseInputSocket):
     """The second (rightmost) pulse input socket."""
 
     @property
-    def pin_id(self):
+    def io_pin_id(self):
         """The unique identifier of the GPIO pin used by this class."""
         return 3

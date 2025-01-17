@@ -36,7 +36,7 @@ class SwitchZ(MultiplexedInput):
         self.state = None
 
     @property
-    def pin_id(self) -> int:
+    def io_pin_id(self) -> int:
         """The unique identifier of the GPIO pin used by this class."""
         return self.__IO_PIN_ID
 

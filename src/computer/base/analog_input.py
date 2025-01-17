@@ -9,14 +9,18 @@ class AnalogInput(HardwareComponent):
 
     There are eight analog inputs on the Computer. The main, X and Y knobs,
     the Z-switch and two pairs of CV and CV/Audio inputs. Excepting the
-    CV/Audio inputs, all reach the Computer via a multiplexer, so there are in
+    CV/Audio inputs, all reach the RP2040 via a multiplexer, so there are in
     total four unique micropython ADC objects attached to GPIO pins with IDs
     26, 27, 28 and 29. The GPIO pins with IDs 28 and 29 are connected to the
     multiplexer to provide values from the 6 selectable inputs. The GPIO pins
-    with IDs 26 and 27 are directly connected to the CV/Audio inputs.
+    with IDs 26 and 27 are directly connected to the CV/Audio inputs. This is
+    abstracted away in the two subclasses of AnalogInput; MultiplexedInput and
+    CVAudioInputSocket.
 
     See Also
     --------
+    MultiplexedInput
+        A multiplexed analog input source.
     MainKnob
         The main (big) knob on the Computer module.
     KnobX
@@ -84,19 +88,3 @@ class AnalogInput(HardwareComponent):
 
         if abs(self.ranged_variable.value - value) > 32:
             self.value_changed.emit(ranged_variable=self.ranged_variable)
-
-    # # TODO - get rid of this? duplicates value of ranged variable
-    # def update_latest_value(self):
-    #     """Update the latest value of this analog input."""
-    #     self._latest_value = self.read()
-    #     # for signals and slots, this will emit a signal if the value changes
-    #     # containing the new value and range allowing mapping to outputs
-    #     # value = self.read()
-    #     # if value != self._latest_value:
-    #     #    self._latest_value = value
-    #     #    self.value_changed.emit(self._latest_value)
-    #
-    # @property
-    # def latest_value(self) -> int:
-    #     """The pot value in the range 0, 4095."""
-    #     return self.ranged_variable.value
