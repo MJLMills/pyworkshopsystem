@@ -41,6 +41,9 @@ class CVAudioOutputSocket(AnalogOutput):
     __BITS = 8
     """The width in bits of each transfer."""
 
+    __HARDWARE_MIN = 0
+    __HARDWARE_MAX = 4095
+
     def __init__(self):
         super().__init__()
         # create a chip select on the documented SPI CS pin
@@ -60,11 +63,11 @@ class CVAudioOutputSocket(AnalogOutput):
 
     @property
     def hardware_min(self) -> int:
-        return 0
+        return self.__HARDWARE_MIN
 
     @property
     def hardware_max(self) -> int:
-        return 4095
+        return self.__HARDWARE_MAX
 
     def write(self, value: int):
         """Write the given value to the DAC.
