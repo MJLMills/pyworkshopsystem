@@ -34,7 +34,7 @@ class DigitalOutput(HardwareComponent):
         self._pin.value(self.on_value)
 
     def turn_off(self, timer=None):
-        self._pin.value(self.off_value)
+        self._pin.value(self.off_value)  # may be able to get rid if this can be used as the callback
 
     def is_on(self):
         return self._pin.value() == self.on_value
