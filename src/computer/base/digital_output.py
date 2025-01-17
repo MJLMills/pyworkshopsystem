@@ -11,10 +11,10 @@ class DigitalOutput(HardwareComponent):
     """
     def __init__(self):
         super().__init__()
-        self.pin = machine.Pin(self.io_pin_id,
-                               machine.Pin.OUT)
+        self._pin = machine.Pin(self.io_pin_id,
+                                machine.Pin.OUT)
 
-        self.timer = machine.Timer(-1)
+        self._timer = machine.Timer(-1)
 
     @property
     def on_value(self) -> int:
@@ -31,26 +31,26 @@ class DigitalOutput(HardwareComponent):
         )
 
     def turn_on(self, timer=None):
-        self.pin.value(self.on_value)
+        self._pin.value(self.on_value)
 
     def turn_off(self, timer=None):
-        self.pin.value(self.off_value)
+        self._pin.value(self.off_value)
 
     def is_on(self):
-        return self.pin.value() == self.on_value
+        return self._pin.value() == self.on_value
 
     def is_off(self):
-        return self.pin.value() == self.off_value
+        return self._pin.value() == self.off_value
 
     def toggle(self):
-        if self.pin.value == self.ON_VALUE:
+        if self._pin.value == self.ON_VALUE:
             self.turn_off()
-        elif self.pin.value == self.OFF_VALUE:
+        elif self._pin.value == self.OFF_VALUE:
             self.turn_on()
 
     def pulse(self):
         self.turn_on()
 
-        self.timer.init(mode=machine.Timer.ONE_SHOT,
-                        period=500,
-                        callback=self.turn_off)
+        self._timer.init(mode=machine.Timer.ONE_SHOT,
+                         period=500,
+                         callback=self.turn_off)
