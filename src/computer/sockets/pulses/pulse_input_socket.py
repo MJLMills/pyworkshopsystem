@@ -1,5 +1,6 @@
 import machine
 from base.hardware_component import HardwareComponent
+from src.connect.signal import Signal
 
 
 class PulseInputSocket(HardwareComponent):
@@ -15,6 +16,14 @@ class PulseInputSocket(HardwareComponent):
         self._pin = machine.Pin(self.io_pin_id,
                                 machine.Pin.IN,
                                 machine.Pin.PULL_UP)
+
+        self.pulse_started = Signal()
+
+        self.irq = self._pin.irq(handler=self.__emit_pulse_started,
+                                 trigger=machine.Pin.IRQ_FALLING)
+
+    def __emit_pulse_started(self, _):
+        self.pulse_started.emit()
 
     @property
     def pin(self):
