@@ -18,19 +18,18 @@ class AnalogOutput(HardwareComponent):
     """
 
     def __init__(self):
-
         # TODO - this is attenuating behaviour, add attenuversion
         # user should not set min_value.minimum or maximum
         self.min_value = RangedVariable(
-            minimum=0,
-            maximum=self.hardware_max / 2,  # touchy
+            minimum=self.hardware_max / 2,
+            maximum=0,
             value=0
         )
 
         self.max_value = RangedVariable(
             minimum=self.hardware_max / 2,
             maximum=self.hardware_max,
-            value=0
+            value=self.hardware_max
         )
 
         self.ranged_variable = RangedVariable(
