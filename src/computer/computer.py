@@ -155,7 +155,7 @@ class Computer(object):
         if self._cv_input_socket_two is None:
             self._cv_input_socket_two = CVInputSocketTwo()
 
-        return self._cv_input_socket_one
+        return self._cv_input_socket_two
 
     @property
     def cv_output_socket_one(self):
