@@ -22,8 +22,29 @@ class PulseInputSocket(HardwareComponent):
 
         self.pulse_started = Signal()
 
+        self.jack_inserted = Signal()
+        self.jack_removed = Signal()
+        self._has_jack = False
+
         self.irq = self._pin.irq(handler=self.__emit_pulse_started,
                                  trigger=machine.Pin.IRQ_FALLING)
+
+    @property
+    def has_jack(self) -> bool:
+        return self._has_jack
+
+    @has_jack.setter
+    def has_jack(self, has_jack: bool) -> None:
+        """Set whether this socket has a jack inserted."""
+        had_jack = self._has_jack
+        self._has_jack = has_jack
+
+        if has_jack == had_jack:
+            return
+        elif has_jack and (not had_jack):
+            self.jack_inserted.emit()
+        elif (not has_jack) and had_jack:
+            self.jack_removed.emit()
 
     def __emit_pulse_started(self, _):
         self.pulse_started.emit()
@@ -33,6 +54,9 @@ class PulseInputSocket(HardwareComponent):
 
     def read(self):
         return self._pin.value()
+
+    def read_norm_probe(self):
+        return self.read()
 
     def is_high(self):
         return self.read() == self.__ON_VALUE
