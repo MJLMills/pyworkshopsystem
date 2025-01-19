@@ -43,6 +43,28 @@ class AnalogInput(HardwareComponent):
         )
         self.value_changed = Signal()
 
+        self._has_jack = None  # actually, do not know - should be able to check independently
+        # but may need to carry a reference to the norm probe.
+        self.jack_inserted = Signal()
+        self.jack_removed = Signal()
+
+    @property
+    def has_jack(self) -> bool:
+        return self._has_jack
+
+    @has_jack.setter
+    def has_jack(self, has_jack: bool) -> None:
+        """Set whether this socket has a jack inserted."""
+        had_jack = self._has_jack
+        self._has_jack = has_jack
+
+        if has_jack == had_jack:
+            return
+        elif has_jack and (not had_jack):
+            self.jack_inserted.emit()
+        elif (not has_jack) and had_jack:
+            self.jack_removed.emit()
+
     @property
     def adc(self) -> machine.ADC:
         raise NotImplementedError(
@@ -88,3 +110,10 @@ class AnalogInput(HardwareComponent):
 
         if abs(self.ranged_variable.value - value) > 32:
             self.value_changed.emit(ranged_variable=self.ranged_variable)
+
+    def read_norm_probe(self) -> bool:
+        self.read()
+        if self.ranged_variable.value < 28383:
+            return True
+        else:
+            return False
