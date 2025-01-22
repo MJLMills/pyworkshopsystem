@@ -1,8 +1,9 @@
 import machine
+from base.analog_output import AnalogOutput
 
 
-class CVAudioOutputSocket(object):
-    """A CV/Audio output socket.
+class CVAudioOutputSocket(AnalogOutput):
+    """The CV/Audio output sockets of the Computer.
 
     https://docs.micropython.org/en/latest/library/machine.SPI.html#machine-spi
 
@@ -40,9 +41,14 @@ class CVAudioOutputSocket(object):
     __BITS = 8
     """The width in bits of each transfer."""
 
+    __HARDWARE_MIN = 0
+    __HARDWARE_MAX = 4095
+
     def __init__(self):
+        super().__init__()
         # create a chip select on the documented SPI CS pin
-        self.__chip_select_pin = machine.Pin(self.__CS_PIN_ID, mode=machine.Pin.OUT, value=1)
+        self.__chip_select_pin = machine.Pin(self.__CS_PIN_ID,
+                                             mode=machine.Pin.OUT, value=1)
 
         self.__spi = machine.SPI(
             id=0,
@@ -55,22 +61,35 @@ class CVAudioOutputSocket(object):
             mosi=self.__SDI_MOSI_PIN_ID,
         )
 
+    @property
+    def hardware_min(self) -> int:
+        return self.__HARDWARE_MIN
+
+    @property
+    def hardware_max(self) -> int:
+        return self.__HARDWARE_MAX
+
     def write(self, value: int):
-        """
+        """Write the given value to the DAC.
+
+        Parameters
+        ----------
+        value
+            The 12-bit uint (a python int ranging 0 to 4095) to write.
+
         Writes to the DAC are 16-bit words.
+        The value to write to the DAC is a 12-bit unsigned integer.
 
         The bytes object (immutable) is 16-bits where:
 
         15 : DAC_SELECTION_BIT in {0, 1}
         14 : IGNORED
-        13 : Output gain selection bit, probably hard-coded in {0, 1}
-        12 : Output Shutdown Control bit in {0, 1}, hard-coded to 1
+        13 : Output gain selection bit, hard-coded to 1
+        12 : Output Shutdown Control bit, hard-coded to 1
         11-0 : the data value to write to the DAC
         """
 
-        value = int((value / 65535) * 4095)
-
-        dac_data = self.__DAC_STRING | (value & 0xFFF)
+        dac_data = self.__DAC_STRING | (int(self.max_value - value) & 0xFFF)
 
         try:
             self.__chip_select_pin.value(0)
@@ -79,7 +98,8 @@ class CVAudioOutputSocket(object):
             self.__chip_select_pin.value(1)
 
     def __str__(self):
-        print(self.__spi)
+        return self.__class__.__name__ + ": (min = " + str(
+            self.min_value) + ", max = " + str(self.max_value) + ")"
 
 
 class CVAudioOutputSocketOne(CVAudioOutputSocket):

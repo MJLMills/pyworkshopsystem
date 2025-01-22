@@ -64,6 +64,13 @@ class LEDMatrix(object):
         return LEDMatrix.LEDS[row_index][col_index]
 
     @staticmethod
+    def get_by_index(index):
+        row_index = LEDMatrix.index_to_subscripts[index][0]
+        col_index = LEDMatrix.index_to_subscripts[index][1]
+
+        return LEDMatrix.LEDS[row_index][col_index]
+
+    @staticmethod
     def turn_row_on(row_index, num_leds=2):
         if row_index not in {0, 1, 2}:
             raise ValueError("Invalid LED row index: ", row_index)

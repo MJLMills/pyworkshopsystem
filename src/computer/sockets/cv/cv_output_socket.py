@@ -1,8 +1,9 @@
-from machine import PWM
-from multiplexed_input import IO
+import machine
+from base.analog_output import AnalogOutput
+from src.connect.ranged_variable import RangedVariable
 
 
-class CVOutputSocket(IO):
+class CVOutputSocket(AnalogOutput):  # both AnalogOutput classes have settable ranges to limit output when needed.
     """The CV output sockets of the Computer.
 
     These sockets use PWM output
@@ -18,32 +19,46 @@ class CVOutputSocket(IO):
 
     Requires firmware calibration for precise values.
     """
-    FREQUENCY_KHZ = 60000
+    _FREQUENCY_KHZ = 60000
+    __HARDWARE_MIN = 0
+    __HARDWARE_MAX = 65535
 
     def __init__(self, duty_cycle: int = 32768):
-        self.pwm = PWM(self.pin_id,
-                       freq=60000,
-                       duty_u16=duty_cycle)
+        super().__init__()
 
-    def write(self, value):
-        self.pwm.duty_u16(65535 - value)
+        self.pwm = machine.PWM(self.io_pin_id,
+                               freq=self._FREQUENCY_KHZ,
+                               duty_u16=duty_cycle,
+                               invert=True)
 
-    def write_norm_value(self, value):
-        if not (0.0 <= value <= 1.0):
-            print("Normalized input exceeded range:", value)
+    @property
+    def hardware_min(self) -> int:
+        return self.__HARDWARE_MIN
 
-        self.write(int((1.0 - value) * 65535))
+    @property
+    def hardware_max(self) -> int:
+        return self.__HARDWARE_MAX
+
+    def write(self, value: int):
+        """Set the PWM duty cycle equal to the provided unsigned 16-bit int value."""
+        self.pwm.duty_u16(int(value))
 
 
 class CVOutputSocketOne(CVOutputSocket):
     """The first (left-most) CV output socket of the Computer."""
+    __IO_PIN_ID = 23
+
     @property
-    def pin_id(self):
-        return 23
+    def io_pin_id(self) -> int:
+        """The unique identifier of the GPIO pin used by this class."""
+        return self.__IO_PIN_ID
 
 
 class CVOutputSocketTwo(CVOutputSocket):
     """The second (right-most) CV output socket of the Computer."""
+    __IO_PIN_ID = 22
+
     @property
-    def pin_id(self):
-        return 22
+    def io_pin_id(self) -> int:
+        """The unique identifier of the GPIO pin used by this class."""
+        return self.__IO_PIN_ID
