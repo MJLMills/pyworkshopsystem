@@ -17,19 +17,20 @@ class AnalogOutput(HardwareComponent):
         The CV output sockets of the Computer.
     """
 
-    def __init__(self):
+    # TODO - m is itself another ranged variable, if we want to map it
+    # with an input ranged variable
+    def __init__(self, m: int = 0):
         # TODO - this is attenuating behaviour, add attenuversion
-        # user should not set min_value.minimum or maximum
         self.min_value = RangedVariable(
             minimum=self.hardware_max / 2,
-            maximum=0,
+            maximum=m,
             value=0
         )
 
         self.max_value = RangedVariable(
             minimum=self.hardware_max / 2,
-            maximum=self.hardware_max,
-            value=self.hardware_max
+            maximum=self.hardware_max - m,
+            value=self.hardware_max - m
         )
 
         self.ranged_variable = RangedVariable(
