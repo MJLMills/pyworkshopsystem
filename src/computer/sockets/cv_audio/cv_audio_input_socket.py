@@ -1,5 +1,5 @@
 import machine
-from input_output import AnalogInput
+from base.analog_input import AnalogInput
 
 
 class CVAudioInputSocket(AnalogInput):
@@ -23,9 +23,11 @@ class CVAudioInputSocket(AnalogInput):
     two assigned GPIO pins (26 and 27) on the Pi, from which they are
     directly readable as analog inputs.
     """
+    __MIN_VALUE_U16 = 0
+    __MAX_VALUE_U16 = 65535
 
     def __init__(self):
-        self._adc = machine.ADC(self.pin_id)
+        self._adc = machine.ADC(self.io_pin_id)
         super().__init__()
 
     @property
@@ -34,26 +36,28 @@ class CVAudioInputSocket(AnalogInput):
 
     @property
     def min_value(self) -> int:
-        return 0
+        return self.__MIN_VALUE_U16
 
     @property
     def max_value(self) -> int:
-        return 65535
+        return self.__MAX_VALUE_U16
 
 
 class CVAudioInputSocketOne(CVAudioInputSocket):
     """The left CV/Audio input socket."""
+    __IO_PIN_ID = 27
 
     @property
-    def pin_id(self) -> int:
+    def io_pin_id(self) -> int:
         """The unique identifier of the GPIO pin used by this class."""
-        return 27
+        return self.__IO_PIN_ID
 
 
 class CVAudioInputSocketTwo(CVAudioInputSocket):
     """The right CV/Audio input socket."""
+    __IO_PIN_ID = 26
 
     @property
-    def pin_id(self) -> int:
+    def io_pin_id(self) -> int:
         """The unique identifier of the GPIO pin used by this class."""
-        return 26
+        return self.__IO_PIN_ID

@@ -1,5 +1,5 @@
 import machine
-from input_output import AnalogOutput
+from base.analog_output import AnalogOutput
 
 
 class CVAudioOutputSocket(AnalogOutput):
@@ -41,6 +41,9 @@ class CVAudioOutputSocket(AnalogOutput):
     __BITS = 8
     """The width in bits of each transfer."""
 
+    __HARDWARE_MIN = 0
+    __HARDWARE_MAX = 4095
+
     def __init__(self):
         super().__init__()
         # create a chip select on the documented SPI CS pin
@@ -58,43 +61,13 @@ class CVAudioOutputSocket(AnalogOutput):
             mosi=self.__SDI_MOSI_PIN_ID,
         )
 
-        self._ranged_min_value = RangedVariable(
-            min_value=self.hardware_max / 2,
-            max_value=0,
-            value=0)
-
-        self._ranged_max_value = RangedVariable(
-            min_value=self.hardware_max / 2,
-            max_value=self.hardware_max,
-            value=self.hardware_max)
-
     @property
     def hardware_min(self) -> int:
-        return 0
+        return self.__HARDWARE_MIN
 
     @property
     def hardware_max(self) -> int:
-        return 4095
-
-    @property
-    def min_value(self) -> int:
-        """The minimum value of the analog output."""
-        return self._ranged_min_value.value
-
-    @min_value.setter
-    def min_value(self, min_value: int) -> None:
-        """Set the minimum value of the analog output."""
-        self._ranged_min_value.value = int(min_value)
-
-    @property
-    def max_value(self) -> int:
-        """The maximum value of the analog output."""
-        return self._ranged_max_value.value
-
-    @max_value.setter
-    def max_value(self, max_value: int) -> None:
-        """Set the maximum value of the analog output."""
-        self._ranged_max_value.value = int(max_value)
+        return self.__HARDWARE_MAX
 
     def write(self, value: int):
         """Write the given value to the DAC.
@@ -116,9 +89,7 @@ class CVAudioOutputSocket(AnalogOutput):
         11-0 : the data value to write to the DAC
         """
 
-        # value = int((value / 65535) * 4095)
-
-        dac_data = self.__DAC_STRING | (int(value) & 0xFFF)
+        dac_data = self.__DAC_STRING | (int(self.max_value - value) & 0xFFF)
 
         try:
             self.__chip_select_pin.value(0)

@@ -1,6 +1,6 @@
 import machine
 from .knobs import MainKnob, KnobX, KnobY
-from .switches import SwitchZ
+from .switch import SwitchZ
 from .sockets import CVAudioInputSocketOne
 from .sockets import CVAudioInputSocketTwo
 from .sockets import CVAudioOutputSocketOne
@@ -15,6 +15,7 @@ from .sockets import PulseOutputSocketOne
 from .sockets import PulseOutputSocketTwo
 from .leds import LEDMatrix
 from .eeprom import Eeprom
+from .normalization_probe import NormalizationProbe
 
 
 class Computer(object):
@@ -96,6 +97,38 @@ class Computer(object):
 
         self._led_matrix = None
 
+        self._normalization_probe = NormalizationProbe()
+
+        self.input_sockets = [
+            self.cv_audio_input_socket_one,
+            self.cv_audio_input_socket_two,
+            self.cv_input_socket_one,
+            self.cv_input_socket_two,
+            self.pulses_input_socket_one,
+            self.pulses_input_socket_two
+        ]
+
+    def update_input_sockets(self):
+
+        # this could be more efficient going bit by bit instead of socket by socket?
+        for socket in self.input_sockets:
+            if socket is None:
+                continue
+
+            socket_connected = False
+            for i in range(self._normalization_probe.n_bits):
+                written_value = self._normalization_probe.write()
+                read_value = socket.read_norm_probe()
+
+                if read_value != written_value:
+                    socket_connected = True
+                    break
+
+            if socket_connected:
+                socket.has_jack = True
+            else:
+                socket.has_jack = False
+
     @property
     def eeprom(self):
         if self._eeprom is None:
@@ -155,7 +188,7 @@ class Computer(object):
         if self._cv_input_socket_two is None:
             self._cv_input_socket_two = CVInputSocketTwo()
 
-        return self._cv_input_socket_one
+        return self._cv_input_socket_two
 
     @property
     def cv_output_socket_one(self):
@@ -236,33 +269,33 @@ class Computer(object):
 
         return self._led_matrix
 
-    #@timed_function
-    def update_analog_inputs(self):  # may be able to speed this up by setting multiplexer pins here
+    def read_analog_inputs(self):
+        # may be able to speed this up by setting multiplexer pins here
         # each update of the two multiplexer pins takes ~0.15 ms and we're doing it 8 times each time this is called (should be 4 max)
-        """Update the current raw values of all of the analog inputs."""
+        """Update the current raw values of all the analog inputs."""
         if self._main_knob is not None:
-            self._main_knob.update_latest_value()
+            self._main_knob.read()
 
         if self._cv_input_socket_one is not None:
-            self._cv_input_socket_one.update_latest_value()
+            self._cv_input_socket_one.read()
 
         if self._knob_x is not None:
-            self._knob_x.update_latest_value()
+            self._knob_x.read()
 
         if self._knob_y is not None:
-            self._knob_y.update_latest_value()
+            self._knob_y.read()
 
         if self._switch_z is not None:
-            self._switch_z.update_latest_value()
+            self._switch_z.read()
 
         if self._cv_input_socket_two is not None:
-            self._cv_input_socket_two.update_latest_value()
+            self._cv_input_socket_two.read()
 
         if self._cv_audio_input_socket_one is not None:
-            self._cv_audio_input_socket_one.update_latest_value()
+            self._cv_audio_input_socket_one.read()
 
         if self._cv_audio_input_socket_two is not None:
-            self._cv_audio_input_socket_two.update_latest_value()
+            self._cv_audio_input_socket_two.read()
 
     @property
     def board_version(self) -> tuple:
