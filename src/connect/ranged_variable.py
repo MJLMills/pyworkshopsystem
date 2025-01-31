@@ -122,7 +122,7 @@ class RangedVariable(object):
         """
         slope = self.value_range / ranged_variable.value_range
         self.value = self.minimum_value + (slope * (
-                    ranged_variable.value - ranged_variable.minimum_value))
+                ranged_variable.value - ranged_variable.minimum_value))
 
     def __str__(self):
         str_rep = self.__class__.__name__ + ": "
