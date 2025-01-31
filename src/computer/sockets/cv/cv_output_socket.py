@@ -8,7 +8,7 @@ class CVOutputSocket(AnalogOutput):  # both AnalogOutput classes have settable r
 
     These sockets use PWM output
 
-    Inverted PWM output.
+    Inverted PWM output, with inversion handled by the PWM instance.
     Two-pole active filtered. Use 11-bit PWM at 60 kHz.
 
     The duty cycle is a 16-bit unsigned integer.

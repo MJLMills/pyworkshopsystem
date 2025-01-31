@@ -89,7 +89,7 @@ class CVAudioOutputSocket(AnalogOutput):
         11-0 : the data value to write to the DAC
         """
 
-        dac_data = self.__DAC_STRING | (int(self.max_value - value) & 0xFFF)
+        dac_data = self.__DAC_STRING | (int(4095 - value) & 0xFFF)
 
         try:
             self.__chip_select_pin.value(0)

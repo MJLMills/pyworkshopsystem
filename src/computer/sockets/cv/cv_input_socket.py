@@ -4,16 +4,16 @@ from base.multiplexed_input import MultiplexedInput
 class CVInputSocket(MultiplexedInput):
     """The CV input sockets of the Computer.
 
-    CV inputs are not inverted.
-    -5V reads ~350
-    0V reads ~2030
-    +5V reads ~3700
+    CV inputs are inverted.
+    +5V reads ~300
+    0V reads ~2080
+    -5V reads ~3800
     (these are from the docs and are hinting at calibration from the uint12
     values to actual voltages)
     """
     __IO_PIN_ID = 29
-    __MIN_VALUE_U16 = 0
-    __MAX_VALUE_U16 = 65535
+    __MIN_VALUE_U16 = 65535  # this inverts the mapping so that the output is inverted as required
+    __MAX_VALUE_U16 = 0
 
     @property
     def io_pin_id(self) -> int:

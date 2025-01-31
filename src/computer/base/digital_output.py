@@ -52,5 +52,5 @@ class DigitalOutput(HardwareComponent):
         self.turn_on()
 
         self._timer.init(mode=machine.Timer.ONE_SHOT,
-                         period=500,
+                         period=100,
                          callback=self.turn_off)

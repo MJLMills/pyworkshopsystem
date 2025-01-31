@@ -23,12 +23,20 @@ class CVAudioInputSocket(AnalogInput):
     two assigned GPIO pins (26 and 27) on the Pi, from which they are
     directly readable as analog inputs.
     """
-    __MIN_VALUE_U16 = 0
-    __MAX_VALUE_U16 = 65535
+    __MIN_VALUE_U16 = 65535
+    __MAX_VALUE_U16 = 0
 
     def __init__(self):
         self._adc = machine.ADC(self.io_pin_id)
         super().__init__()
+
+    def read(self) -> None:
+        """Read a 12-bit uint value from the RP2040's ADC."""
+        value = self.ranged_variable.value
+        self.ranged_variable.value = self.adc.read_u16()
+
+        if abs(self.ranged_variable.value - value) > 32:
+            self.value_changed.emit(ranged_variable=self.ranged_variable)
 
     @property
     def adc(self):

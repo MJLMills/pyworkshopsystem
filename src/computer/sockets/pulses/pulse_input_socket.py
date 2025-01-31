@@ -24,7 +24,7 @@ class PulseInputSocket(HardwareComponent):
 
         self.jack_inserted = Signal()
         self.jack_removed = Signal()
-        self._has_jack = None
+        self._has_jack = False
 
         self.irq = self._pin.irq(handler=self.__emit_pulse_started,
                                  trigger=machine.Pin.IRQ_FALLING)
@@ -56,7 +56,7 @@ class PulseInputSocket(HardwareComponent):
         return self._pin.value()
 
     def read_norm_probe(self):
-        return self.read()
+        return not self.read()
 
     def is_high(self):
         return self.read() == self.__ON_VALUE

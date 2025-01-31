@@ -43,8 +43,7 @@ class AnalogInput(HardwareComponent):
         )
         self.value_changed = Signal()
 
-        self._has_jack = None  # actually, do not know - should be able to check independently
-        # but may need to carry a reference to the norm probe.
+        self._has_jack = False
         self.jack_inserted = Signal()
         self.jack_removed = Signal()
 
@@ -60,9 +59,9 @@ class AnalogInput(HardwareComponent):
 
         if has_jack == had_jack:
             return
-        elif has_jack and (not had_jack):
+        elif self._has_jack and (not had_jack):
             self.jack_inserted.emit()
-        elif (not has_jack) and had_jack:
+        elif (not self._has_jack) and had_jack:
             self.jack_removed.emit()
 
     @property
@@ -113,7 +112,7 @@ class AnalogInput(HardwareComponent):
 
     def read_norm_probe(self) -> bool:
         self.read()
-        if self.ranged_variable.value < 28383:
+        if self.ranged_variable.value > 37152:
             return True
         else:
             return False

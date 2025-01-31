@@ -68,6 +68,7 @@ class Computer(object):
         sockets have plugs in them.
         The normalization probe high reads ~2600.
     """
+
     def __init__(self):
 
         self._board_version = None
@@ -114,6 +115,8 @@ class Computer(object):
         for socket in self.input_sockets:
             if socket is None:
                 continue
+            # else:
+            #    print(f"{socket} instantiated")
 
             socket_connected = False
             for i in range(self._normalization_probe.n_bits):
@@ -276,7 +279,7 @@ class Computer(object):
         if self._main_knob is not None:
             self._main_knob.read()
 
-        if self._cv_input_socket_one is not None:
+        if self._cv_input_socket_one is not None and self._cv_input_socket_one.has_jack:
             self._cv_input_socket_one.read()
 
         if self._knob_x is not None:
@@ -288,13 +291,13 @@ class Computer(object):
         if self._switch_z is not None:
             self._switch_z.read()
 
-        if self._cv_input_socket_two is not None:
+        if self._cv_input_socket_two is not None and self._cv_input_socket_two.has_jack:
             self._cv_input_socket_two.read()
 
-        if self._cv_audio_input_socket_one is not None:
+        if self._cv_audio_input_socket_one is not None and self._cv_audio_input_socket_one.has_jack:
             self._cv_audio_input_socket_one.read()
 
-        if self._cv_audio_input_socket_two is not None:
+        if self._cv_audio_input_socket_two is not None and self._cv_audio_input_socket_two.has_jack:
             self._cv_audio_input_socket_two.read()
 
     @property
