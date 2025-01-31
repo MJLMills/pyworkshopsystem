@@ -3,9 +3,10 @@ class Signal(object):
     def __init__(self):
         self.slots = []
 
-    def connect(self, slot):
-        if slot not in self.slots:
-            self.slots.append(slot)
+    def connect(self, *slots):
+        for slot in slots:
+            if slot not in self.slots:
+                self.slots.append(slot)
 
     def disconnect(self, slot):
         if slot in self.slots:
