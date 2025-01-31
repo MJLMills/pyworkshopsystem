@@ -110,9 +110,9 @@ class AnalogInput(HardwareComponent):
         if abs(self.ranged_variable.value - value) > 32:
             self.value_changed.emit(ranged_variable=self.ranged_variable)
 
-    def read_norm_probe(self) -> bool:
+    def read_norm_probe(self):
         self.read()
-        if self.ranged_variable.value > 37152:
+        if self.ranged_variable.value < 28383:
             return True
         else:
             return False
