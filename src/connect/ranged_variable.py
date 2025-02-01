@@ -51,6 +51,14 @@ class RangedVariable(object):
         #    raise ValueError(f"Value outside range: {value}, {self._minimum}, {self._maximum}")
 
     @property
+    def minimum(self) -> RangedVariable:
+        return self._minimum
+
+    @property
+    def maximum(self) -> RangedVariable:
+        return self._maximum
+
+    @property
     def minimum_value(self):
         """The minimum value of this ranged variable.
 
