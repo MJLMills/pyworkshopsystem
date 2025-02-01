@@ -100,34 +100,36 @@ class Computer(object):
 
         self._normalization_probe = NormalizationProbe()
 
-        self.input_sockets = [
-            self.cv_audio_input_socket_one,
-            self.cv_audio_input_socket_two,
-            self.cv_input_socket_one,
-            self.cv_input_socket_two,
-            self.pulses_input_socket_one,
-            self.pulses_input_socket_two
-        ]
+        self.__input_sockets = []
 
     def update_input_sockets(self):
 
+        self.__input_sockets = [
+            self._cv_audio_input_socket_one,
+            self._cv_audio_input_socket_two,
+            self._cv_input_socket_one,
+            self._cv_input_socket_two,
+            self._pulses_input_socket_one,
+            self._pulses_input_socket_two
+        ]
+
         # this could be more efficient going bit by bit instead of socket by socket?
-        for socket in self.input_sockets:
+        for socket in self.__input_sockets:
             if socket is None:
                 continue
-            # else:
-            #    print(f"{socket} instantiated")
 
             socket_connected = False
             for i in range(self._normalization_probe.n_bits):
                 written_value = self._normalization_probe.write()
                 read_value = socket.read_norm_probe()
+                # print(written_value, read_value)
 
                 if read_value != written_value:
                     socket_connected = True
                     break
 
             if socket_connected:
+                # print(f"{socket} has jack")
                 socket.has_jack = True
             else:
                 socket.has_jack = False
