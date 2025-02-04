@@ -25,7 +25,9 @@ class RangedVariable(object):
 
         self._minimum = minimum
         self._maximum = maximum
-        self.value = value
+        self._value = value
+        self._numerical_min = min(self.minimum_value, self.maximum_value)
+        self._numerical_max = max(self.minimum_value, self.maximum_value)
 
     @property
     def value(self):
@@ -45,17 +47,15 @@ class RangedVariable(object):
         ----------
         value : int or float
         """
-        # if self.minimum_value <= value <= self.maximum_value:
-        self._value = value
-        # else:
-        #    raise ValueError(f"Value outside range: {value}, {self._minimum}, {self._maximum}")
+        if self._numerical_min <= value <= self._numerical_max:
+            self._value = value
 
     @property
-    def minimum(self) -> RangedVariable:
+    def minimum(self) -> "RangedVariable":
         return self._minimum
 
     @property
-    def maximum(self) -> RangedVariable:
+    def maximum(self) -> "RangedVariable":
         return self._maximum
 
     @property
@@ -85,6 +85,9 @@ class RangedVariable(object):
         else:
             self._minimum = minimum
 
+        self._numerical_min = min(self.minimum_value, self.maximum_value)
+        self._numerical_max = max(self.minimum_value, self.maximum_value)
+
     @property
     def maximum_value(self):
         """The maximum value of this ranged variable.
@@ -110,6 +113,9 @@ class RangedVariable(object):
             self._maximum.value = maximum
         else:
             self._maximum = maximum
+
+        self._numerical_min = min(self.minimum_value, self.maximum_value)
+        self._numerical_max = max(self.minimum_value, self.maximum_value)
 
     @property
     def value_range(self):
