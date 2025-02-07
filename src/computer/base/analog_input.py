@@ -34,6 +34,7 @@ class AnalogInput(HardwareComponent):
     CVAudioInputSocket
         The CV/Audio input sockets of the computer.
     """
+
     def __init__(self):
 
         self.ranged_variable = RangedVariable(
@@ -111,8 +112,8 @@ class AnalogInput(HardwareComponent):
             self.value_changed.emit(ranged_variable=self.ranged_variable)
 
     def read_norm_probe(self):
-        self.read()
-        if self.ranged_variable.value < 28383:
+
+        if self.adc.read_u16() < 28000:
             return True
         else:
             return False

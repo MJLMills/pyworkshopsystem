@@ -25,6 +25,12 @@ class CVInputSocket(MultiplexedInput):
 
     def __init__(self, voltage_range: tuple = None):
 
+        self.set_voltage_range(voltage_range)
+        super().__init__()
+
+    def set_voltage_range(self,
+                          voltage_range: tuple = None):  # needs to mess with the ranged variable's extrema
+
         if voltage_range is None:
             self._min_value = self.__MIN_VALUE_U16
             self._max_value = self.__MAX_VALUE_U16
@@ -47,7 +53,11 @@ class CVInputSocket(MultiplexedInput):
                 self._max_value = int(
                     (self.__GRADIENT * voltage_range[1]) + self.__INTERCEPT)
 
-        super().__init__()
+        self.ranged_variable = RangedVariable(
+            value=self.min_value,
+            minimum=self.min_value,
+            maximum=self.max_value
+        )
 
     @property
     def io_pin_id(self) -> int:

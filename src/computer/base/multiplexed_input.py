@@ -121,6 +121,7 @@ class MultiplexedInput(AnalogInput):
     adc -> machine.ADC
         The analog-to-digital converter attached to this input.
     """
+
     def __init__(self):
         super().__init__()
         self.__multiplexer = Multiplexer()
@@ -154,3 +155,13 @@ class MultiplexedInput(AnalogInput):
                                                     self.mux_logic_b_pin_value)
 
         super().read()
+
+    def read_norm_probe(self):
+        self.__multiplexer.set_logic_pin_values(self.mux_logic_a_pin_value,
+                                                self.mux_logic_b_pin_value)
+
+        if self.adc.read_u16() < 28000:
+            return True
+        else:
+            return False
+

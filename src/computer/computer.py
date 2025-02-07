@@ -122,14 +122,12 @@ class Computer(object):
             for i in range(self._normalization_probe.n_bits):
                 written_value = self._normalization_probe.write()
                 read_value = socket.read_norm_probe()
-                # print(written_value, read_value)
 
                 if read_value != written_value:
                     socket_connected = True
                     break
 
             if socket_connected:
-                # print(f"{socket} has jack")
                 socket.has_jack = True
             else:
                 socket.has_jack = False
