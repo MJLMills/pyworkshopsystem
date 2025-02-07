@@ -3,11 +3,12 @@ import micropython
 
 
 class TimerConnector:
-
+    """Micropython timer for timed event loops."""
     def __init__(self,
                  looper,
-                 freq,
+                 freq: int,
                  computer=None):
+
         self._timer = machine.Timer(-1,
                                     freq=freq,
                                     callback=self.callback)
@@ -15,10 +16,9 @@ class TimerConnector:
         self._computer = computer
 
     def callback(self, _):
-        # computer.cv_audio_input_socket_one.read()
-        # computer.cv_audio_input_socket_two.read()
-
+        """The callback to run on each timed execution."""
         micropython.schedule(self.update, 0)
 
     def update(self, _):
+        """The update method to be scheduled by the callback."""
         self._looper.take_step()
