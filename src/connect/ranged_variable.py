@@ -28,9 +28,9 @@ class RangedVariable(object):
                  minimum,
                  maximum):
 
+        self._value = value
         self._minimum = minimum
         self._maximum = maximum
-        self._value = value
 
         self._numerical_min = min(self.minimum_value, self.maximum_value)
         self._numerical_max = max(self.minimum_value, self.maximum_value)
@@ -51,7 +51,8 @@ class RangedVariable(object):
         value : int or float
             The value to which to set this ranged variable's value.
         """
-        if self._numerical_min <= value <= self._numerical_max:
+        if min(self.minimum_value, self.maximum_value) <= value <= max(
+                self.minimum_value, self.maximum_value):
             self._value = value
 
     @property
@@ -167,16 +168,42 @@ class RangedVariable(object):
         Parameters
         ----------
         ranged_variable : RangedVariable
+            The ranged variable from which to map this ranged variable's value.
         """
         slope = self.value_range / ranged_variable.value_range
-        self.value = self.minimum_value + (slope * (
-                ranged_variable.value - ranged_variable.minimum_value))
+        self.value = self.minimum_value + \
+                     (slope * (ranged_variable.value -
+                               ranged_variable.minimum_value))
+
+    def map_minimum_value(self, ranged_variable):
+        """Update this ranged variable's minimum's value from another.
+
+        Parameters
+        ----------
+        ranged_variable : RangedVariable
+            The ranged variable from which to map this ranged variable's minimum's value.
+        """
+        self.minimum.map_value(ranged_variable)
+        self._numerical_min = min(self.minimum_value, self.maximum_value)
+        self._numerical_max = max(self.minimum_value, self.maximum_value)
+
+    def map_maximum_value(self, ranged_variable):
+        """Update this ranged variable's maximum's value from another.
+
+        Parameters
+        ----------
+        ranged_variable : RangedVariable
+            The ranged variable from which to map this ranged variable's maximum's value.
+        """
+        self.maximum.map_value(ranged_variable)
+        self._numerical_min = min(self.minimum_value, self.maximum_value)
+        self._numerical_max = max(self.minimum_value, self.maximum_value)
 
     def __str__(self) -> str:
         """Create a human-readable representation of this object."""
         str_rep = self.__class__.__name__ + ": "
         str_rep += f"value = {self._value}, "
-        str_rep += f"minimum value ({type(self._minimum)}) = {self._minimum}, "
-        str_rep += f"maximum value ({type(self._minimum)}) = {self._maximum}"
+        str_rep += f"min. ({type(self._minimum)}) = {self._minimum}, "
+        str_rep += f"max. ({type(self._maximum)}) = {self._maximum}"
 
         return str_rep
