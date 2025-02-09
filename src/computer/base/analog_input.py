@@ -33,6 +33,7 @@ class AnalogInput(HardwareComponent):
         The CV input sockets of the Computer.
     CVAudioInputSocket
         The CV/Audio input sockets of the computer.
+        These classes' values are not read via the multiplexer.
     """
 
     def __init__(self):
@@ -43,18 +44,25 @@ class AnalogInput(HardwareComponent):
             maximum=self.max_value
         )
         self.value_changed = Signal()
+        """Signal emitted when this analog input's value changes."""
 
         self._has_jack = False
+        """Whether this analog input has a jack inserted."""
+
         self.jack_inserted = Signal()
+        """Signal emitted when a jack is plugged into this analog input."""
+
         self.jack_removed = Signal()
+        """Signal emitted when a jack is removed from this analog input."""
 
     @property
     def has_jack(self) -> bool:
+        """Whether this analog input has a jack inserted."""
         return self._has_jack
 
     @has_jack.setter
     def has_jack(self, has_jack: bool) -> None:
-        """Set whether this socket has a jack inserted."""
+        """Set whether this analog input has a jack inserted."""
         had_jack = self._has_jack
         self._has_jack = has_jack
 
@@ -67,18 +75,21 @@ class AnalogInput(HardwareComponent):
 
     @property
     def adc(self) -> machine.ADC:
+        """The analog-to-digital converter used by this analog input."""
         raise NotImplementedError(
             self.__class__.__name__ + " does not implement adc."
         )
 
     @property
     def min_value(self) -> int:
+        """The minimum value of this analog input."""
         raise NotImplementedError(
             self.__class__.__name__ + " does not implement min_value."
         )
 
     @property
     def max_value(self) -> int:
+        """The maximum value of this analog input."""
         raise NotImplementedError(
             self.__class__.__name__ + " does not implement max_value."
         )
@@ -111,8 +122,14 @@ class AnalogInput(HardwareComponent):
         if abs(self.ranged_variable.value - value) > 32:
             self.value_changed.emit(ranged_variable=self.ranged_variable)
 
-    def read_norm_probe(self):
+    def read_norm_probe(self) -> bool:
+        """Read a boolean value from this analog input.
 
+        To test whether a jack is plugged into an input or output socket, a series
+        of digital values are written to the socket, which must be read back in in
+        order to determine whether the written pattern matches the read pattern, in
+        which case the socket can be assumed to not contain a jack.
+        """
         if self.adc.read_u16() < 28000:
             return True
         else:

@@ -103,8 +103,10 @@ class CVAudioOutputSocket(AnalogOutput):
 
 
 class CVAudioOutputSocketOne(CVAudioOutputSocket):
+    """The first (leftmost) CV/Audio output socket."""
     __DAC_STRING = 0b0011000000000000
 
 
 class CVAudioOutputSocketTwo(CVAudioOutputSocket):
+    """The second (rightmost) CV/Audio output socket."""
     __DAC_STRING = 0b1011000000000000

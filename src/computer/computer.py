@@ -102,7 +102,7 @@ class Computer(object):
 
         self.__input_sockets = []
 
-    def update_input_sockets(self):
+    def update_input_sockets(self, fire_all_signals: bool = False):
 
         self.__input_sockets = [
             self._cv_audio_input_socket_one,
@@ -129,8 +129,13 @@ class Computer(object):
 
             if socket_connected:
                 socket.has_jack = True
+                if fire_all_signals:
+                    socket.jack_inserted.emit()
+
             else:
                 socket.has_jack = False
+                if fire_all_signals:
+                    socket.jack_removed.emit()
 
     @property
     def eeprom(self):

@@ -86,6 +86,7 @@ class Multiplexer(object):
         self.mux_logic_pin_b_value = value_b
 
     def get_adc(self, pin_id) -> machine.ADC:
+        """Get the analog-to-digital converter connected to the pin with the provided pin ID."""
         if pin_id == self.MUX_IO_PIN_ONE_ID:
             return self.__MUX_IO_ADC_ONE
         elif pin_id == self.MUX_IO_PIN_TWO_ID:
@@ -164,4 +165,3 @@ class MultiplexedInput(AnalogInput):
             return True
         else:
             return False
-

@@ -3,8 +3,7 @@ from base.analog_output import AnalogOutput
 from src.connect.ranged_variable import RangedVariable
 
 
-class CVOutputSocket(
-    AnalogOutput):  # both AnalogOutput classes have settable ranges to limit output when needed.
+class CVOutputSocket(AnalogOutput):  # both AnalogOutput classes have settable ranges to limit output when needed.
     """The CV output sockets of the Computer.
 
     These sockets use PWM output

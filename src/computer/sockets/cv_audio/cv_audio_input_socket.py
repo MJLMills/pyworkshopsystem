@@ -23,7 +23,7 @@ class CVAudioInputSocket(AnalogInput):
     two assigned GPIO pins (26 and 27) on the Pi, from which they are
     directly readable as analog inputs.
     """
-    __MIN_VALUE_U16 = 32768  # 65535
+    __MIN_VALUE_U16 = 65535
     __MAX_VALUE_U16 = 0
 
     # probably introduce a new class to share this across both types of CV input socket
@@ -85,11 +85,11 @@ class CVAudioInputSocket(AnalogInput):
 
     @property
     def min_value(self) -> int:
-        return self.__MIN_VALUE_U16
+        return self._min_value
 
     @property
     def max_value(self) -> int:
-        return self.__MAX_VALUE_U16
+        return self._max_value
 
 
 class CVAudioInputSocketOne(CVAudioInputSocket):
