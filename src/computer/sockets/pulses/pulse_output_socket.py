@@ -21,6 +21,7 @@ class PulseOutputSocket(DigitalOutput):
         """The value used to represent "off" for this digital output."""
         return self.__OFF_VALUE
 
+
 class PulseOutputSocketOne(PulseOutputSocket):
     """The first (leftmost) pulse input socket."""
 

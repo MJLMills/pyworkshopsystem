@@ -2,10 +2,10 @@ class RangedVariable(object):
     """A variable constrained to a specific range.
 
     The variable has a value that is constrained to lie within a specific
-    range. It is designed to enable mappings to be constructed between
-    pairs of ranged variables. The formula to compute an output value for a
-    given input value requires the input value and the minimum and maximum
-    values of the input and output values.
+    (modifiable) range. It is designed to enable mappings to be constructed
+    between pairs of ranged variables. The formula to compute an output value
+    for a given input value requires the input value and the minimum and
+    maximum values of the input and output values.
 
     Hardware variables are inherently ranged. For inputs, variables read
     from an ADC or digital pin will have fixed ranges. For outputs, hardware
@@ -14,8 +14,13 @@ class RangedVariable(object):
     Parameters
     ----------
     value : int or float
+        The current value of this ranged variable.
     minimum : int or float or RangedVariable
+        The lowest allowed value of this ranged variable.
+        This may itself be a ranged variable.
     maximum : int or float or RangedVariable
+        The highest allowed value of this ranged variable.
+        This may itself be a ranged variable.
     """
 
     def __init__(self,
@@ -23,41 +28,66 @@ class RangedVariable(object):
                  minimum,
                  maximum):
 
+        self._value = value
         self._minimum = minimum
         self._maximum = maximum
-        self.value = value
+
+        self._numerical_min = min(self.minimum_value, self.maximum_value)
+        self._numerical_max = max(self.minimum_value, self.maximum_value)
 
     @property
     def value(self):
-        """The current value of this ranged variable.
-
-        Returns
-        -------
-        int or float
-        """
+        """The current value of this ranged variable."""
         return self._value
 
     @value.setter
     def value(self, value) -> None:
         """Set the current value of this ranged variable.
 
+        This method ensures that the range of the ranged variable is respected.
+
         Parameters
         ----------
         value : int or float
+            The value to which to set this ranged variable's value.
         """
-        # if self.minimum_value <= value <= self.maximum_value:
-        self._value = value
-        # else:
-        #    raise ValueError(f"Value outside range: {value}, {self._minimum}, {self._maximum}")
+        if min(self.minimum_value, self.maximum_value) <= value <= max(
+                self.minimum_value, self.maximum_value):
+            self._value = value
+
+    @property
+    def minimum(self):
+        """The minimum of this ranged variable.
+
+        Returns
+        -------
+        int or float or RangedVariable
+            The lowest allowed value of this ranged variable.
+        """
+        return self._minimum
+
+    @property
+    def maximum(self):
+        """The maximum of this ranged variable.
+
+        Returns
+        -------
+        int or float or RangedVariable
+            The highest allowed value of this ranged variable.
+        """
+        return self._maximum
 
     @property
     def minimum_value(self):
-        """The minimum value of this ranged variable.
+        """The current value of the minimum of this ranged variable.
 
+        This method always returns the numerical value of the minimum, whether
+        it is inherently numerical or a ranged variable.
 
         Returns
         -------
         int or float
+            The current value of the minimum of this ranged variable.
         """
         if isinstance(self._minimum, RangedVariable):
             return self._minimum.value
@@ -66,24 +96,32 @@ class RangedVariable(object):
 
     @minimum_value.setter
     def minimum_value(self, minimum) -> None:
-        """Set the minimum value of this ranged variable.
+        """Set the value of the minimum of this ranged variable.
 
         Parameters
         ----------
-        value : int or float
+        minimum : int or float
+            The value to which to set the minimum of this ranged variable.
         """
         if isinstance(self._minimum, RangedVariable):
             self._minimum.value = minimum
         else:
             self._minimum = minimum
 
+        self._numerical_min = min(self.minimum_value, self.maximum_value)
+        self._numerical_max = max(self.minimum_value, self.maximum_value)
+
     @property
     def maximum_value(self):
-        """The maximum value of this ranged variable.
+        """The current value of the maximum of this ranged variable.
+
+        This method always returns the numerical value of the maximum, whether
+        it is inherently numerical or a ranged variable.
 
         Returns
         -------
         int or float
+            The current value of the maximum of this ranged variable.
         """
         if isinstance(self._maximum, RangedVariable):
             return self._maximum.value
@@ -92,23 +130,34 @@ class RangedVariable(object):
 
     @maximum_value.setter
     def maximum_value(self, maximum) -> None:
-        """Set the maximum value of this ranged variable.
+        """Set the value of the maximum of this ranged variable.
 
         Parameters
         ----------
-        value : int or float
+        maximum : int or float
+            The value to which to set the maximum of this ranged variable.
         """
         if isinstance(self._maximum, RangedVariable):
             self._maximum.value = maximum
         else:
             self._maximum = maximum
 
+        self._numerical_min = min(self.minimum_value, self.maximum_value)
+        self._numerical_max = max(self.minimum_value, self.maximum_value)
+
     @property
     def value_range(self):
+        """The range of values which this ranged variable can take.
+
+        Returns
+        -------
+        int or float
+            The range of values which this ranged variable can take.
+        """
         return self.maximum_value - self.minimum_value
 
     def map_value(self, ranged_variable):
-        """Update the value of this ranged variable.
+        """Update the value of this ranged variable from another.
 
         This method has access to this variable's ranges, and the value and
         ranges of the variable it is to be updated from.
@@ -119,15 +168,42 @@ class RangedVariable(object):
         Parameters
         ----------
         ranged_variable : RangedVariable
+            The ranged variable from which to map this ranged variable's value.
         """
         slope = self.value_range / ranged_variable.value_range
-        self.value = self.minimum_value + (slope * (
-                    ranged_variable.value - ranged_variable.minimum_value))
+        self.value = self.minimum_value + \
+                     (slope * (ranged_variable.value -
+                               ranged_variable.minimum_value))
 
-    def __str__(self):
+    def map_minimum_value(self, ranged_variable):
+        """Update this ranged variable's minimum's value from another.
+
+        Parameters
+        ----------
+        ranged_variable : RangedVariable
+            The ranged variable from which to map this ranged variable's minimum's value.
+        """
+        self.minimum.map_value(ranged_variable)
+        self._numerical_min = min(self.minimum_value, self.maximum_value)
+        self._numerical_max = max(self.minimum_value, self.maximum_value)
+
+    def map_maximum_value(self, ranged_variable):
+        """Update this ranged variable's maximum's value from another.
+
+        Parameters
+        ----------
+        ranged_variable : RangedVariable
+            The ranged variable from which to map this ranged variable's maximum's value.
+        """
+        self.maximum.map_value(ranged_variable)
+        self._numerical_min = min(self.minimum_value, self.maximum_value)
+        self._numerical_max = max(self.minimum_value, self.maximum_value)
+
+    def __str__(self) -> str:
+        """Create a human-readable representation of this object."""
         str_rep = self.__class__.__name__ + ": "
-        str_rep += f"value = {self.value}, "
-        str_rep += f"minimum value = {self.minimum_value}, "
-        str_rep += f"maximum value = {self.maximum_value}"
+        str_rep += f"value = {self._value}, "
+        str_rep += f"min. ({type(self._minimum)}) = {self._minimum}, "
+        str_rep += f"max. ({type(self._maximum)}) = {self._maximum}"
 
         return str_rep
