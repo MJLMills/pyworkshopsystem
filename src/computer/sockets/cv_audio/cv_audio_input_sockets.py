@@ -1,6 +1,6 @@
 import array
-from .cv_audio_input_socket import CVAudioInputSocketOne
-from .cv_audio_input_socket import CVAudioInputSocketTwo
+from computer.sockets.cv_audio.cv_audio_input_socket import CVAudioInputSocketOne
+from computer.sockets.cv_audio.cv_audio_input_socket import CVAudioInputSocketTwo
 
 
 class CVAudioInputSockets(object):

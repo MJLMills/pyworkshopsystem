@@ -1,6 +1,6 @@
 import machine
-from base.analog_output import AnalogOutput
-from src.connect.ranged_variable import RangedVariable
+from computer.base.analog_output import AnalogOutput
+from connect.ranged_variable import RangedVariable
 
 
 class CVOutputSocket(AnalogOutput):  # both AnalogOutput classes have settable ranges to limit output when needed.

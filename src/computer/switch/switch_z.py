@@ -1,5 +1,5 @@
-from base.multiplexed_input import MultiplexedInput
-from src.connect.signal import Signal
+from computer.base.multiplexed_input import MultiplexedInput
+from connect.signal import Signal
 
 
 class SwitchZ(MultiplexedInput):
