@@ -1,4 +1,4 @@
-from base.hardware_component import HardwareComponent
+from computer.base.hardware_component import HardwareComponent
 
 
 class DigitalOutput(HardwareComponent):

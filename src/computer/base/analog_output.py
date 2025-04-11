@@ -1,5 +1,5 @@
-from base.hardware_component import HardwareComponent
-from src.connect.ranged_variable import RangedVariable
+from computer.base.hardware_component import HardwareComponent
+from connect.ranged_variable import RangedVariable
 
 
 class AnalogOutput(HardwareComponent):
