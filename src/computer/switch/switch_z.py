@@ -1,5 +1,5 @@
-from base.multiplexed_input import MultiplexedInput
-from src.connect.signal import Signal
+from computer.base.multiplexed_input import MultiplexedInput
+from connect.signal import Signal
 
 
 class SwitchZ(MultiplexedInput):
@@ -30,9 +30,13 @@ class SwitchZ(MultiplexedInput):
         super().__init__()
 
         self.switched_up = Signal()
+        """Signal emitted when the switch is moved to the up position."""
         self.switched_up_to_middle = Signal()
+        """Signal emitted when the switch is moved from the up to the middle position."""
         self.switched_down_to_middle = Signal()
+        """Signal emitted when the switch is moved from the down to the middle position."""
         self.switched_down = Signal()
+        """Signal emitted when the switch is moved to the down position."""
 
         self.__set_state()
 

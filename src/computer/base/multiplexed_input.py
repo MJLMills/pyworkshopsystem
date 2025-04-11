@@ -1,5 +1,5 @@
 import machine
-from base.analog_input import AnalogInput
+from computer.base.analog_input import AnalogInput
 
 
 class Multiplexer(object):
@@ -86,6 +86,7 @@ class Multiplexer(object):
         self.mux_logic_pin_b_value = value_b
 
     def get_adc(self, pin_id) -> machine.ADC:
+        """Get the analog-to-digital converter connected to the pin with the provided pin ID."""
         if pin_id == self.MUX_IO_PIN_ONE_ID:
             return self.__MUX_IO_ADC_ONE
         elif pin_id == self.MUX_IO_PIN_TWO_ID:
@@ -121,6 +122,7 @@ class MultiplexedInput(AnalogInput):
     adc -> machine.ADC
         The analog-to-digital converter attached to this input.
     """
+
     def __init__(self):
         super().__init__()
         self.__multiplexer = Multiplexer()
@@ -154,3 +156,12 @@ class MultiplexedInput(AnalogInput):
                                                     self.mux_logic_b_pin_value)
 
         super().read()
+
+    def read_norm_probe(self):
+        self.__multiplexer.set_logic_pin_values(self.mux_logic_a_pin_value,
+                                                self.mux_logic_b_pin_value)
+
+        if self.adc.read_u16() < 28000:
+            return True
+        else:
+            return False

@@ -1,9 +1,10 @@
-git clone https://github.com/micropython/micropython.git
 cd micropython
 make -C mpy-cross
-cd ports/rp2/
-make submodules
+
+cd ports/rp2
+make BOARD=RPI_PICO submodules
 make clean
-make
-# make BOARD=MYBOARD FROZEN_MANIFEST=./manifest.py
-ls build-RPI_PICO/firmware.uf2
+make -j 8 BOARD=RPI_PICO FROZEN_MANIFEST=/Users/mjohnmills/PycharmProjects/mtmws_od/modules/pyworkshopsystem/manifest.py
+
+mkdir -p ../../../dist
+cp -rf build-RPI_PICO/firmware.uf2 ../../../dist

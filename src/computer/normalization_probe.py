@@ -18,7 +18,7 @@ class NormalizationProbe(object):
     the possibility of coincidentally receiving it as a genuine input.
     """
     __IO_PIN_ID = 4
-    __N_BITS = 4
+    __N_BITS = 32
 
     def __init__(self):
         self._pin = machine.Pin(self.__IO_PIN_ID,
@@ -38,4 +38,3 @@ class NormalizationProbe(object):
             self.index += 1
 
         return self._pin.value()
-

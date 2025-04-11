@@ -1,4 +1,4 @@
-from base.digital_output import DigitalOutput
+from computer.base.digital_output import DigitalOutput
 
 
 class PulseOutputSocket(DigitalOutput):
@@ -20,6 +20,7 @@ class PulseOutputSocket(DigitalOutput):
     def off_value(self) -> int:
         """The value used to represent "off" for this digital output."""
         return self.__OFF_VALUE
+
 
 class PulseOutputSocketOne(PulseOutputSocket):
     """The first (leftmost) pulse input socket."""

@@ -68,6 +68,7 @@ class Computer(object):
         sockets have plugs in them.
         The normalization probe high reads ~2600.
     """
+
     def __init__(self):
 
         self._board_version = None
@@ -99,19 +100,21 @@ class Computer(object):
 
         self._normalization_probe = NormalizationProbe()
 
-        self.input_sockets = [
-            self.cv_audio_input_socket_one,
-            self.cv_audio_input_socket_two,
-            self.cv_input_socket_one,
-            self.cv_input_socket_two,
-            self.pulses_input_socket_one,
-            self.pulses_input_socket_two
+        self.__input_sockets = []
+
+    def update_input_sockets(self, fire_all_signals: bool = False):
+
+        self.__input_sockets = [
+            self._cv_audio_input_socket_one,
+            self._cv_audio_input_socket_two,
+            self._cv_input_socket_one,
+            self._cv_input_socket_two,
+            self._pulses_input_socket_one,
+            self._pulses_input_socket_two
         ]
 
-    def update_input_sockets(self):
-
         # this could be more efficient going bit by bit instead of socket by socket?
-        for socket in self.input_sockets:
+        for socket in self.__input_sockets:
             if socket is None:
                 continue
 
@@ -126,8 +129,13 @@ class Computer(object):
 
             if socket_connected:
                 socket.has_jack = True
+                if fire_all_signals:
+                    socket.jack_inserted.emit()
+
             else:
                 socket.has_jack = False
+                if fire_all_signals:
+                    socket.jack_removed.emit()
 
     @property
     def eeprom(self):
@@ -276,7 +284,7 @@ class Computer(object):
         if self._main_knob is not None:
             self._main_knob.read()
 
-        if self._cv_input_socket_one is not None:
+        if self._cv_input_socket_one is not None and self._cv_input_socket_one.has_jack:
             self._cv_input_socket_one.read()
 
         if self._knob_x is not None:
@@ -288,13 +296,13 @@ class Computer(object):
         if self._switch_z is not None:
             self._switch_z.read()
 
-        if self._cv_input_socket_two is not None:
+        if self._cv_input_socket_two is not None and self._cv_input_socket_two.has_jack:
             self._cv_input_socket_two.read()
 
-        if self._cv_audio_input_socket_one is not None:
+        if self._cv_audio_input_socket_one is not None and self._cv_audio_input_socket_one.has_jack:
             self._cv_audio_input_socket_one.read()
 
-        if self._cv_audio_input_socket_two is not None:
+        if self._cv_audio_input_socket_two is not None and self._cv_audio_input_socket_two.has_jack:
             self._cv_audio_input_socket_two.read()
 
     @property

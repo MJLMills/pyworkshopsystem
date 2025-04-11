@@ -1,5 +1,5 @@
-from base.hardware_component import HardwareComponent
-from src.connect.ranged_variable import RangedVariable
+from computer.base.hardware_component import HardwareComponent
+from connect.ranged_variable import RangedVariable
 
 
 class AnalogOutput(HardwareComponent):
@@ -9,6 +9,10 @@ class AnalogOutput(HardwareComponent):
     Two are dedicated to CV and are written to using PWM. The other two may be
     used for CV or audio, and are written to through the Computer's DAC.
 
+    Parameters
+    ----------
+    m : int
+
     See Also
     --------
     CVAudioOutputSocket
@@ -17,10 +21,7 @@ class AnalogOutput(HardwareComponent):
         The CV output sockets of the Computer.
     """
 
-    # TODO - m is itself another ranged variable, if we want to map it
-    # with an input ranged variable
     def __init__(self, m: int = 0):
-        # TODO - this is attenuating behaviour, add attenuversion
         self.min_value = RangedVariable(
             minimum=self.hardware_max / 2,
             maximum=m,
@@ -39,33 +40,65 @@ class AnalogOutput(HardwareComponent):
             maximum=self.max_value
         )
 
-    def map_min_value(self, ranged_variable):
-        self.min_value.map_value(ranged_variable)
-
-    def map_max_value(self, ranged_variable):
-        self.max_value.map_value(ranged_variable)
-
-    def map_range(self, ranged_variable):
-        self.min_value.map_value(ranged_variable)
-        self.max_value.map_value(ranged_variable)
-
     @property
     def hardware_min(self) -> int:
+        """The minimum value writeable to this analog output."""
         raise NotImplementedError(
             self.__class__.__name__ + " does not implement max_value."
         )
 
     @property
     def hardware_max(self) -> int:
+        """The maximum value writeable to this analog output."""
         raise NotImplementedError(
             self.__class__.__name__ + " does not implement max_value."
         )
 
     def write(self, value):
+        """Write the provided value to this analog output."""
         raise NotImplementedError(
             self.__class__.__name__ + " does not implement write."
         )
 
+    def map_min_value(self, ranged_variable):
+        """Update this analog output's ranged variable's minimum's value from another.
+
+        Parameters
+        ----------
+        ranged_variable : RangedVariable
+            The ranged variable from which to map this analog output's ranged variable's minimum's value.
+        """
+        self.min_value.map_value(ranged_variable)
+
+    def map_max_value(self, ranged_variable):
+        """Update this analog output's ranged variable's maximum's value from another.
+
+        Parameters
+        ----------
+        ranged_variable : RangedVariable
+            The ranged variable from which to map this analog output's ranged variable's maximum's value.
+        """
+        self.max_value.map_value(ranged_variable)
+
+    def map_range(self, ranged_variable):
+        """Update this analog output's range from a ranged variable.
+
+        Parameters
+        ----------
+        ranged_variable : RangedVariable
+            The ranged variable from which to map this analog output's range.
+        """
+
+        self.min_value.map_value(ranged_variable)
+        self.max_value.map_value(ranged_variable)
+
     def map_and_write_value(self, ranged_variable):
+        """Update and write the value of this analog output's ranged variable from another.
+
+        Parameters
+        ----------
+        ranged_variable : RangedVariable
+            The ranged variable from which to map this analog output's ranged variable's value.
+        """
         self.ranged_variable.map_value(ranged_variable)
         self.write(self.ranged_variable.value)

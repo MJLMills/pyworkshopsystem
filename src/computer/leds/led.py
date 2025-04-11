@@ -1,4 +1,4 @@
-from base.digital_output import DigitalOutput
+from computer.base.digital_output import DigitalOutput
 
 
 class LED(DigitalOutput):
