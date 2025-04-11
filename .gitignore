@@ -4,3 +4,4 @@
 /tests/__pycache__/
 /tests/connect/__pycache__/
 /dist/
+.DS_Store
