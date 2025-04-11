@@ -1,5 +1,5 @@
 import machine
-from .led import LED
+from computer.leds.led import LED
 
 
 class LEDMatrix(object):

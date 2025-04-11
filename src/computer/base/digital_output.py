@@ -1,3 +1,4 @@
+import machine
 from computer.base.hardware_component import HardwareComponent
 
 

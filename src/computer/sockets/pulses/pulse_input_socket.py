@@ -1,6 +1,6 @@
 import machine
-from base.hardware_component import HardwareComponent
-from src.connect.signal import Signal
+from computer.base.hardware_component import HardwareComponent
+from connect.signal import Signal
 
 
 class PulseInputSocket(HardwareComponent):

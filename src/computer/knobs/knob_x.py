@@ -1,4 +1,4 @@
-from base.multiplexed_input import MultiplexedInput
+from computer.base.multiplexed_input import MultiplexedInput
 
 
 class KnobX(MultiplexedInput):
