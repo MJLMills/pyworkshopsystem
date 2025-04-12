@@ -1,4 +1,5 @@
 from computer.base.multiplexed_input import MultiplexedInput
+from connect.ranged_variable import RangedVariable
 
 
 class CVInputSocket(MultiplexedInput):

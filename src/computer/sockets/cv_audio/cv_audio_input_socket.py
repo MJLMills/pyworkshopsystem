@@ -1,5 +1,6 @@
 import machine
 from computer.base.analog_input import AnalogInput
+from connect.ranged_variable import RangedVariable
 
 
 class CVAudioInputSocket(AnalogInput):
