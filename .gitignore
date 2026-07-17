@@ -5,3 +5,4 @@
 /tests/connect/__pycache__/
 /dist/
 .DS_Store
+/.venv314/
