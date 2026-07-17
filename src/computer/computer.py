@@ -102,7 +102,22 @@ class Computer(object):
 
         self.__input_sockets = []
 
-    def update_input_sockets(self, fire_all_signals: bool = False):
+    def update_input_socket_jack_status(self, fire_all_signals: bool = False) ->None:
+        """Update whether sockets have jacks or not using the normalization probe.
+
+        The update process is as follows: write each probe bit once, then read all undecided sockets for that bit.
+        Remove sockets from the undecided set as soon as they're classified. Loop over bits, writing once per bit and
+        testing only undecided sockets. Any remaining undecided sockets are treated as not connected.
+
+        Parameters
+        ----------
+        fire_all_signals:bool
+            Whether to emit jack inserted/removed signals.
+
+        Returns
+        -------
+
+        """
 
         self.__input_sockets = [
             self._cv_audio_input_socket_one,
@@ -113,29 +128,33 @@ class Computer(object):
             self._pulses_input_socket_two
         ]
 
-        # this could be more efficient going bit by bit instead of socket by socket?
-        for socket in self.__input_sockets:
-            if socket is None:
-                continue
+        undecided = [s for s in self.__input_sockets if s is not None]
 
-            socket_connected = False
-            for i in range(self._normalization_probe.n_bits):
-                written_value = self._normalization_probe.write()
+        if not undecided:
+            return
+
+        probe = self._normalization_probe
+        n_bits = probe.n_bits
+
+        for _ in range(n_bits):
+            written_value = probe.write()
+
+            for socket in undecided[:]:
                 read_value = socket.read_norm_probe()
 
                 if read_value != written_value:
-                    socket_connected = True
-                    break
+                    socket.has_jack = True
+                    if fire_all_signals:
+                        socket.jack_inserted.emit()
+                    undecided.remove(socket)
 
-            if socket_connected:
-                socket.has_jack = True
-                if fire_all_signals:
-                    socket.jack_inserted.emit()
+            if not undecided:
+                break
 
-            else:
-                socket.has_jack = False
-                if fire_all_signals:
-                    socket.jack_removed.emit()
+        for socket in undecided:
+            socket.has_jack = False
+            if fire_all_signals:
+                socket.jack_removed.emit()
 
     @property
     def eeprom(self):
