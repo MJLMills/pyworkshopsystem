@@ -39,10 +39,8 @@ class LEDMatrix(object):
     @staticmethod
     def turn_on(index: int = None):
         if index:
-
-            row_index = LEDMatrix.index_to_subscripts[index][0]
-            column_index = LEDMatrix.index_to_subscripts[index][1]
-            LEDMatrix.LEDS[row_index][column_index].turn_on()
+            row_index, col_index = LEDMatrix.index_to_subscripts[index]
+            LEDMatrix.LEDS[row_index][col_index].turn_on()
         else:
             for led_a, led_b in LEDMatrix.LEDS:
                 led_a.turn_on()
@@ -75,8 +73,9 @@ class LEDMatrix(object):
         if row_index not in {0, 1, 2}:
             raise ValueError("Invalid LED row index: ", row_index)
 
-        for led in LEDMatrix.LEDS[row_index][0:num_leds]:
-            led.value = 1
+        row = LEDMatrix.LEDS[row_index]
+        for i in range(num_leds):
+            row[i].value = 1
 
     @staticmethod
     def turn_top_row_on(num_leds=2):
@@ -115,8 +114,8 @@ class LEDMatrix(object):
         if col_index not in {0, 1}:
             raise ValueError("Invalid LED column index: ", col_index)
 
-        for row in LEDMatrix.LEDS[0:num_leds]:
-            row[col_index].value = 1
+        for i in range(num_leds):
+            LEDMatrix.LEDS[i][col_index].value = 1
 
     @staticmethod
     def turn_left_column_on(num_leds=3):
