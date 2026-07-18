@@ -50,6 +50,14 @@ class Computer(object):
     Each of these controls is abstracted as a dedicated class, minimizing redundancy and
     hiding the complexity of the hardware, while providing access to the
     micropython objects for use where specific functionality is not yet implemented.
+
+    This class enforces a strict singleton pattern. Once instantiated, further attempts to instantiate
+    will raise a RuntimeError. This is intended to fail fast so that the error can be quickly corrected.
+
+    Raises
+    ------
+    RuntimeError
+        When a second instance of the class is instantiated.
     """
     KNOWN_BOARD_VERSION_NAMES = {
         (False, False, False): "Proto 1.2",
@@ -76,8 +84,14 @@ class Computer(object):
         sockets have plugs in them.
         The normalization probe high reads ~2600.
     """
+    _instance = None
 
     def __init__(self):
+
+        if Computer._instance is not None:
+            raise RuntimeError("Computer already initialized.")
+
+        Computer._instance = self
 
         self._board_version = None
         self._board_version_name = None
