@@ -54,6 +54,8 @@ class Computer(object):
     This class enforces a strict singleton pattern. Once instantiated, further attempts to instantiate
     will raise a RuntimeError. This is intended to fail fast so that the error can be quickly corrected.
 
+    NB: GPIO pin 20 is not connected.
+
     Raises
     ------
     RuntimeError
@@ -65,19 +67,10 @@ class Computer(object):
     }
     """Known versions of the Computer board."""
 
-    PIN_IDS = {
-        "UART0_TX": 0,
-        "UART0_RX": 1,
-    }
-    """GPIO Pin IDs not assigned to Computer classes.
+    __UART_TX_PIN_ID = 0
+    __UART_RX_PIN_ID = 1
+    """GPIO Pin IDs for UART connections."""
 
-    NB: GPIO pin 20 is not connected.
-
-    UART0_TX, UART0_RX
-        From unpopulated headers next to LEDs.
-        There are two UARTS on the RP2040, UART0 and UART1.
-        In this case, UART0 has been mapped to GPIO pins 0/1.
-    """
     _instance = None
 
     def __init__(self):
@@ -177,12 +170,17 @@ class Computer(object):
 
     @property
     def uart(self):
+        """
+        From unpopulated headers next to LEDs.
+        There are two UARTS on the RP2040, UART0 and UART1.
+        In this case, UART0 has been mapped to GPIO pins 0/1.
+        """
         if self._uart0 is None:
             self._uart0 = machine.UART(
                 0,
                 baudrate=9600,  # check value
-                tx=machine.Pin(Computer.PIN_IDS["UART0_TX"]),
-                rx=machine.Pin(Computer.PIN_IDS["UART0_RX"])
+                tx=machine.Pin(Computer.__UART_TX_PIN_ID),
+                rx=machine.Pin(Computer.__UART_RX_PIN_ID)
             )
 
         return self._uart0
