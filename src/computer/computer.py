@@ -68,7 +68,6 @@ class Computer(object):
     PIN_IDS = {
         "UART0_TX": 0,
         "UART0_RX": 1,
-        "NORMALIZATION_PROBE": 4,
     }
     """GPIO Pin IDs not assigned to Computer classes.
 
@@ -124,7 +123,7 @@ class Computer(object):
 
         self.__input_sockets = []
 
-    def update_input_socket_jack_status(self, fire_all_signals: bool = False) ->None:
+    def update_input_socket_jack_status(self, fire_all_signals: bool = False) -> None:
         """Update whether sockets have jacks or not using the normalization probe.
 
         The update process is as follows: write each probe bit once, then read all undecided sockets for that bit.
@@ -135,10 +134,6 @@ class Computer(object):
         ----------
         fire_all_signals:bool
             Whether to emit jack inserted/removed signals.
-
-        Returns
-        -------
-
         """
 
         self.__input_sockets = [
