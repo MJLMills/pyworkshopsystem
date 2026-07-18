@@ -187,6 +187,7 @@ class Computer(object):
 
     @property
     def main_knob(self):
+        """The main knob on the computer."""
         if self._main_knob is None:
             self._main_knob = MainKnob()
 
@@ -194,6 +195,7 @@ class Computer(object):
 
     @property
     def knob_x(self):
+        """The X knob on the computer."""
         if self._knob_x is None:
             self._knob_x = KnobX()
 
@@ -201,6 +203,7 @@ class Computer(object):
 
     @property
     def knob_y(self):
+        """The Y knob on the computer."""
         if self._knob_y is None:
             self._knob_y = KnobY()
 
@@ -208,6 +211,7 @@ class Computer(object):
 
     @property
     def switch_z(self):
+        """The Z switch on the computer."""
         if self._switch_z is None:
             self._switch_z = SwitchZ()
 
@@ -215,6 +219,7 @@ class Computer(object):
 
     @property
     def cv_input_socket_one(self):
+        """The left CV input socket on the computer."""
         if self._cv_input_socket_one is None:
             self._cv_input_socket_one = CVInputSocketOne()
 
@@ -222,6 +227,7 @@ class Computer(object):
 
     @property
     def cv_input_socket_two(self):
+        """The right CV input socket on the computer."""
         if self._cv_input_socket_two is None:
             self._cv_input_socket_two = CVInputSocketTwo()
 
@@ -229,6 +235,7 @@ class Computer(object):
 
     @property
     def cv_output_socket_one(self):
+        """The left CV output socket on the computer."""
         if self._cv_output_socket_one is None:
             self._cv_output_socket_one = CVOutputSocketOne()
 
@@ -236,6 +243,7 @@ class Computer(object):
 
     @property
     def cv_output_socket_two(self):
+        """The right CV output socket on the computer."""
         if self._cv_output_socket_two is None:
             self._cv_output_socket_two = CVOutputSocketTwo()
 
@@ -259,6 +267,7 @@ class Computer(object):
 
     @property
     def cv_audio_output_socket_one(self):
+        """The left CV/Audio output socket on the Computer."""
         if self._cv_audio_output_socket_one is None:
             self._cv_audio_output_socket_one = CVAudioOutputSocketOne()
 
@@ -266,6 +275,7 @@ class Computer(object):
 
     @property
     def cv_audio_output_socket_two(self):
+        """The right CV/Audio output socket on the Computer."""
         if self._cv_audio_output_socket_two is None:
             self._cv_audio_output_socket_two = CVAudioOutputSocketTwo()
 
@@ -273,6 +283,7 @@ class Computer(object):
 
     @property
     def pulses_input_socket_one(self):
+        """The left pulses input socket on the Computer."""
         if self._pulses_input_socket_one is None:
             self._pulses_input_socket_one = PulseInputSocketOne()
 
@@ -280,6 +291,7 @@ class Computer(object):
 
     @property
     def pulses_input_socket_two(self):
+        """The right pulses input socket on the Computer."""
         if self._pulses_input_socket_two is None:
             self._pulses_input_socket_two = PulseInputSocketTwo()
 
@@ -287,6 +299,7 @@ class Computer(object):
 
     @property
     def pulses_output_socket_one(self):
+        """The left pulses output socket on the Computer."""
         if self._pulses_output_socket_one is None:
             self._pulses_output_socket_one = PulseOutputSocketOne()
 
@@ -294,6 +307,7 @@ class Computer(object):
 
     @property
     def pulses_output_socket_two(self):
+        """The right pulses output socket on the Computer."""
         if self._pulses_output_socket_two is None:
             self._pulses_output_socket_two = PulseOutputSocketTwo()
 
@@ -301,6 +315,7 @@ class Computer(object):
 
     @property
     def led_matrix(self):
+        """The LED matrix on the Computer."""
         if self._led_matrix is None:
             self._led_matrix = LEDMatrix()
 
