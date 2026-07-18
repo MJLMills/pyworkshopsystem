@@ -8,7 +8,7 @@ class NormalizationProbe(object):
     The normalization probe is a digital output connected to GPIO pin 4. When
     nothing is plugged into each input socket (pulse inputs one and two, CV
     inputs one and two, CV/Audio inputs one and two), they are connected to
-    the normalization probe and will have the values written there. By writing
+    the normalization probe via a protection diode and will have the values written there. By writing
     a known pattern of digital values to the sockets and checking their read
     values, it is possible to determine whether each socket is connected to the
     normalization probe, and therefore whether a jack is plugged into its

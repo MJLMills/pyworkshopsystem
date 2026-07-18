@@ -77,11 +77,6 @@ class Computer(object):
         From unpopulated headers next to LEDs.
         There are two UARTS on the RP2040, UART0 and UART1.
         In this case, UART0 has been mapped to GPIO pins 0/1.
-    NORMALIZATION_PROBE
-        Connected to the switch inputs on all the inputs via a BAT45 protection
-        diode. Toggle this pin to identify which input (CV/Audio, CV and pulse)
-        sockets have plugs in them.
-        The normalization probe high reads ~2600.
     """
     _instance = None
 
