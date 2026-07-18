@@ -8,6 +8,13 @@ specifics, it aims to allow a user to interact directly with the components of
 the module (knobs, sockets, switches and LEDs) in software, and to connect 
 them using a signals/slots API.
 
+```python
+from computer import Computer
+
+computer = Computer()
+
+```
+
 ### Building the Package
 
 The source code can be frozen into the micropython code within a .uf2 file, 
