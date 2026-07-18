@@ -23,25 +23,33 @@ class Computer(object):
 
     This class abstracts the Computer module in order to make interacting with
     its controls as direct as possible. The package uses micropython for
-    interaction with the hardware.
-    The module provides the following set of controls (top-to-bottom,
+    interaction with the hardware. The module provides the following set of controls (top-to-bottom,
     left-to-right):
 
-    A "main knob" - a potentiometer with a large dial.
-    X and Y knobs - trimmer potentiometers.
-    Z switch - (ON)-OFF-ON, momentary push down, normal pull up.
-    Two CV/Audio inputs
-    Two CV/Audio outputs
-    Two CV inputs
-    Two CV outputs
-    Two pulse inputs
-    Two pulse outputs
-    Six LEDs (arranged in a 3x2 matrix)
+    * A "main knob"
+        A potentiometer with a large dial.
+    * X and Y knobs
+        Two trimmer potentiometers.
+    * Z switch
+        An (ON)-OFF-ON switch with momentary push down and latching push up.
+    * Two separate CV/Audio inputs
+        Labeled 1 and 2 herein, corresponding to physical left and right.
+    * Two separate CV/Audio outputs
+        Labeled 1 and 2 herein, corresponding to physical left and right.
+    * Two separate CV inputs
+        Labeled 1 and 2 herein, corresponding to physical left and right.
+    * Two separate CV outputs
+        Labeled 1 and 2 herein, corresponding to physical left and right.
+    * Two separate pulse inputs
+        Labeled 1 and 2 herein, corresponding to physical left and right.
+    * Two separate pulse outputs
+        Labeled 1 and 2 herein, corresponding to physical left and right.
+    * Six LEDs
+        Arranged in a 3x2 matrix.
 
-    Each of these is modeled with a dedicated class, minimizing re-use and
+    Each of these controls is abstracted as a dedicated class, minimizing redundancy and
     hiding the complexity of the hardware, while providing access to the
-    micropython objects for use where specific functionality is not yet
-     implemented.
+    micropython objects for use where specific functionality is not yet implemented.
     """
     KNOWN_BOARD_VERSION_NAMES = {
         (False, False, False): "Proto 1.2",
