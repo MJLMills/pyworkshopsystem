@@ -93,7 +93,8 @@ class Computer(object):
 
         self._normalization_probe = NormalizationProbe()
 
-        self.__input_sockets = []
+        self.__input_sockets = [None] * 6
+        self.__active_socket_count = 0
 
     def update_input_socket_jack_status(self, fire_all_signals: bool = False) -> None:
         """Update whether sockets have jacks or not using the normalization probe.
@@ -107,43 +108,57 @@ class Computer(object):
         fire_all_signals:bool
             Whether to emit jack inserted/removed signals.
         """
+        self.__active_socket_count = 0
 
-        self.__input_sockets = [
-            self._cv_audio_input_socket_one,
-            self._cv_audio_input_socket_two,
-            self._cv_input_socket_one,
-            self._cv_input_socket_two,
-            self._pulses_input_socket_one,
-            self._pulses_input_socket_two
-        ]
+        if self._cv_audio_input_socket_one is not None:
+            self.__input_sockets[self.__active_socket_count] = self._cv_audio_input_socket_one
+            self.__active_socket_count += 1
+        if self._cv_audio_input_socket_two is not None:
+            self.__input_sockets[self.__active_socket_count] = self._cv_audio_input_socket_two
+            self.__active_socket_count += 1
+        if self._cv_input_socket_one is not None:
+            self.__input_sockets[self.__active_socket_count] = self._cv_input_socket_one
+            self.__active_socket_count += 1
+        if self._cv_input_socket_two is not None:
+            self.__input_sockets[self.__active_socket_count] = self._cv_input_socket_two
+            self.__active_socket_count += 1
+        if self._pulses_input_socket_one is not None:
+            self.__input_sockets[self.__active_socket_count] = self._pulses_input_socket_one
+            self.__active_socket_count += 1
+        if self._pulses_input_socket_two is not None:
+            self.__input_sockets[self.__active_socket_count] = self._pulses_input_socket_two
+            self.__active_socket_count += 1
 
-        undecided = [s for s in self.__input_sockets if s is not None]
-
-        if not undecided:
+        if self.__active_socket_count == 0:
             return
 
         probe = self._normalization_probe
         n_bits = probe.n_bits
 
         for _ in range(n_bits):
-            written_value = probe.write()
+            if self.__active_socket_count == 0:
+                break
 
-            for socket in undecided[:]:
+            written_value = probe.write()
+            i = 0
+            while i < self.__active_socket_count:
+                socket = self.__input_sockets[i]
                 read_value = socket.read_norm_probe()
 
                 if read_value != written_value:
                     socket.has_jack = True
                     if fire_all_signals:
                         socket.jack_inserted.emit()
-                    undecided.remove(socket)
 
-            if not undecided:
-                break
+                    self.__active_socket_count -= 1
+                    self.__input_sockets[i] = self.__input_sockets[self.__active_socket_count]
+                else:
+                    i += 1
 
-        for socket in undecided:
-            socket.has_jack = False
+        for i in range(self.__active_socket_count):
+            self.__input_sockets[i].has_jack = False
             if fire_all_signals:
-                socket.jack_removed.emit()
+                self.__input_sockets[i].jack_removed.emit()
 
     @property
     def eeprom(self):
