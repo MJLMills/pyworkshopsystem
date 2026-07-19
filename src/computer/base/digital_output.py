@@ -5,6 +5,8 @@ from computer.base.hardware_component import HardwareComponent
 class DigitalOutput(HardwareComponent):
     """A hardware digital output.
 
+    Subclasses must implement two constants: ON_VALUE and OFF_VALUE.
+
     See Also
     --------
     PulseOutputSocket
@@ -12,6 +14,8 @@ class DigitalOutput(HardwareComponent):
     LED
         A light emitting diode on the module.
     """
+    ON_VALUE = None
+    OFF_VALUE = None
 
     def __init__(self):
         super().__init__()
@@ -36,19 +40,19 @@ class DigitalOutput(HardwareComponent):
 
     def turn_on(self, timer=None) -> None:
         """Turn this digital output on."""
-        self._pin.value(self.on_value)
+        self._pin.value(self.ON_VALUE)
 
     def turn_off(self, timer=None) -> None:
         """Turn this digital output off."""
-        self._pin.value(self.off_value)
+        self._pin.value(self.OFF_VALUE)
 
     def is_on(self) -> bool:
         """Determine whether this digital output is turned on."""
-        return self._pin.value() == self.on_value
+        return self._pin.value() == self.ON_VALUE
 
     def is_off(self) -> bool:
         """Determine whether this digital output is turned off."""
-        return self._pin.value() == self.off_value
+        return self._pin.value() == self.OFF_VALUE
 
     def toggle(self) -> None:
         """Toggle the value of this digital output."""
