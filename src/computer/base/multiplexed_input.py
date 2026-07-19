@@ -24,27 +24,27 @@ class Multiplexer(object):
     one will return the main knob value and pin two will return the CV 1 input
     value.
     """
-    __MUX_LOGIC_PIN_A_ID = 24
+    MUX_LOGIC_PIN_A_ID = 24
     """The ID of the first multiplexer output pin."""
-    __MUX_LOGIC_PIN_B_ID = 25
+    MUX_LOGIC_PIN_B_ID = 25
     """The ID of the second multiplexer output pin."""
     MUX_IO_PIN_ONE_ID = 28
     """The ID of the multiplexer's first analog input pin."""
     MUX_IO_PIN_TWO_ID = 29
     """The ID of the multiplexer's second analog input pin."""
 
-    __MUX_LOGIC_A_PIN = machine.Pin(__MUX_LOGIC_PIN_A_ID,
-                                    machine.Pin.OUT)
+    MUX_LOGIC_A_PIN = machine.Pin(MUX_LOGIC_PIN_A_ID,
+                                  machine.Pin.OUT)
     """The first digital output pin connected to the multiplexer."""
 
-    __MUX_LOGIC_B_PIN = machine.Pin(__MUX_LOGIC_PIN_B_ID,
-                                    machine.Pin.OUT)
+    MUX_LOGIC_B_PIN = machine.Pin(MUX_LOGIC_PIN_B_ID,
+                                  machine.Pin.OUT)
     """The second digital output pin connected to the multiplexer."""
 
-    __MUX_IO_ADC_ONE = machine.ADC(MUX_IO_PIN_ONE_ID)
+    MUX_IO_ADC_ONE = machine.ADC(MUX_IO_PIN_ONE_ID)
     """The ADC connected to the first multiplexer analog output."""
 
-    __MUX_IO_ADC_TWO = machine.ADC(MUX_IO_PIN_TWO_ID)
+    MUX_IO_ADC_TWO = machine.ADC(MUX_IO_PIN_TWO_ID)
     """The ADC connected to the second multiplexer analog output."""
 
     def __init__(self):
@@ -55,22 +55,22 @@ class Multiplexer(object):
     @property
     def mux_logic_pin_a_value(self) -> bool:
         """The value at the first mux logic digital output pin."""
-        return self.__MUX_LOGIC_A_PIN.value()
+        return self.MUX_LOGIC_A_PIN.value()
 
     @mux_logic_pin_a_value.setter
     def mux_logic_pin_a_value(self, value) -> None:
         """Set the value at the first mux logic digital output pin."""
-        self.__MUX_LOGIC_A_PIN.value(value)
+        self.MUX_LOGIC_A_PIN.value(value)
 
     @property
     def mux_logic_pin_b_value(self) -> bool:
         """The value at the second mux logic digital output pin."""
-        return self.__MUX_LOGIC_B_PIN.value()
+        return self.MUX_LOGIC_B_PIN.value()
 
     @mux_logic_pin_b_value.setter
     def mux_logic_pin_b_value(self, value) -> None:
         """Set the value at the second mux logic digital output pin."""
-        self.__MUX_LOGIC_B_PIN.value(value)
+        self.MUX_LOGIC_B_PIN.value(value)
 
     def set_logic_pin_values(self, value_a: bool, value_b: bool) -> None:
         """Set the values of the multiplexer logic pins.
@@ -88,9 +88,9 @@ class Multiplexer(object):
     def get_adc(self, pin_id) -> machine.ADC:
         """Get the analog-to-digital converter connected to the pin with the provided pin ID."""
         if pin_id == self.MUX_IO_PIN_ONE_ID:
-            return self.__MUX_IO_ADC_ONE
+            return self.MUX_IO_ADC_ONE
         elif pin_id == self.MUX_IO_PIN_TWO_ID:
-            return self.__MUX_IO_ADC_TWO
+            return self.MUX_IO_ADC_TWO
         else:
             raise ValueError(
                 "Supplied pin ID not connected to multiplexer: ", pin_id
