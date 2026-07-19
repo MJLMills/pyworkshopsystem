@@ -1,4 +1,5 @@
 import machine
+from micropython import const
 
 
 class Eeprom(object):
@@ -26,8 +27,8 @@ class Eeprom(object):
     }
     """Memory map for 2 x precision PWM voltage outputs = Channels 0 and 1."""
 
-    SDA_PIN_ID = 16
-    SCL_PIN_ID = 17
+    SDA_PIN_ID = const(16)
+    SCL_PIN_ID = const(17)
     def __init__(self):
         self.i2c = machine.I2C(0,
                                scl=machine.Pin(Eeprom.SCL_PIN_ID,

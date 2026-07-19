@@ -1,4 +1,5 @@
 import machine
+from micropython import const
 from computer.base.hardware_component import HardwareComponent
 from connect.signal import Signal
 
@@ -12,10 +13,10 @@ class PulseInputSocket(HardwareComponent):
 
     The gates are about 5-6v
     """
-    __ON_VALUE = 0
+    __ON_VALUE = const(0)
     """The value used to represent "on" for this pulse input."""
 
-    __OFF_VALUE = 1
+    __OFF_VALUE = const(1)
     """The value used to represent "off" for this pulse input."""
 
     def __init__(self):
@@ -81,10 +82,10 @@ class PulseInputSocket(HardwareComponent):
 
 class PulseInputSocketOne(PulseInputSocket):
     """The first (leftmost) pulse input socket."""
-    IO_PIN_ID = 2
+    IO_PIN_ID = const(2)
 
 
 class PulseInputSocketTwo(PulseInputSocket):
     """The second (rightmost) pulse input socket."""
-    IO_PIN_ID = 3
+    IO_PIN_ID = const(3)
 

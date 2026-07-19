@@ -1,4 +1,5 @@
 import machine
+from micropython import const
 from computer.leds.led import LED
 
 
@@ -9,13 +10,13 @@ class LEDMatrix(object):
     matrix.
     """
     # row indices
-    TOP = 0
-    MIDDLE = 1
-    BOTTOM = 2
+    TOP = const(0)
+    MIDDLE = const(1)
+    BOTTOM = const(2)
 
     # column indices
-    LEFT = 0
-    RIGHT = 1
+    LEFT = const(0)
+    RIGHT = const(1)
 
     LEDS = (
         (LED(led_index=1), LED(led_index=2)),

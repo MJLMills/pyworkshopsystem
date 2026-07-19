@@ -1,4 +1,5 @@
 import machine
+from micropython import const
 import random
 
 
@@ -17,22 +18,22 @@ class NormalizationProbe(object):
     length of this sequence is hard-coded; the longer the sequence the lower
     the possibility of coincidentally receiving it as a genuine input.
     """
-    __IO_PIN_ID = 4
-    __N_BITS = 32
+    IO_PIN_ID = const(4)
+    N_BITS = const(32)
 
     def __init__(self):
-        self._pin = machine.Pin(self.__IO_PIN_ID,
+        self._pin = machine.Pin(self.IO_PIN_ID,
                                 machine.Pin.OUT)
 
-        self.pattern = random.getrandbits(self.__N_BITS)
+        self.pattern = random.getrandbits(self.N_BITS)
         self.index = 0
-        self.n_bits = self.__N_BITS
+        self.n_bits = self.N_BITS
 
     def write(self):
         """Write the next bit of the pattern to pin 4."""
         self._pin.value((self.pattern >> self.index) & 1)
 
-        if self.index == self.__N_BITS - 1:
+        if self.index == self.N_BITS - 1:
             self.index = 0
         else:
             self.index += 1

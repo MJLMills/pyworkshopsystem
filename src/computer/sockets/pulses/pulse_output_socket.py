@@ -1,3 +1,4 @@
+from micropython import const
 from computer.base.digital_output import DigitalOutput
 
 
@@ -8,15 +9,15 @@ class PulseOutputSocket(DigitalOutput):
     Scaled via a transistor.
     Pin should be output, no pullup.
     """
-    ON_VALUE = 0
-    OFF_VALUE = 1
+    ON_VALUE = const(0)
+    OFF_VALUE = const(1)
 
 
 class PulseOutputSocketOne(PulseOutputSocket):
     """The first (leftmost) pulse input socket."""
-    IO_PIN_ID = 8
+    IO_PIN_ID = const(8)
 
 
 class PulseOutputSocketTwo(PulseOutputSocket):
     """The second (rightmost) pulse input socket."""
-    IO_PIN_ID = 9
+    IO_PIN_ID = const(9)

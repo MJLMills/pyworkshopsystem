@@ -1,4 +1,5 @@
 import machine
+from micropython import const
 from .normalization_probe import NormalizationProbe
 
 
@@ -51,8 +52,8 @@ class Computer(object):
     }
     """Known versions of the Computer board."""
 
-    __UART_TX_PIN_ID = 0
-    __UART_RX_PIN_ID = 1
+    UART_TX_PIN_ID = const(0)
+    UART_RX_PIN_ID = const(1)
     """GPIO Pin IDs for UART connections."""
 
     _instance = None
@@ -179,8 +180,8 @@ class Computer(object):
             self._uart0 = machine.UART(
                 0,
                 baudrate=9600,  # check value
-                tx=machine.Pin(Computer.__UART_TX_PIN_ID),
-                rx=machine.Pin(Computer.__UART_RX_PIN_ID)
+                tx=machine.Pin(Computer.UART_TX_PIN_ID),
+                rx=machine.Pin(Computer.UART_RX_PIN_ID)
             )
 
         return self._uart0

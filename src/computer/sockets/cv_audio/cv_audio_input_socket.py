@@ -1,3 +1,4 @@
+from micropython import const
 import machine
 from computer.base.analog_input import AnalogInput
 from connect.ranged_variable import RangedVariable
@@ -24,8 +25,8 @@ class CVAudioInputSocket(AnalogInput):
     two assigned GPIO pins (26 and 27) on the Pi, from which they are
     directly readable as analog inputs.
     """
-    __MIN_VALUE_U16 = 65535
-    __MAX_VALUE_U16 = 0
+    __MIN_VALUE_U16 = const(65535)
+    __MAX_VALUE_U16 = const(0)
 
     # probably introduce a new class to share this across both types of CV input socket
     # the uncalibrated assumption is that +6V = 65535,  0V = 32768, -6V = 0
@@ -95,8 +96,8 @@ class CVAudioInputSocket(AnalogInput):
 
 class CVAudioInputSocketOne(CVAudioInputSocket):
     """The left CV/Audio input socket."""
-    IO_PIN_ID = 27
+    IO_PIN_ID = const(27)
 
 class CVAudioInputSocketTwo(CVAudioInputSocket):
     """The right CV/Audio input socket."""
-    IO_PIN_ID = 26
+    IO_PIN_ID = const(26)

@@ -1,3 +1,4 @@
+from micropython import const
 import machine
 from computer.base.analog_output import AnalogOutput
 from connect.ranged_variable import RangedVariable
@@ -19,25 +20,25 @@ class CVOutputSocket(AnalogOutput):  # both AnalogOutput classes have settable r
 
     Requires firmware calibration for precise values.
     """
-    _FREQUENCY_KHZ = 60000
-    __HARDWARE_MIN = 0
-    __HARDWARE_MAX = 65535
+    FREQUENCY_KHZ = const(60000)
+    HARDWARE_MIN = const(0)
+    HARDWARE_MAX = const(65535)
 
     def __init__(self, duty_cycle: int = 32768):
         super().__init__()
 
-        self.pwm = machine.PWM(self.IO_PIN_ID,
-                               freq=self._FREQUENCY_KHZ,
+        self.pwm = machine.PWM(CVOutputSocket.IO_PIN_ID,
+                               freq=CVOutputSocket.FREQUENCY_KHZ,
                                duty_u16=duty_cycle,
                                invert=True)
 
     @property
     def hardware_min(self) -> int:
-        return self.__HARDWARE_MIN
+        return self.HARDWARE_MIN
 
     @property
     def hardware_max(self) -> int:
-        return self.__HARDWARE_MAX
+        return self.HARDWARE_MAX
 
     def write(self, value: int):
         """Set the PWM duty cycle equal to the provided unsigned 16-bit int value."""
@@ -46,9 +47,9 @@ class CVOutputSocket(AnalogOutput):  # both AnalogOutput classes have settable r
 
 class CVOutputSocketOne(CVOutputSocket):
     """The first (left-most) CV output socket of the Computer."""
-    IO_PIN_ID = 23
+    IO_PIN_ID = const(23)
 
 
 class CVOutputSocketTwo(CVOutputSocket):
     """The second (right-most) CV output socket of the Computer."""
-    IO_PIN_ID = 22
+    IO_PIN_ID = const(22)

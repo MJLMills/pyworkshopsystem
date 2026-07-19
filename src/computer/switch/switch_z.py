@@ -1,3 +1,4 @@
+from micropython import const
 from computer.base.multiplexed_input import MultiplexedInput
 from connect.signal import Signal
 
@@ -24,11 +25,11 @@ class SwitchZ(MultiplexedInput):
     Direct values are used for comparisons to save time.
 
     """
-    IO_PIN_ID = 28
-    MIN_VALUE_U16 = 0
-    MAX_VALUE_U16 = 65535
-    MUX_LOGIC_PIN_A_VALUE = True
-    MUX_LOGIC_PIN_B_VALUE = True
+    IO_PIN_ID = const(28)
+    MIN_VALUE_U16 = const(0)
+    MAX_VALUE_U16 = const(65535)
+    MUX_LOGIC_PIN_A_VALUE = const(True)
+    MUX_LOGIC_PIN_B_VALUE = const(True)
 
     def __init__(self):
 

@@ -1,4 +1,5 @@
 import machine
+from micropython import const
 from computer.base.analog_output import AnalogOutput
 
 
@@ -26,23 +27,23 @@ class CVAudioOutputSocket(AnalogOutput):
     The datasheet has the rest, but there are 12 bits for the value.
     """
 
-    __SCK_PIN_ID = 18
+    __SCK_PIN_ID = const(18)
     """Pin ID for clock signal from the RP2040 to the DAC."""
 
-    __SDI_MOSI_PIN_ID = 19
+    __SDI_MOSI_PIN_ID = const(19)
     """Pin ID for serial data from RP2040 to the DAC, most-significant bit first."""
 
-    __CS_PIN_ID = 21
+    __CS_PIN_ID = const(21)
     """Active-low chip select signal from RP2040 to enable communication with the DAC."""
 
-    __BAUD_RATE_HZ = 20_000_000
+    __BAUD_RATE_HZ = const(20_000_000)
     """The max SCK clock rate (in Hz) from the MCP4822 datasheet. Equal to 20 MHz"""
 
-    __BITS = 8
+    __BITS = const(8)
     """The width in bits of each transfer."""
 
-    __HARDWARE_MIN = 0
-    __HARDWARE_MAX = 4095
+    __HARDWARE_MIN = const(0)
+    __HARDWARE_MAX = const(4095)
 
     def __init__(self):
         super().__init__()
@@ -104,9 +105,9 @@ class CVAudioOutputSocket(AnalogOutput):
 
 class CVAudioOutputSocketOne(CVAudioOutputSocket):
     """The first (leftmost) CV/Audio output socket."""
-    __DAC_STRING = 0b0011000000000000
+    __DAC_STRING = const(0b0011000000000000)
 
 
 class CVAudioOutputSocketTwo(CVAudioOutputSocket):
     """The second (rightmost) CV/Audio output socket."""
-    __DAC_STRING = 0b1011000000000000
+    __DAC_STRING = const(0b1011000000000000)

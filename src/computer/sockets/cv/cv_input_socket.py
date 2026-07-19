@@ -1,3 +1,4 @@
+from micropython import const
 from computer.base.multiplexed_input import MultiplexedInput
 from connect.ranged_variable import RangedVariable
 
@@ -12,9 +13,9 @@ class CVInputSocket(MultiplexedInput):
     voltage_range : Tuple[float, float]
         The range of voltages accepted by this CV input socket.
     """
-    IO_PIN_ID = 29
-    MIN_VALUE_U16 = 65535
-    MAX_VALUE_U16 = 0
+    IO_PIN_ID = const(29)
+    MIN_VALUE_U16 = const(65535)
+    MAX_VALUE_U16 = const(0)
 
     # probably introduce a new class to share this across both types of CV input socket
     # the uncalibrated assumption is that +6V = 65535,  0V = 32768, -6V = 0
@@ -33,12 +34,12 @@ class CVInputSocket(MultiplexedInput):
                           voltage_range: tuple = None):  # needs to mess with the ranged variable's extrema
 
         if voltage_range is None:
-            self._min_value = self.__MIN_VALUE_U16
-            self._max_value = self.__MAX_VALUE_U16
+            self._min_value = self.MIN_VALUE_U16
+            self._max_value = self.MAX_VALUE_U16
         else:
 
             if voltage_range[0] is None:
-                self._min_value = self.__MIN_VALUE_U16
+                self._min_value = self.MIN_VALUE_U16
             else:
                 self._min_value = int(
                     (self.__GRADIENT * voltage_range[0]) + self.__INTERCEPT)
@@ -49,7 +50,7 @@ class CVInputSocket(MultiplexedInput):
                 # a calibration procedure
 
             if voltage_range[1] is None:
-                self._max_value = self.__MAX_VALUE_U16
+                self._max_value = self.MAX_VALUE_U16
             else:
                 self._max_value = int(
                     (self.__GRADIENT * voltage_range[1]) + self.__INTERCEPT)

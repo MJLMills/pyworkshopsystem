@@ -1,3 +1,4 @@
+from micropython import const
 from computer.base.digital_output import DigitalOutput
 
 
@@ -18,9 +19,9 @@ class LED(DigitalOutput):
     value
         The value of this LED.
     """
-    ON_VALUE = 1
-    OFF_VALUE = 0
-    _FIRST_LED_PIN_INDEX = 10
+    ON_VALUE = const(1)
+    OFF_VALUE = const(0)
+    _FIRST_LED_PIN_INDEX = const(10)
 
     def __init__(self, led_index):
         if led_index < 1 or led_index > 6:
