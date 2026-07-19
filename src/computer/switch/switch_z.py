@@ -10,20 +10,25 @@ class SwitchZ(MultiplexedInput):
     Up - latching, high value on read - always 65535
     Middle - latching, medium value on read - ranges 32311 to 32407 over 200 secs (converged after 140 secs)
     Down - momentary, low value on read - ranges 176 to 272 over 200 secs (converged after 4 secs)
+
+    values corresponding to each state:
+    DOWN = 0
+    MIDDLE = 1
+    UP = 2
+    Direct values are used for comparisons to save time.
+
+    Read values at the boundary between the three switch states:
+    DOWN_MID_BOUNDARY = 16292
+    MID_UP_BOUNDARY = 48971
+    UP_MAX = 65535
+    Direct values are used for comparisons to save time.
+
     """
     IO_PIN_ID = 28
     MIN_VALUE_U16 = 0
     MAX_VALUE_U16 = 65535
     MUX_LOGIC_PIN_A_VALUE = True
     MUX_LOGIC_PIN_B_VALUE = True
-
-    __DOWN_MID_BOUNDARY = 16292
-    __MID_UP_BOUNDARY = 48971
-    __UP_MAX = 65535
-
-    __DOWN = 0
-    __MIDDLE = 1
-    __UP = 2
 
     def __init__(self):
 
@@ -38,6 +43,14 @@ class SwitchZ(MultiplexedInput):
         self.switched_down = Signal()
         """Signal emitted when the switch is moved to the down position."""
 
+        # State transition map: (previous_state, current_state) -> signal
+        self._transitions = {
+            (2, 1): self.switched_up_to_middle,  # UP -> MIDDLE
+            (0, 1): self.switched_down_to_middle,  # DOWN -> MIDDLE
+            (1, 2): self.switched_up,  # MIDDLE -> UP
+            (1, 0): self.switched_down,  # MIDDLE -> DOWN
+        }
+
         self.__set_state()
 
     @property
@@ -49,43 +62,30 @@ class SwitchZ(MultiplexedInput):
         return SwitchZ.MAX_VALUE_U16
 
     def is_up(self):
-        return self.state == self.__UP
+        return self.state == 2
 
     def is_middle(self):
-        return self.state == self.__MIDDLE
+        return self.state == 1
 
     def is_down(self):
-        return self.state == self.__DOWN
+        return self.state == 0
 
     def __set_state(self):
         super().read()
 
         value = self.ranged_variable.value
-        if 0 <= value < SwitchZ.__DOWN_MID_BOUNDARY:
-            self.state = SwitchZ.__DOWN
-        elif SwitchZ.__DOWN_MID_BOUNDARY <= value < SwitchZ.__MID_UP_BOUNDARY:
-            self.state = SwitchZ.__MIDDLE
-        else: # SwitchZ.__MID_UP_BOUNDARY <= value <= SwitchZ.__UP_MAX:
-            self.state = SwitchZ.__UP
+        if 0 <= value < 16292:
+            self.state = 0  # switch is down
+        elif 16292 <= value < 48971:
+            self.state = 1  # switch is in the middle
+        else: # 48971 <= value <= 65535:
+            self.state = 2  # switch is up
 
     def read(self, set_logic=True) -> None:
         """Read the switch and emit appropriate signals."""
         previous_state = self.state
         self.__set_state()
 
-        state = self.state
-        if previous_state == SwitchZ.__UP and state == SwitchZ.__MIDDLE:
-            self.switched_up_to_middle.emit()
-            return
-
-        if previous_state == SwitchZ.__DOWN and state == SwitchZ.__MIDDLE:
-            self.switched_down_to_middle.emit()
-            return
-
-        if previous_state == SwitchZ.__MIDDLE and state == SwitchZ.__UP:
-            self.switched_up.emit()
-            return
-
-        if previous_state == SwitchZ.__MIDDLE and state == SwitchZ.__DOWN:
-            self.switched_down.emit()
-            return
+        signal_to_emit = self._transitions.get((previous_state, self.state))
+        if signal_to_emit:
+            signal_to_emit.emit()
