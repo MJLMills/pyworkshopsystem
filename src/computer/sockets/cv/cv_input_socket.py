@@ -12,15 +12,15 @@ class CVInputSocket(MultiplexedInput):
     voltage_range : Tuple[float, float]
         The range of voltages accepted by this CV input socket.
     """
-    __IO_PIN_ID = 29
-    __MIN_VALUE_U16 = 65535
-    __MAX_VALUE_U16 = 0
+    IO_PIN_ID = 29
+    MIN_VALUE_U16 = 65535
+    MAX_VALUE_U16 = 0
 
     # probably introduce a new class to share this across both types of CV input socket
     # the uncalibrated assumption is that +6V = 65535,  0V = 32768, -6V = 0
     # n = m(V) + c, c=32768, m = -65535/12 = -5461
-    __GRADIENT = -__MIN_VALUE_U16 / 12
-    __INTERCEPT = __MIN_VALUE_U16 / 2
+    __GRADIENT = -MIN_VALUE_U16 / 12
+    __INTERCEPT = MIN_VALUE_U16 / 2
 
     # calibration of these values is per-socket
 
@@ -63,7 +63,7 @@ class CVInputSocket(MultiplexedInput):
     @property
     def io_pin_id(self) -> int:
         """The unique identifier of the GPIO pin used by this class."""
-        return self.__IO_PIN_ID
+        return CVInputSocket.IO_PIN_ID
 
     @property
     def min_value(self) -> int:
@@ -79,31 +79,11 @@ class CVInputSocket(MultiplexedInput):
 
 class CVInputSocketOne(CVInputSocket):
     """The first (left-most) CV input socket of the Computer."""
-    __MUX_LOGIC_A_PIN_VALUE = False
-    __MUX_LOGIC_B_PIN_VALUE = False
-
-    @property
-    def mux_logic_a_pin_value(self) -> bool:
-        """The value of the first multiplexer login pin for this input."""
-        return self.__MUX_LOGIC_A_PIN_VALUE
-
-    @property
-    def mux_logic_b_pin_value(self) -> bool:
-        """The value of the second multiplexer login pin for this input."""
-        return self.__MUX_LOGIC_B_PIN_VALUE
+    MUX_LOGIC_PIN_A_VALUE = False
+    MUX_LOGIC_PIN_B_VALUE = False
 
 
 class CVInputSocketTwo(CVInputSocket):
     """The second (right-most) CV input socket of the Computer."""
-    __MUX_LOGIC_A_PIN_VALUE = True
-    __MUX_LOGIC_B_PIN_VALUE = False
-
-    @property
-    def mux_logic_a_pin_value(self) -> bool:
-        """The value of the first multiplexer login pin for this input."""
-        return self.__MUX_LOGIC_A_PIN_VALUE
-
-    @property
-    def mux_logic_b_pin_value(self) -> bool:
-        """The value of the second multiplexer login pin for this input."""
-        return self.__MUX_LOGIC_B_PIN_VALUE
+    MUX_LOGIC_A_PIN_VALUE = True
+    MUX_LOGIC_B_PIN_VALUE = False

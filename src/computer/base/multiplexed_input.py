@@ -24,20 +24,20 @@ class Multiplexer(object):
     one will return the main knob value and pin two will return the CV 1 input
     value.
     """
-    __MUX_LOGIC_A_PIN_ID = 24
+    __MUX_LOGIC_PIN_A_ID = 24
     """The ID of the first multiplexer output pin."""
-    __MUX_LOGIC_B_PIN_ID = 25
+    __MUX_LOGIC_PIN_B_ID = 25
     """The ID of the second multiplexer output pin."""
     MUX_IO_PIN_ONE_ID = 28
     """The ID of the multiplexer's first analog input pin."""
     MUX_IO_PIN_TWO_ID = 29
     """The ID of the multiplexer's second analog input pin."""
 
-    __MUX_LOGIC_A_PIN = machine.Pin(__MUX_LOGIC_A_PIN_ID,
+    __MUX_LOGIC_A_PIN = machine.Pin(__MUX_LOGIC_PIN_A_ID,
                                     machine.Pin.OUT)
     """The first digital output pin connected to the multiplexer."""
 
-    __MUX_LOGIC_B_PIN = machine.Pin(__MUX_LOGIC_B_PIN_ID,
+    __MUX_LOGIC_B_PIN = machine.Pin(__MUX_LOGIC_PIN_B_ID,
                                     machine.Pin.OUT)
     """The second digital output pin connected to the multiplexer."""
 
@@ -106,6 +106,19 @@ class MultiplexedInput(AnalogInput):
     values for the two multiplexer logic pins), these inputs can all share the
     same implementation of the read method.
 
+    Each subclass (of which there are a fixed set) must define the following constants:
+
+    IO_PIN_ID : int
+        The unique identifier of the GPIO pin used by this class.
+    MIN_VALUE_U16 : int
+        The minimum value readable from this input.
+    MAX_VALUE_U16 : int
+        The maximum value readable from this input.
+    MUX_LOGIC_PIN_A_VALUE : bool
+        The value of the first multiplexer login pin for this input.
+    MUX_LOGIC_PIN_B_VALUE : bool
+        The value of the second multiplexer login pin for this input.
+
     Methods
     -------
     read -> int
@@ -122,6 +135,8 @@ class MultiplexedInput(AnalogInput):
     adc -> machine.ADC
         The analog-to-digital converter attached to this input.
     """
+    MUX_LOGIC_PIN_A_VALUE = None
+    MUX_LOGIC_PIN_B_VALUE = None
 
     def __init__(self):
         super().__init__()
@@ -133,33 +148,17 @@ class MultiplexedInput(AnalogInput):
         """The analog-to-digital converter attached to this input."""
         return self._adc
 
-    @property
-    def mux_logic_a_pin_value(self) -> bool:
-        """The value of the first multiplexer login pin for this input."""
-        raise NotImplementedError(
-            self.__class__.__name__ + \
-            " does not implement mux_logic_a_pin_value."
-        )
-
-    @property
-    def mux_logic_b_pin_value(self) -> bool:
-        """The value of the second multiplexer login pin for this input."""
-        raise NotImplementedError(
-            self.__class__.__name__ + \
-            " does not implement mux_logic_b_pin_value."
-        )
-
     def read(self, set_logic=True) -> None:
         """Set up the multiplexer before reading the value from the ADC."""
         if set_logic:
-            self.__multiplexer.set_logic_pin_values(self.mux_logic_a_pin_value,
-                                                    self.mux_logic_b_pin_value)
+            self.__multiplexer.set_logic_pin_values(self.MUX_LOGIC_PIN_A_VALUE,
+                                                    self.MUX_LOGIC_PIN_B_VALUE)
 
         super().read()
 
-    def read_norm_probe(self):
-        self.__multiplexer.set_logic_pin_values(self.mux_logic_a_pin_value,
-                                                self.mux_logic_b_pin_value)
+    def read_norm_probe(self) -> bool:
+        self.__multiplexer.set_logic_pin_values(self.MUX_LOGIC_PIN_A_VALUE,
+                                                self.MUX_LOGIC_PIN_B_VALUE)
 
         if self.adc.read_u16() < 28000:
             return True
