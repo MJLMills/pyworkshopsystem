@@ -13,11 +13,6 @@ class KnobX(MultiplexedInput):
         super().__init__()
 
     @property
-    def io_pin_id(self) -> int:
-        """The unique identifier of the GPIO pin used by knob X."""
-        return KnobX.IO_PIN_ID
-
-    @property
     def min_value(self) -> int:
         """The minimum value that can be read from knob X."""
         return KnobX.MIN_VALUE_U16

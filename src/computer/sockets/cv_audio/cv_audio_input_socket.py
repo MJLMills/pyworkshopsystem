@@ -36,7 +36,7 @@ class CVAudioInputSocket(AnalogInput):
     # calibration of these values is per-socket
 
     def __init__(self, voltage_range: tuple = None):
-        self._adc = machine.ADC(self.io_pin_id)
+        self._adc = machine.ADC(self.IO_PIN_ID)
         self.set_voltage_range(voltage_range)
 
         super().__init__()
@@ -95,19 +95,8 @@ class CVAudioInputSocket(AnalogInput):
 
 class CVAudioInputSocketOne(CVAudioInputSocket):
     """The left CV/Audio input socket."""
-    __IO_PIN_ID = 27
-
-    @property
-    def io_pin_id(self) -> int:
-        """The unique identifier of the GPIO pin used by this class."""
-        return self.__IO_PIN_ID
-
+    IO_PIN_ID = 27
 
 class CVAudioInputSocketTwo(CVAudioInputSocket):
     """The right CV/Audio input socket."""
-    __IO_PIN_ID = 26
-
-    @property
-    def io_pin_id(self) -> int:
-        """The unique identifier of the GPIO pin used by this class."""
-        return self.__IO_PIN_ID
+    IO_PIN_ID = 26

@@ -61,11 +61,6 @@ class CVInputSocket(MultiplexedInput):
         )
 
     @property
-    def io_pin_id(self) -> int:
-        """The unique identifier of the GPIO pin used by this class."""
-        return CVInputSocket.IO_PIN_ID
-
-    @property
     def min_value(self) -> int:
         return self._min_value
 

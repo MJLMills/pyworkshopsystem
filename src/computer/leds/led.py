@@ -26,12 +26,8 @@ class LED(DigitalOutput):
         if led_index < 1 or led_index > 6:
             raise ValueError("Invalid LED index: ", led_index)
 
-        self._pin_id = self._FIRST_LED_PIN_INDEX + led_index - 1
+        self.IO_PIN_ID = self._FIRST_LED_PIN_INDEX + led_index - 1
         super().__init__()
-
-    @property
-    def io_pin_id(self) -> int:
-        return self._pin_id
 
     @property
     def on_value(self) -> int:

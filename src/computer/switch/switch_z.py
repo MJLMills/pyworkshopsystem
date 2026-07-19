@@ -41,11 +41,6 @@ class SwitchZ(MultiplexedInput):
         self.__set_state()
 
     @property
-    def io_pin_id(self) -> int:
-        """The unique identifier of the GPIO pin used by this class."""
-        return SwitchZ.IO_PIN_ID
-
-    @property
     def min_value(self) -> int:
         return SwitchZ.MIN_VALUE_U16
 

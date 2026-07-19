@@ -15,7 +15,7 @@ class DigitalOutput(HardwareComponent):
 
     def __init__(self):
         super().__init__()
-        self._pin = machine.Pin(self.io_pin_id,
+        self._pin = machine.Pin(self.IO_PIN_ID,
                                 machine.Pin.OUT)
 
         self._timer = machine.Timer(-1)

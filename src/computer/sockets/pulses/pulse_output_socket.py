@@ -24,17 +24,9 @@ class PulseOutputSocket(DigitalOutput):
 
 class PulseOutputSocketOne(PulseOutputSocket):
     """The first (leftmost) pulse input socket."""
-
-    @property
-    def io_pin_id(self) -> int:
-        """The unique identifier of the GPIO pin used by this class."""
-        return 8
+    IO_PIN_ID = 8
 
 
 class PulseOutputSocketTwo(PulseOutputSocket):
     """The second (rightmost) pulse input socket."""
-
-    @property
-    def io_pin_id(self) -> int:
-        """The unique identifier of the GPIO pin used by this class."""
-        return 9
+    IO_PIN_ID = 9
