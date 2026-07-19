@@ -11,6 +11,7 @@
 - Prefer global static buffers or bytearrays over continuous object creation to avoid garbage collection spikes.
 - Use explicit integer math or bitwise shift operations (`<<`, `>>`) instead of float operations where possible.
 - Avoid deep object-oriented inheritance structures; use simple flat classes or lightweight function lookups.
+- Optimization of hardware interaction is much more important than optimization of startup time.
 
 ## Decorators & Language Tools
 - Prioritize the `@micropython.native` decorator for code blocks requiring faster execution speeds.
