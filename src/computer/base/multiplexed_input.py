@@ -1,4 +1,5 @@
 import machine
+from micropython import const
 from computer.base.analog_input import AnalogInput
 
 
@@ -24,13 +25,13 @@ class Multiplexer(object):
     one will return the main knob value and pin two will return the CV 1 input
     value.
     """
-    MUX_LOGIC_PIN_A_ID = 24
+    MUX_LOGIC_PIN_A_ID = const(24)
     """The ID of the first multiplexer output pin."""
-    MUX_LOGIC_PIN_B_ID = 25
+    MUX_LOGIC_PIN_B_ID = const(25)
     """The ID of the second multiplexer output pin."""
-    MUX_IO_PIN_ONE_ID = 28
+    MUX_IO_PIN_ONE_ID = const(28)
     """The ID of the multiplexer's first analog input pin."""
-    MUX_IO_PIN_TWO_ID = 29
+    MUX_IO_PIN_TWO_ID = const(29)
     """The ID of the multiplexer's second analog input pin."""
 
     MUX_LOGIC_A_PIN = machine.Pin(MUX_LOGIC_PIN_A_ID,
@@ -47,10 +48,27 @@ class Multiplexer(object):
     MUX_IO_ADC_TWO = machine.ADC(MUX_IO_PIN_TWO_ID)
     """The ADC connected to the second multiplexer analog output."""
 
+    _instance = None
+
     def __init__(self):
+
+        if Multiplexer._instance is not None:
+            raise RuntimeError("Multiplexer already initialized.")
+
+        Multiplexer._instance = self
 
         self.mux_logic_pin_a_value = False
         self.mux_logic_pin_b_value = False
+
+        self._cached_a = None
+        self._cached_b = None
+
+    @classmethod
+    def get_instance(cls):
+        """Return the instance of the MultiplexedInput class."""
+        if cls._instance is None:
+            cls._instance = Multiplexer()
+        return cls._instance
 
     @property
     def mux_logic_pin_a_value(self) -> bool:
@@ -60,7 +78,9 @@ class Multiplexer(object):
     @mux_logic_pin_a_value.setter
     def mux_logic_pin_a_value(self, value) -> None:
         """Set the value at the first mux logic digital output pin."""
-        self.MUX_LOGIC_A_PIN.value(value)
+        if self._cached_a != value:
+            self.MUX_LOGIC_A_PIN.value(value)
+            self._cached_a = value
 
     @property
     def mux_logic_pin_b_value(self) -> bool:
@@ -70,7 +90,9 @@ class Multiplexer(object):
     @mux_logic_pin_b_value.setter
     def mux_logic_pin_b_value(self, value) -> None:
         """Set the value at the second mux logic digital output pin."""
-        self.MUX_LOGIC_B_PIN.value(value)
+        if self._cached_b != value:
+            self.MUX_LOGIC_B_PIN.value(value)
+            self._cached_b = value
 
     def set_logic_pin_values(self, value_a: bool, value_b: bool) -> None:
         """Set the values of the multiplexer logic pins.
@@ -140,8 +162,8 @@ class MultiplexedInput(AnalogInput):
 
     def __init__(self):
         super().__init__()
-        self.__multiplexer = Multiplexer()
-        self._adc = self.__multiplexer.get_adc(self.IO_PIN_ID)
+        self.multiplexer = Multiplexer.get_instance()
+        self._adc = self.multiplexer.get_adc(self.IO_PIN_ID)
 
     @property
     def adc(self):
@@ -151,14 +173,14 @@ class MultiplexedInput(AnalogInput):
     def read(self, set_logic=True) -> None:
         """Set up the multiplexer before reading the value from the ADC."""
         if set_logic:
-            self.__multiplexer.set_logic_pin_values(self.MUX_LOGIC_PIN_A_VALUE,
-                                                    self.MUX_LOGIC_PIN_B_VALUE)
+            self.multiplexer.set_logic_pin_values(self.MUX_LOGIC_PIN_A_VALUE,
+                                                  self.MUX_LOGIC_PIN_B_VALUE)
 
         super().read()
 
     def read_norm_probe(self) -> bool:
-        self.__multiplexer.set_logic_pin_values(self.MUX_LOGIC_PIN_A_VALUE,
-                                                self.MUX_LOGIC_PIN_B_VALUE)
+        self.multiplexer.set_logic_pin_values(self.MUX_LOGIC_PIN_A_VALUE,
+                                              self.MUX_LOGIC_PIN_B_VALUE)
 
         if self.adc.read_u16() < 28000:
             return True
