@@ -1,113 +1,113 @@
 import machine
+import micropython
 from micropython import const
 from computer.base.analog_output import AnalogOutput
+import uctypes
 
 
 class CVAudioOutputSocket(AnalogOutput):
-    """The CV/Audio output sockets of the Computer.
 
-    https://docs.micropython.org/en/latest/library/machine.SPI.html#machine-spi
+    REG_GPIO_OUT_SET = const(0xd0000014)
+    """Memory address of the hardware register used to atomically set specific GPIO output pins high."""
 
-    1) How do you write to the outputs?
+    REG_GPIO_OUT_CLR = const(0xd0000018)
+    """Memory address of the hardware register used to atomically clear specific GPIO output pins low."""
 
-    The CV/Audio outputs are bipolar (inverted) and DC-coupled.
-    Outputs must go through a MCP4822 (2-input-channel) DAC to the sockets.
+    PIN_21_MASK = const(1 << 21)
+    """Bitmask used to target and control GPIO Pin 21."""
 
-    "Communication with the device is accomplished via a simple serial interface using SPI protocols."
+    # SPI0 Status register masks
+    SPI_SR_TNF_MASK = const(1 << 1)
+    """Bitmask constant used to check Transmit FIFO Not Full status."""
 
-    Pins 18, 19 and 21 are specified for control of the MCP4822.
-    Pin 18 is labeled DAC_SCK / SCK - clock signal from main
-    Pin 19 is labeled DAC_SDI / MOSI - serial data from main, most-significant bit first
-    Pin 21 is labeled DAC_CS / CS - active-low chip select signal from main to enable communication with a specific sub device.
-    MISO is not included as the DAC (sub) does not output to main (the Pi)
+    SPI_SR_BSY_MASK = const(1 << 4)  # SPI Busy Flag
+    """Bitmask constant used to check Busy status."""
 
-    Looks like you setup a connection with the SPI class and write through it.
-    There are two analog outputs on the DAC that are going to the sockets
-    Each 16-bit word written to the DAC over SPI has a flag on byte 15 for which DAC you want to write to.
-    The datasheet has the rest, but there are 12 bits for the value.
-    """
-
-    __SCK_PIN_ID = const(18)
-    """Pin ID for clock signal from the RP2040 to the DAC."""
-
-    __SDI_MOSI_PIN_ID = const(19)
-    """Pin ID for serial data from RP2040 to the DAC, most-significant bit first."""
-
-    __CS_PIN_ID = const(21)
-    """Active-low chip select signal from RP2040 to enable communication with the DAC."""
-
-    __BAUD_RATE_HZ = const(20_000_000)
-    """The max SCK clock rate (in Hz) from the MCP4822 datasheet. Equal to 20 MHz"""
-
-    __BITS = const(8)
-    """The width in bits of each transfer."""
-
-    __HARDWARE_MIN = const(0)
-    __HARDWARE_MAX = const(4095)
+    HARDWARE_MIN = const(0)
+    HARDWARE_MAX = const(4095)
+    BAUD_RATE_HZ = const(20_000_000)
 
     def __init__(self):
         super().__init__()
-        # create a chip select on the documented SPI CS pin
-        self.__chip_select_pin = machine.Pin(self.__CS_PIN_ID,
-                                             mode=machine.Pin.OUT, value=1)
-
-        self.__spi = machine.SPI(
+        self.chip_select_pin = machine.Pin(21, mode=machine.Pin.OUT, value=1)
+        self.spi = machine.SPI(
             id=0,
-            baudrate=self.__BAUD_RATE_HZ,
+            baudrate=self.BAUD_RATE_HZ,
             polarity=0,
             phase=0,
-            bits=self.__BITS,
+            bits=8,
             firstbit=machine.SPI.MSB,
-            sck=self.__SCK_PIN_ID,
-            mosi=self.__SDI_MOSI_PIN_ID,
+            sck=machine.Pin(18),
+            mosi=machine.Pin(19),
         )
+        self.spi_buffer = bytearray(2)
+        self.buf_addr = uctypes.addressof(self.spi_buffer)
 
     @property
     def hardware_min(self) -> int:
-        return self.__HARDWARE_MIN
+        return self.HARDWARE_MIN
 
     @property
     def hardware_max(self) -> int:
-        return self.__HARDWARE_MAX
+        return self.HARDWARE_MAX
 
     def write(self, value: int):
-        """Write the given value to the DAC.
+        # Extract primitive values out of structures before entering viper
+        self._write_viper(
+            value,
+            self.DAC_HIGH_BYTE,
+            self.buf_addr,
+            self.PIN_21_MASK,
+            self.SPI_SR_TNF_MASK,
+            self.SPI_SR_BSY_MASK
+        )
 
-        Parameters
-        ----------
-        value
-            The 12-bit uint (a python int ranging 0 to 4095) to write.
+    @staticmethod
+    @micropython.viper
+    def _write_viper(value: int,
+                     dac_high_byte: int,
+                     buf_ptr: ptr8,
+                     cs_mask: int,
+                     tnf_mask: int,
+                     bsy_mask: int):
+        # 1. Process value
+        inverted_val = (~value) & 0xFFF
 
-        Writes to the DAC are 16-bit words.
-        The value to write to the DAC is a 12-bit unsigned integer.
+        # 2. Write to buffer pointer
+        buf_ptr[0] = dac_high_byte | (inverted_val >> 8)
+        buf_ptr[1] = inverted_val & 0xFF
 
-        The bytes object (immutable) is 16-bits where:
+        # 3. Create pointer structures
+        sio_regs = ptr32(0xd0000000)  # SIO Base
+        spi_regs = ptr32(0x4003c000)  # SPI0 Base
 
-        15 : DAC_SELECTION_BIT in {0, 1}
-        14 : IGNORED
-        13 : Output gain selection bit, hard-coded to 1
-        12 : Output Shutdown Control bit, hard-coded to 1
-        11-0 : the data value to write to the DAC
-        """
+        # 4. Pull CS Low (Clear register at 0xd0000018 -> index 6)
+        sio_regs[6] = cs_mask
 
-        dac_data = self.__DAC_STRING | (int(4095 - value) & 0xFFF)
+        # 5. Push Byte 0 (Wait for TX FIFO space)
+        while not (spi_regs[3] & tnf_mask):
+            pass
+        spi_regs[2] = int(buf_ptr[0])
 
-        try:
-            self.__chip_select_pin.value(0)
-            self.__spi.write(bytes((dac_data >> 8, dac_data & 0xFF)))
-        finally:
-            self.__chip_select_pin.value(1)
+        # 6. Push Byte 1 (Wait for TX FIFO space)
+        while not (spi_regs[3] & tnf_mask):
+            pass
+        spi_regs[2] = int(buf_ptr[1])
+
+        # 7. Wait completely until all bits are shifted out
+        while spi_regs[3] & bsy_mask:
+            pass
+
+        # 8. Pull CS High (Set register at 0xd0000014 -> index 5)
+        sio_regs[5] = cs_mask
 
     def __str__(self):
-        return self.__class__.__name__ + ": (min = " + str(
-            self.min_value) + ", max = " + str(self.max_value) + ")"
+        return f"{self.__class__.__name__}: (min = {self.hardware_min}, max = {self.hardware_max})"
 
 
 class CVAudioOutputSocketOne(CVAudioOutputSocket):
-    """The first (leftmost) CV/Audio output socket."""
-    __DAC_STRING = const(0b0011000000000000)
+    DAC_HIGH_BYTE = const(0x30)
 
 
 class CVAudioOutputSocketTwo(CVAudioOutputSocket):
-    """The second (rightmost) CV/Audio output socket."""
-    __DAC_STRING = const(0b1011000000000000)
+    DAC_HIGH_BYTE = const(0xB0)

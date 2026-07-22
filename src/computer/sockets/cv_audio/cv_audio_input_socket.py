@@ -1,3 +1,4 @@
+import micropython
 from micropython import const
 import machine
 from computer.base.analog_input import AnalogInput
@@ -73,13 +74,15 @@ class CVAudioInputSocket(AnalogInput):
             maximum=self.max_value
         )
 
+    @micropython.native
     def read(self) -> None:
         """Read a 12-bit uint value from the RP2040's ADC."""
-        value = self.ranged_variable.value
-        self.ranged_variable.value = self.adc.read_u16()
+        rv = self.ranged_variable
+        old_value = rv.value
+        rv.value = self._adc.read_u16()
 
-        if abs(self.ranged_variable.value - value) > 32:
-            self.value_changed.emit(ranged_variable=self.ranged_variable)
+        if abs(rv.value - old_value) > const(32):
+            self.value_changed.emit(ranged_variable=rv)
 
     @property
     def adc(self):
