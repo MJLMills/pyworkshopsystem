@@ -3,7 +3,7 @@ from computer.base.multiplexed_input import MultiplexedInput
 
 class KnobX(MultiplexedInput):
     """The knob marked X."""
-    __IO_PIN_ID = 28
+    IO_PIN_ID = 28
     __MIN_VALUE_U16 = 192
     __MAX_VALUE_U16 = 65535
     __MUX_LOGIC_A_PIN_VALUE = True
@@ -11,11 +11,6 @@ class KnobX(MultiplexedInput):
 
     def __init__(self):
         super().__init__()
-
-    @property
-    def io_pin_id(self) -> int:
-        """The unique identifier of the GPIO pin used by knob X."""
-        return self.__IO_PIN_ID
 
     @property
     def min_value(self) -> int:

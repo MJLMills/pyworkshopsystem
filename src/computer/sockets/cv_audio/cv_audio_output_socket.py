@@ -1,8 +1,8 @@
 import machine
-from computer.base.analog_output import AnalogOutput
+from computer.base.analog_output import MultiPinAnalogOutput
 
 
-class CVAudioOutputSocket(AnalogOutput):
+class CVAudioOutputSocket(MultiPinAnalogOutput):
     """The CV/Audio output sockets of the Computer.
 
     https://docs.micropython.org/en/latest/library/machine.SPI.html#machine-spi

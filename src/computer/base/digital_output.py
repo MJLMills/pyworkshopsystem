@@ -1,12 +1,14 @@
 import machine
-from computer.base.hardware_component import HardwareComponent
+from computer.base.hardware_component import SinglePinHardwareComponent
 
 
-class DigitalOutput(HardwareComponent):
+class DigitalOutput(SinglePinHardwareComponent):
     """A hardware digital output.
 
     Every subclass of this class must implement the following constants:
 
+    IO_PIN_ID (from HardwareComponent):
+        The ID of the GPIO pin connected to this digital output hardware component.
     ON_VALUE
         The value (0 or 1) corresponding to the "on" state.
     OFF_VALUE
@@ -20,14 +22,19 @@ class DigitalOutput(HardwareComponent):
         A light emitting diode on the module.
     """
     ON_VALUE = None
+    """The value (0 or 1) corresponding to the "on" state."""
     OFF_VALUE = None
+    """The value (0 or 1) corresponding to the "off" state."""
 
     def __init__(self):
         super().__init__()
-        self._pin = machine.Pin(self.IO_PIN_ID,
+        self._pin = machine.Pin(self._resolve_pin_id(),
                                 machine.Pin.OUT)
 
         self._timer = machine.Timer(-1)
+
+    def _resolve_pin_id(self):
+        return self.IO_PIN_ID
 
     def turn_on(self, timer=None) -> None:
         """Turn this digital output on."""

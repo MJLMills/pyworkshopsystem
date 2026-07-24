@@ -8,33 +8,15 @@ class PulseOutputSocket(DigitalOutput):
     Scaled via a transistor.
     Pin should be output, no pullup.
     """
-    __ON_VALUE = 0
-    __OFF_VALUE = 1
-
-    @property
-    def on_value(self) -> int:
-        """The value used to represent "on" for this digital output."""
-        return self.__ON_VALUE
-
-    @property
-    def off_value(self) -> int:
-        """The value used to represent "off" for this digital output."""
-        return self.__OFF_VALUE
+    ON_VALUE = 0
+    OFF_VALUE = 1
 
 
 class PulseOutputSocketOne(PulseOutputSocket):
     """The first (leftmost) pulse input socket."""
-
-    @property
-    def io_pin_id(self) -> int:
-        """The unique identifier of the GPIO pin used by this class."""
-        return 8
+    IO_PIN_ID = 8
 
 
 class PulseOutputSocketTwo(PulseOutputSocket):
     """The second (rightmost) pulse input socket."""
-
-    @property
-    def io_pin_id(self) -> int:
-        """The unique identifier of the GPIO pin used by this class."""
-        return 9
+    IO_PIN_ID = 9

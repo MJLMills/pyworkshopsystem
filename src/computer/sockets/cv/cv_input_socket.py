@@ -12,7 +12,7 @@ class CVInputSocket(MultiplexedInput):
     voltage_range : Tuple[float, float]
         The range of voltages accepted by this CV input socket.
     """
-    __IO_PIN_ID = 29
+    IO_PIN_ID = 29
     __MIN_VALUE_U16 = 65535
     __MAX_VALUE_U16 = 0
 
@@ -59,11 +59,6 @@ class CVInputSocket(MultiplexedInput):
             minimum=self.min_value,
             maximum=self.max_value
         )
-
-    @property
-    def io_pin_id(self) -> int:
-        """The unique identifier of the GPIO pin used by this class."""
-        return self.__IO_PIN_ID
 
     @property
     def min_value(self) -> int:

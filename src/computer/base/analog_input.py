@@ -1,10 +1,10 @@
 import machine
-from computer.base.hardware_component import HardwareComponent
+from computer.base.hardware_component import SinglePinHardwareComponent
 from connect.ranged_variable import RangedVariable
 from connect.signal import Signal
 
 
-class AnalogInput(HardwareComponent):
+class AnalogInput(SinglePinHardwareComponent):
     """An abstract class for an analog input hardware object.
 
     There are eight analog inputs on the Computer. The main, X and Y knobs,

@@ -1,9 +1,9 @@
 import machine
-from computer.base.analog_output import AnalogOutput
+from computer.base.analog_output import SinglePinAnalogOutput
 from connect.ranged_variable import RangedVariable
 
 
-class CVOutputSocket(AnalogOutput):  # both AnalogOutput classes have settable ranges to limit output when needed.
+class CVOutputSocket(SinglePinAnalogOutput):  # both AnalogOutput classes have settable ranges to limit output when needed.
     """The CV output sockets of the Computer.
 
     These sockets use PWM output
@@ -26,7 +26,7 @@ class CVOutputSocket(AnalogOutput):  # both AnalogOutput classes have settable r
     def __init__(self, duty_cycle: int = 32768):
         super().__init__()
 
-        self.pwm = machine.PWM(self.io_pin_id,
+        self.pwm = machine.PWM(self.IO_PIN_ID,
                                freq=self._FREQUENCY_KHZ,
                                duty_u16=duty_cycle,
                                invert=True)

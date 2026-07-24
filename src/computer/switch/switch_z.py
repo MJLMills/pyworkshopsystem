@@ -11,7 +11,7 @@ class SwitchZ(MultiplexedInput):
     Middle - latching, medium value on read - ranges 32311 to 32407 over 200 secs (converged after 140 secs)
     Down - momentary, low value on read - ranges 176 to 272 over 200 secs (converged after 4 secs)
     """
-    __IO_PIN_ID = 28
+    IO_PIN_ID = 28
     __MIN_VALUE_U16 = 0
     __MAX_VALUE_U16 = 65535
     __MUX_LOGIC_A_PIN_VALUE = True
@@ -39,11 +39,6 @@ class SwitchZ(MultiplexedInput):
         """Signal emitted when the switch is moved to the down position."""
 
         self.__set_state()
-
-    @property
-    def io_pin_id(self) -> int:
-        """The unique identifier of the GPIO pin used by this class."""
-        return self.__IO_PIN_ID
 
     @property
     def min_value(self) -> int:

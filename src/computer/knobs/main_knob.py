@@ -10,7 +10,7 @@ class MainKnob(MultiplexedInput):
     full range of the 16-bit unsigned integer.
 
     """
-    __IO_PIN_ID = 28
+    IO_PIN_ID = 28
     __MIN_VALUE_U16 = 224
     __MAX_VALUE_U16 = 65535
     __MUX_LOGIC_A_PIN_VALUE = False
@@ -18,11 +18,6 @@ class MainKnob(MultiplexedInput):
 
     def __init__(self):
         super().__init__()
-
-    @property
-    def io_pin_id(self) -> int:
-        """The unique identifier of the GPIO pin used by this class."""
-        return self.__IO_PIN_ID
 
     @property
     def min_value(self) -> int:

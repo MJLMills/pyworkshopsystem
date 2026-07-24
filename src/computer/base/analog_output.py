@@ -1,8 +1,12 @@
-from computer.base.hardware_component import HardwareComponent
+from computer.base.hardware_component import HardwareComponent, SinglePinHardwareComponent
 from connect.ranged_variable import RangedVariable
 
 
-class AnalogOutput(HardwareComponent):
+class MultiPinAnalogOutput(HardwareComponent):
+    pass
+
+
+class SinglePinAnalogOutput(SinglePinHardwareComponent):
     """A hardware analog output.
 
     There are four analog outputs on the Computer, each of which is a socket.

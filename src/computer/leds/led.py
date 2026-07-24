@@ -14,16 +14,14 @@ class LED(DigitalOutput):
     """
     ON_VALUE = const(1)
     OFF_VALUE = const(0)
-    __FIRST_LED_PIN_INDEX = const(10)
+    FIRST_LED_PIN_INDEX = const(10)
 
     def __init__(self, led_index):
         if led_index not in range(1, 7):
             raise ValueError("Invalid LED index: ", led_index)
 
-        self._pin_id = self.__FIRST_LED_PIN_INDEX + (led_index - 1)
+        self.io_pin_id = self.FIRST_LED_PIN_INDEX + (led_index - 1)
         super().__init__()
 
-    @property
-    def io_pin_id(self) -> int:
-        """The unique identifier of the GPIO pin used by this class."""
-        return self._pin_id
+    def _resolve_pin_id(self):
+        return self.io_pin_id
