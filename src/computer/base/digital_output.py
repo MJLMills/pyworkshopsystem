@@ -5,6 +5,13 @@ from computer.base.hardware_component import HardwareComponent
 class DigitalOutput(HardwareComponent):
     """A hardware digital output.
 
+    Every subclass of this class must implement the following constants:
+
+    ON_VALUE
+        The value (0 or 1) corresponding to the "on" state.
+    OFF_VALUE
+        The value (0 or 1) corresponding to the "off" state.
+
     See Also
     --------
     PulseOutputSocket
@@ -12,45 +19,31 @@ class DigitalOutput(HardwareComponent):
     LED
         A light emitting diode on the module.
     """
-    __ON_VALUE = None
-    __OFF_VALUE = None
+    ON_VALUE = None
+    OFF_VALUE = None
 
     def __init__(self):
         super().__init__()
-        self._pin = machine.Pin(self.io_pin_id,
+        self._pin = machine.Pin(self.IO_PIN_ID,
                                 machine.Pin.OUT)
 
         self._timer = machine.Timer(-1)
 
-    @property
-    def on_value(self) -> int:
-        """The value used to represent "on" for this digital output."""
-        raise NotImplementedError(
-            self.__class__.__name__ + " does not implement on_value."
-        )
-
-    @property
-    def off_value(self) -> int:
-        """The value used to represent "off" for this digital output."""
-        raise NotImplementedError(
-            self.__class__.__name__ + " does not implement off_value."
-        )
-
     def turn_on(self, timer=None) -> None:
         """Turn this digital output on."""
-        self._pin.value(self.on_value)
+        self._pin.value(self.ON_VALUE)
 
     def turn_off(self, timer=None) -> None:
         """Turn this digital output off."""
-        self._pin.value(self.off_value)
+        self._pin.value(self.OFF_VALUE)
 
     def is_on(self) -> bool:
         """Determine whether this digital output is turned on."""
-        return self._pin.value() == self.on_value
+        return self._pin.value() == self.ON_VALUE
 
     def is_off(self) -> bool:
         """Determine whether this digital output is turned off."""
-        return self._pin.value() == self.off_value
+        return self._pin.value() == self.OFF_VALUE
 
     def toggle(self) -> None:
         """Toggle the value of this digital output."""
