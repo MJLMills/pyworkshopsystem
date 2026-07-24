@@ -12,6 +12,8 @@ class DigitalOutput(HardwareComponent):
     LED
         A light emitting diode on the module.
     """
+    __ON_VALUE = None
+    __OFF_VALUE = None
 
     def __init__(self):
         super().__init__()
@@ -52,10 +54,7 @@ class DigitalOutput(HardwareComponent):
 
     def toggle(self) -> None:
         """Toggle the value of this digital output."""
-        if self._pin.value == self.ON_VALUE:
-            self.turn_off()
-        elif self._pin.value == self.OFF_VALUE:
-            self.turn_on()
+        self._pin.toggle()
 
     def pulse(self) -> None:
         """Turn this digital output on for a period, then off."""
