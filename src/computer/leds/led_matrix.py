@@ -1,4 +1,3 @@
-import machine
 from micropython import const
 from computer.leds.led import LED
 
