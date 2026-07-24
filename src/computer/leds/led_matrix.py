@@ -48,6 +48,11 @@ class LEDMatrix(object):
                 led_a.turn_on()
                 led_b.turn_on()
 
+    def toggle(self):
+        for led_a, led_b in self.LEDS:
+            led_a.toggle()
+            led_b.toggle()
+
     @staticmethod
     def turn_off(index: int = None):
         if index:
