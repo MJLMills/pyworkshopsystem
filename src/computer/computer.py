@@ -1,20 +1,5 @@
 import machine
-from .knobs import MainKnob, KnobX, KnobY
-from .switch import SwitchZ
-from .sockets import CVAudioInputSocketOne
-from .sockets import CVAudioInputSocketTwo
-from .sockets import CVAudioOutputSocketOne
-from .sockets import CVAudioOutputSocketTwo
-from .sockets import CVInputSocketOne
-from .sockets import CVInputSocketTwo
-from .sockets import CVOutputSocketOne
-from .sockets import CVOutputSocketTwo
-from .sockets import PulseInputSocketOne
-from .sockets import PulseInputSocketTwo
-from .sockets import PulseOutputSocketOne
-from .sockets import PulseOutputSocketTwo
-from .leds import LEDMatrix
-from .eeprom import Eeprom
+from micropython import const
 from .normalization_probe import NormalizationProbe
 
 
@@ -23,25 +8,43 @@ class Computer(object):
 
     This class abstracts the Computer module in order to make interacting with
     its controls as direct as possible. The package uses micropython for
-    interaction with the hardware.
-    The module provides the following set of controls (top-to-bottom,
+    interaction with the hardware. The module provides the following set of controls (top-to-bottom,
     left-to-right):
 
-    A "main knob" - a potentiometer with a large dial.
-    X and Y knobs - trimmer potentiometers.
-    Z switch - (ON)-OFF-ON, momentary push down, normal pull up.
-    Two CV/Audio inputs
-    Two CV/Audio outputs
-    Two CV inputs
-    Two CV outputs
-    Two pulse inputs
-    Two pulse outputs
-    Six LEDs (arranged in a 3x2 matrix)
+    * A "main knob"
+        A potentiometer with a large dial.
+    * X and Y knobs
+        Two trimmer potentiometers.
+    * Z switch
+        An (ON)-OFF-ON switch with momentary push down and latching push up.
+    * Two separate CV/Audio inputs
+        Labeled 1 and 2 herein, corresponding to physical left and right.
+    * Two separate CV/Audio outputs
+        Labeled 1 and 2 herein, corresponding to physical left and right.
+    * Two separate CV inputs
+        Labeled 1 and 2 herein, corresponding to physical left and right.
+    * Two separate CV outputs
+        Labeled 1 and 2 herein, corresponding to physical left and right.
+    * Two separate pulse inputs
+        Labeled 1 and 2 herein, corresponding to physical left and right.
+    * Two separate pulse outputs
+        Labeled 1 and 2 herein, corresponding to physical left and right.
+    * Six LEDs
+        Arranged in a 3x2 matrix.
 
-    Each of these is modeled with a dedicated class, minimizing re-use and
+    Each of these controls is abstracted as a dedicated class, minimizing redundancy and
     hiding the complexity of the hardware, while providing access to the
-    micropython objects for use where specific functionality is not yet
-     implemented.
+    micropython objects for use where specific functionality is not yet implemented.
+
+    This class enforces a strict singleton pattern. Once instantiated, further attempts to instantiate
+    will raise a RuntimeError. This is intended to fail fast so that the error can be quickly corrected.
+
+    NB: GPIO pin 20 is not connected.
+
+    Raises
+    ------
+    RuntimeError
+        When a second instance of the class is instantiated.
     """
     KNOWN_BOARD_VERSION_NAMES = {
         (False, False, False): "Proto 1.2",
@@ -49,27 +52,18 @@ class Computer(object):
     }
     """Known versions of the Computer board."""
 
-    PIN_IDS = {
-        "UART0_TX": 0,
-        "UART0_RX": 1,
-        "NORMALIZATION_PROBE": 4,
-    }
-    """GPIO Pin IDs not assigned to Computer classes.
+    UART_TX_PIN_ID = const(0)
+    UART_RX_PIN_ID = const(1)
+    """GPIO Pin IDs for UART connections."""
 
-    NB: GPIO pin 20 is not connected.
-
-    UART0_TX, UART0_RX
-        From unpopulated headers next to LEDs.
-        There are two UARTS on the RP2040, UART0 and UART1.
-        In this case, UART0 has been mapped to GPIO pins 0/1.
-    NORMALIZATION_PROBE
-        Connected to the switch inputs on all the inputs via a BAT45 protection
-        diode. Toggle this pin to identify which input (CV/Audio, CV and pulse)
-        sockets have plugs in them.
-        The normalization probe high reads ~2600.
-    """
+    _instance = None
 
     def __init__(self):
+
+        if Computer._instance is not None:
+            raise RuntimeError("Computer already initialized.")
+
+        Computer._instance = self
 
         self._board_version = None
         self._board_version_name = None
@@ -100,114 +94,167 @@ class Computer(object):
 
         self._normalization_probe = NormalizationProbe()
 
-        self.__input_sockets = []
+        self.__input_sockets = [None] * 6
+        self.__active_socket_count = 0
 
-    def update_input_sockets(self, fire_all_signals: bool = False):
+    # TODO - test this still works
+    def update_input_socket_jack_status(self, fire_all_signals: bool = False) -> None:
+        """Update whether sockets have jacks or not using the normalization probe.
 
-        self.__input_sockets = [
-            self._cv_audio_input_socket_one,
-            self._cv_audio_input_socket_two,
-            self._cv_input_socket_one,
-            self._cv_input_socket_two,
-            self._pulses_input_socket_one,
-            self._pulses_input_socket_two
-        ]
+        The update process is as follows: write each probe bit once, then read all undecided sockets for that bit.
+        Remove sockets from the undecided set as soon as they're classified. Loop over bits, writing once per bit and
+        testing only undecided sockets. Any remaining undecided sockets are treated as not connected.
 
-        # this could be more efficient going bit by bit instead of socket by socket?
-        for socket in self.__input_sockets:
-            if socket is None:
-                continue
+        Parameters
+        ----------
+        fire_all_signals:bool
+            Whether to emit jack inserted/removed signals.
+        """
+        self.__active_socket_count = 0
 
-            socket_connected = False
-            for i in range(self._normalization_probe.n_bits):
-                written_value = self._normalization_probe.write()
+        if self._cv_audio_input_socket_one is not None:
+            self.__input_sockets[self.__active_socket_count] = self._cv_audio_input_socket_one
+            self.__active_socket_count += 1
+        if self._cv_audio_input_socket_two is not None:
+            self.__input_sockets[self.__active_socket_count] = self._cv_audio_input_socket_two
+            self.__active_socket_count += 1
+        if self._cv_input_socket_one is not None:
+            self.__input_sockets[self.__active_socket_count] = self._cv_input_socket_one
+            self.__active_socket_count += 1
+        if self._cv_input_socket_two is not None:
+            self.__input_sockets[self.__active_socket_count] = self._cv_input_socket_two
+            self.__active_socket_count += 1
+        if self._pulses_input_socket_one is not None:
+            self.__input_sockets[self.__active_socket_count] = self._pulses_input_socket_one
+            self.__active_socket_count += 1
+        if self._pulses_input_socket_two is not None:
+            self.__input_sockets[self.__active_socket_count] = self._pulses_input_socket_two
+            self.__active_socket_count += 1
+
+        if self.__active_socket_count == 0:
+            return
+
+        probe = self._normalization_probe
+        n_bits = probe.n_bits
+
+        for _ in range(n_bits):
+            if self.__active_socket_count == 0:
+                break
+
+            written_value = probe.write()
+            i = 0
+            while i < self.__active_socket_count:
+                socket = self.__input_sockets[i]
                 read_value = socket.read_norm_probe()
 
                 if read_value != written_value:
-                    socket_connected = True
-                    break
+                    socket.has_jack = True
+                    if fire_all_signals:
+                        socket.jack_inserted.emit()
 
-            if socket_connected:
-                socket.has_jack = True
-                if fire_all_signals:
-                    socket.jack_inserted.emit()
+                    self.__active_socket_count -= 1
+                    self.__input_sockets[i] = self.__input_sockets[self.__active_socket_count]
+                else:
+                    i += 1
 
-            else:
-                socket.has_jack = False
-                if fire_all_signals:
-                    socket.jack_removed.emit()
+        for i in range(self.__active_socket_count):
+            self.__input_sockets[i].has_jack = False
+            if fire_all_signals:
+                self.__input_sockets[i].jack_removed.emit()
 
     @property
     def eeprom(self):
         if self._eeprom is None:
+            from .eeprom import Eeprom
             self._eeprom = Eeprom()
 
         return self._eeprom
 
     @property
     def uart(self):
+        """
+        From unpopulated headers next to LEDs.
+        There are two UARTS on the RP2040, UART0 and UART1.
+        In this case, UART0 has been mapped to GPIO pins 0/1.
+        """
         if self._uart0 is None:
             self._uart0 = machine.UART(
                 0,
                 baudrate=9600,  # check value
-                tx=machine.Pin(Computer.PIN_IDS["UART0_TX"]),
-                rx=machine.Pin(Computer.PIN_IDS["UART0_RX"])
+                tx=machine.Pin(Computer.UART_TX_PIN_ID),
+                rx=machine.Pin(Computer.UART_RX_PIN_ID)
             )
 
         return self._uart0
 
     @property
     def main_knob(self):
+        """The main knob on the computer."""
         if self._main_knob is None:
+            from .knobs import MainKnob
             self._main_knob = MainKnob()
 
         return self._main_knob
 
     @property
     def knob_x(self):
+        """The X knob on the computer."""
         if self._knob_x is None:
+            from .knobs import KnobX
             self._knob_x = KnobX()
 
         return self._knob_x
 
     @property
     def knob_y(self):
+        """The Y knob on the computer."""
         if self._knob_y is None:
+            from .knobs import KnobY
             self._knob_y = KnobY()
 
         return self._knob_y
 
     @property
     def switch_z(self):
+        """The Z switch on the computer."""
         if self._switch_z is None:
+            from .switch import SwitchZ
             self._switch_z = SwitchZ()
 
         return self._switch_z
 
     @property
     def cv_input_socket_one(self):
+        """The left CV input socket on the computer."""
         if self._cv_input_socket_one is None:
+            from .sockets import CVInputSocketOne
             self._cv_input_socket_one = CVInputSocketOne()
 
         return self._cv_input_socket_one
 
     @property
     def cv_input_socket_two(self):
+        """The right CV input socket on the computer."""
         if self._cv_input_socket_two is None:
+            from .sockets import CVInputSocketTwo
             self._cv_input_socket_two = CVInputSocketTwo()
 
         return self._cv_input_socket_two
 
     @property
     def cv_output_socket_one(self):
+        """The left CV output socket on the computer."""
         if self._cv_output_socket_one is None:
+            from .sockets import CVOutputSocketOne
             self._cv_output_socket_one = CVOutputSocketOne()
 
         return self._cv_output_socket_one
 
     @property
     def cv_output_socket_two(self):
+        """The right CV output socket on the computer."""
         if self._cv_output_socket_two is None:
+            from .sockets import CVOutputSocketTwo
             self._cv_output_socket_two = CVOutputSocketTwo()
 
         return self._cv_output_socket_two
@@ -216,6 +263,7 @@ class Computer(object):
     def cv_audio_input_socket_one(self):
         """The left CV/Audio input socket on the Computer."""
         if self._cv_audio_input_socket_one is None:
+            from .sockets import CVAudioInputSocketOne
             self._cv_audio_input_socket_one = CVAudioInputSocketOne()
 
         return self._cv_audio_input_socket_one
@@ -224,55 +272,70 @@ class Computer(object):
     def cv_audio_input_socket_two(self):
         """The right CV/Audio input socket on the Computer."""
         if self._cv_audio_input_socket_two is None:
+            from .sockets import CVAudioInputSocketTwo
             self._cv_audio_input_socket_two = CVAudioInputSocketTwo()
 
         return self._cv_audio_input_socket_two
 
     @property
     def cv_audio_output_socket_one(self):
+        """The left CV/Audio output socket on the Computer."""
         if self._cv_audio_output_socket_one is None:
+            from .sockets import CVAudioOutputSocketOne
             self._cv_audio_output_socket_one = CVAudioOutputSocketOne()
 
         return self._cv_audio_output_socket_one
 
     @property
     def cv_audio_output_socket_two(self):
+        """The right CV/Audio output socket on the Computer."""
         if self._cv_audio_output_socket_two is None:
+            from .sockets import CVAudioOutputSocketTwo
             self._cv_audio_output_socket_two = CVAudioOutputSocketTwo()
 
         return self._cv_audio_output_socket_two
 
     @property
     def pulses_input_socket_one(self):
+        """The left pulses input socket on the Computer."""
         if self._pulses_input_socket_one is None:
+            from .sockets import PulseInputSocketOne
             self._pulses_input_socket_one = PulseInputSocketOne()
 
         return self._pulses_input_socket_one
 
     @property
     def pulses_input_socket_two(self):
+        """The right pulses input socket on the Computer."""
         if self._pulses_input_socket_two is None:
+            from .sockets import PulseInputSocketTwo
             self._pulses_input_socket_two = PulseInputSocketTwo()
 
         return self._pulses_input_socket_two
 
     @property
     def pulses_output_socket_one(self):
+        """The left pulses output socket on the Computer."""
         if self._pulses_output_socket_one is None:
+            from .sockets import PulseOutputSocketOne
             self._pulses_output_socket_one = PulseOutputSocketOne()
 
         return self._pulses_output_socket_one
 
     @property
     def pulses_output_socket_two(self):
+        """The right pulses output socket on the Computer."""
         if self._pulses_output_socket_two is None:
+            from .sockets import PulseOutputSocketTwo
             self._pulses_output_socket_two = PulseOutputSocketTwo()
 
         return self._pulses_output_socket_two
 
     @property
     def led_matrix(self):
+        """The LED matrix on the Computer."""
         if self._led_matrix is None:
+            from .leds import LEDMatrix
             self._led_matrix = LEDMatrix()
 
         return self._led_matrix
