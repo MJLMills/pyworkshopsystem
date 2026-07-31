@@ -149,19 +149,22 @@ class MultiplexedInput(AnalogInput):
             " does not implement mux_logic_b_pin_value."
         )
 
-    def read(self, set_logic=True) -> None:
-        """Set up the multiplexer before reading the value from the ADC."""
-        if set_logic:
-            self.__multiplexer.set_logic_pin_values(self.mux_logic_a_pin_value,
-                                                    self.mux_logic_b_pin_value)
+    def set_logic_pin_values(self) -> None:
+        """Set the values of the multiplexer logic pins for this analog input."""
+        self.__multiplexer.set_logic_pin_values(
+            self.mux_logic_a_pin_value,
+            self.mux_logic_b_pin_value
+        )
 
+    def set_and_read(self) -> None:
+        """Set multiplexer pins before reading the value from the ADC."""
+        self.set_logic_pin_values()
+        super().read()
+
+    def read(self) -> None:
+        """Read the value from the multiplexer. Assumes logic pins are correctly set."""
         super().read()
 
     def read_norm_probe(self):
-        self.__multiplexer.set_logic_pin_values(self.mux_logic_a_pin_value,
-                                                self.mux_logic_b_pin_value)
-
-        if self.adc.read_u16() < 28000:
-            return True
-        else:
-            return False
+        self.set_logic_pin_values()
+        return self.adc.read_u16() < 28000
