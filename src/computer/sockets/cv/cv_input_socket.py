@@ -84,22 +84,8 @@ class CVInputSocketOne(CVInputSocket):
     _MUX_LOGIC_A_PIN_VALUE = const(0)
     _MUX_LOGIC_B_PIN_VALUE = const(1)
 
-    def __init__(self):
-        super().__init__(
-            self._IO_PIN_ID,
-            self._MUX_LOGIC_A_PIN_VALUE,
-            self._MUX_LOGIC_B_PIN_VALUE,
-        )
-
 
 class CVInputSocketTwo(CVInputSocket):
     """The second (right-most) CV input socket of the Computer."""
     _MUX_LOGIC_A_PIN_VALUE = const(1)
     _MUX_LOGIC_B_PIN_VALUE = const(0)
-
-    def __init__(self):
-        super().__init__(
-            self._IO_PIN_ID,
-            self._MUX_LOGIC_A_PIN_VALUE,
-            self._MUX_LOGIC_B_PIN_VALUE,
-        )
