@@ -1,13 +1,15 @@
+from micropython import const
 from computer.base.multiplexed_input import MultiplexedInput
 
 
 class KnobY(MultiplexedInput):
     """The knob marked Y."""
-    IO_PIN_ID = 28
+    _IO_PIN_ID = const(28)
+    _MUX_LOGIC_A_PIN_VALUE = const(0)
+    _MUX_LOGIC_B_PIN_VALUE = const(1)
+
     __MIN_VALUE_U16 = 192
     __MAX_VALUE_U16 = 65535
-    __MUX_LOGIC_A_PIN_VALUE = False
-    __MUX_LOGIC_B_PIN_VALUE = True
 
     def __init__(self):
         super().__init__()

@@ -20,7 +20,7 @@ class PulseInputSocket(SinglePinHardwareComponent):
 
     def __init__(self):
 
-        self._pin = machine.Pin(self.IO_PIN_ID,
+        self._pin = machine.Pin(self._IO_PIN_ID,
                                 machine.Pin.IN,
                                 machine.Pin.PULL_UP)
 

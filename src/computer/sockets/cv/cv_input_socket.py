@@ -1,3 +1,4 @@
+from micropython import const
 from computer.base.multiplexed_input import MultiplexedInput
 from connect.ranged_variable import RangedVariable
 
@@ -12,7 +13,8 @@ class CVInputSocket(MultiplexedInput):
     voltage_range : Tuple[float, float]
         The range of voltages accepted by this CV input socket.
     """
-    IO_PIN_ID = 29
+    _IO_PIN_ID = const(29)
+
     __MIN_VALUE_U16 = 65535
     __MAX_VALUE_U16 = 0
 
@@ -74,31 +76,11 @@ class CVInputSocket(MultiplexedInput):
 
 class CVInputSocketOne(CVInputSocket):
     """The first (left-most) CV input socket of the Computer."""
-    __MUX_LOGIC_A_PIN_VALUE = False
-    __MUX_LOGIC_B_PIN_VALUE = False
-
-    @property
-    def mux_logic_a_pin_value(self) -> bool:
-        """The value of the first multiplexer login pin for this input."""
-        return self.__MUX_LOGIC_A_PIN_VALUE
-
-    @property
-    def mux_logic_b_pin_value(self) -> bool:
-        """The value of the second multiplexer login pin for this input."""
-        return self.__MUX_LOGIC_B_PIN_VALUE
+    _MUX_LOGIC_A_PIN_VALUE = const(0)
+    _MUX_LOGIC_B_PIN_VALUE = const(1)
 
 
 class CVInputSocketTwo(CVInputSocket):
     """The second (right-most) CV input socket of the Computer."""
-    __MUX_LOGIC_A_PIN_VALUE = True
-    __MUX_LOGIC_B_PIN_VALUE = False
-
-    @property
-    def mux_logic_a_pin_value(self) -> bool:
-        """The value of the first multiplexer login pin for this input."""
-        return self.__MUX_LOGIC_A_PIN_VALUE
-
-    @property
-    def mux_logic_b_pin_value(self) -> bool:
-        """The value of the second multiplexer login pin for this input."""
-        return self.__MUX_LOGIC_B_PIN_VALUE
+    _MUX_LOGIC_A_PIN_VALUE = const(1)
+    _MUX_LOGIC_B_PIN_VALUE = const(0)

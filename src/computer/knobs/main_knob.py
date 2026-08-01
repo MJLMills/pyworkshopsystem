@@ -1,3 +1,4 @@
+from micropython import const
 from computer.base import MultiplexedInput
 
 
@@ -10,11 +11,12 @@ class MainKnob(MultiplexedInput):
     full range of the 16-bit unsigned integer.
 
     """
-    IO_PIN_ID = 28
+    _IO_PIN_ID = const(28)
+    _MUX_LOGIC_A_PIN_VALUE = const(0)
+    _MUX_LOGIC_B_PIN_VALUE = const(0)
+
     __MIN_VALUE_U16 = 224
     __MAX_VALUE_U16 = 65535
-    __MUX_LOGIC_A_PIN_VALUE = False
-    __MUX_LOGIC_B_PIN_VALUE = False
 
     def __init__(self):
         super().__init__()
@@ -27,12 +29,3 @@ class MainKnob(MultiplexedInput):
     def max_value(self) -> int:
         return self.__MAX_VALUE_U16
 
-    @property
-    def mux_logic_a_pin_value(self) -> bool:
-        """The value of the first multiplexer login pin for this input."""
-        return self.__MUX_LOGIC_A_PIN_VALUE
-
-    @property
-    def mux_logic_b_pin_value(self) -> bool:
-        """The value of the second multiplexer login pin for this input."""
-        return self.__MUX_LOGIC_B_PIN_VALUE

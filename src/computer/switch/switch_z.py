@@ -1,3 +1,4 @@
+from micropython import const
 from computer.base.multiplexed_input import MultiplexedInput
 from connect.signal import Signal
 
@@ -11,11 +12,12 @@ class SwitchZ(MultiplexedInput):
     Middle - latching, medium value on read - ranges 32311 to 32407 over 200 secs (converged after 140 secs)
     Down - momentary, low value on read - ranges 176 to 272 over 200 secs (converged after 4 secs)
     """
-    IO_PIN_ID = 28
+    _IO_PIN_ID = const(28)
+    _MUX_LOGIC_A_PIN_VALUE = const(1)
+    _MUX_LOGIC_B_PIN_VALUE = const(1)
+
     __MIN_VALUE_U16 = 0
     __MAX_VALUE_U16 = 65535
-    __MUX_LOGIC_A_PIN_VALUE = True
-    __MUX_LOGIC_B_PIN_VALUE = True
 
     __DOWN_MID_BOUNDARY = 16292
     __MID_UP_BOUNDARY = 48971
@@ -47,16 +49,6 @@ class SwitchZ(MultiplexedInput):
     @property
     def max_value(self) -> int:
         return self.__MAX_VALUE_U16
-
-    @property
-    def mux_logic_a_pin_value(self) -> bool:
-        """The value of the first multiplexer login pin for this input."""
-        return self.__MUX_LOGIC_A_PIN_VALUE
-
-    @property
-    def mux_logic_b_pin_value(self) -> bool:
-        """The value of the second multiplexer login pin for this input."""
-        return self.__MUX_LOGIC_B_PIN_VALUE
 
     def is_up(self):
         return self.state == self.__UP

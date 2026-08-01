@@ -34,7 +34,7 @@ class DigitalOutput(SinglePinHardwareComponent):
         self._timer = machine.Timer(-1)
 
     def _resolve_pin_id(self):
-        return self.IO_PIN_ID
+        return self._IO_PIN_ID
 
     def turn_on(self, timer=None) -> None:
         """Turn this digital output on."""

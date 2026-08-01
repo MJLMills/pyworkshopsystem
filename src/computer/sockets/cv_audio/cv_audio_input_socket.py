@@ -36,7 +36,7 @@ class CVAudioInputSocket(AnalogInput):
     # calibration of these values is per-socket
 
     def __init__(self, voltage_range: tuple = None):
-        self._adc = machine.ADC(self.IO_PIN_ID)
+        self._adc = machine.ADC(self._IO_PIN_ID)
         self.set_voltage_range(voltage_range)
 
         super().__init__()

@@ -26,7 +26,7 @@ class CVOutputSocket(SinglePinAnalogOutput):  # both AnalogOutput classes have s
     def __init__(self, duty_cycle: int = 32768):
         super().__init__()
 
-        self.pwm = machine.PWM(self.IO_PIN_ID,
+        self.pwm = machine.PWM(self._IO_PIN_ID,
                                freq=self._FREQUENCY_KHZ,
                                duty_u16=duty_cycle,
                                invert=True)

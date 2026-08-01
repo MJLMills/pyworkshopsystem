@@ -1,13 +1,15 @@
+from micropython import const
 from computer.base.multiplexed_input import MultiplexedInput
 
 
 class KnobX(MultiplexedInput):
     """The knob marked X."""
-    IO_PIN_ID = 28
+    _IO_PIN_ID = const(28)
+    _MUX_LOGIC_A_PIN_VALUE = const(1)
+    _MUX_LOGIC_B_PIN_VALUE = const(0)
+
     __MIN_VALUE_U16 = 192
     __MAX_VALUE_U16 = 65535
-    __MUX_LOGIC_A_PIN_VALUE = True
-    __MUX_LOGIC_B_PIN_VALUE = False
 
     def __init__(self):
         super().__init__()
@@ -22,12 +24,3 @@ class KnobX(MultiplexedInput):
         """The maximum value that can be read from knob Y."""
         return self.__MAX_VALUE_U16
 
-    @property
-    def mux_logic_a_pin_value(self) -> bool:
-        """The value of the first multiplexer login pin for knob X."""
-        return self.__MUX_LOGIC_A_PIN_VALUE
-
-    @property
-    def mux_logic_b_pin_value(self) -> bool:
-        """The value of the second multiplexer login pin for knob X."""
-        return self.__MUX_LOGIC_B_PIN_VALUE
