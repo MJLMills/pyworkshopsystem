@@ -37,6 +37,7 @@ class CVAudioInputSocket(AnalogInput):
 
     def __init__(self, voltage_range: tuple = None):
         self._adc = machine.ADC(self._IO_PIN_ID)
+        self._adc_read_u16 = self._adc.read_u16
         self.set_voltage_range(voltage_range)
 
         super().__init__()

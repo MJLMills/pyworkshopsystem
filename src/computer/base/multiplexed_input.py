@@ -104,6 +104,7 @@ class MultiplexedInput(AnalogInput):
         multiplexer = Multiplexer.get_instance()
 
         self._adc = multiplexer.get_adc(pin_id)
+        self._adc_read_u16 = self._adc.read_u16
         self._mux_logic_set_pin_values = getattr(multiplexer, "set_logic_pin_values")
 
         self._mux_logic_a_pin_value = mux_logic_a_pin_value

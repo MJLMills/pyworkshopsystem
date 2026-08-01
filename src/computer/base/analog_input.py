@@ -1,3 +1,4 @@
+import micropython
 import machine
 from computer.base.hardware_component import SinglePinHardwareComponent
 from connect.ranged_variable import RangedVariable
@@ -74,13 +75,6 @@ class AnalogInput(SinglePinHardwareComponent):
             self.jack_removed.emit()
 
     @property
-    def adc(self) -> machine.ADC:
-        """The analog-to-digital converter used by this analog input."""
-        raise NotImplementedError(
-            self.__class__.__name__ + " does not implement adc."
-        )
-
-    @property
     def min_value(self) -> int:
         """The minimum value of this analog input."""
         raise NotImplementedError(
@@ -94,6 +88,7 @@ class AnalogInput(SinglePinHardwareComponent):
             self.__class__.__name__ + " does not implement max_value."
         )
 
+    @micropython.native
     def read(self) -> None:
         """Read a 12-bit uint value from the RP2040's ADC.
 
@@ -114,13 +109,28 @@ class AnalogInput(SinglePinHardwareComponent):
         u12 = u16 >> 4
         Neither of these seems strictly necessary on read since the mappings take
         care of converting to the right ranges, and either way python is storing these
-        as integers, 12-bit or 16-bit it doesn't care.
-        """
-        value = self.ranged_variable.value
-        self.ranged_variable.value = self._adc.read_u16()
+        as integers, 12-bit or 16-bit it doesn't care. It is standard in micropython
+        to pass the "16-bit" values around despite them containing 4 bits of noise as
+        there is no performance penalty for doing so.
 
-        if abs(self.ranged_variable.value - value) > 32:
-            self.value_changed.emit(ranged_variable=self.ranged_variable)
+        The value of 128 for the threshold is required because the RP2040 ADC typically has a jitter of 4 to 8 steps
+        on its native 12-bit scale. 16 * 8 = 128 which blocks the native 12-bit hardware noise.
+        """
+        new_val = self._adc_read_u16()
+
+        ranged_var = self.ranged_variable
+
+        if self._process_deadband(new_val, int(ranged_var.value)):
+            ranged_var.value = new_val
+            self.value_changed.emit(ranged_variable=ranged_var)
+
+    @micropython.viper
+    def _process_deadband(self, new_val: int, old_val: int) -> bool:
+        """Pure machine-register math loop. Bypasses Python interpreter completely."""
+        diff = new_val - old_val
+        if diff < 0:
+            diff = -diff
+        return diff > 128
 
     def read_norm_probe(self) -> bool:
         """Read a boolean value from this analog input.
@@ -130,7 +140,7 @@ class AnalogInput(SinglePinHardwareComponent):
         order to determine whether the written pattern matches the read pattern, in
         which case the socket can be assumed to not contain a jack.
         """
-        if self.adc.read_u16() < 28000:
+        if self._adc.read_u16() < 28000:
             return True
         else:
             return False
