@@ -11,15 +11,19 @@ class MainKnob(MultiplexedInput):
     full range of the 16-bit unsigned integer.
 
     """
-    _IO_PIN_ID = const(28)
-    _MUX_LOGIC_A_PIN_VALUE = const(0)
-    _MUX_LOGIC_B_PIN_VALUE = const(0)
+    _IO_PIN_ID: int = const(28)
+    _MUX_LOGIC_A_PIN_VALUE: int = const(0)
+    _MUX_LOGIC_B_PIN_VALUE: int = const(0)
 
     __MIN_VALUE_U16 = 224
     __MAX_VALUE_U16 = 65535
 
     def __init__(self):
-        super().__init__()
+        super().__init__(
+            self._IO_PIN_ID,
+            self._MUX_LOGIC_A_PIN_VALUE,
+            self._MUX_LOGIC_B_PIN_VALUE,
+        )
 
     @property
     def min_value(self) -> int:

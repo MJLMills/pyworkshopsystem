@@ -4,15 +4,19 @@ from computer.base.multiplexed_input import MultiplexedInput
 
 class KnobX(MultiplexedInput):
     """The knob marked X."""
-    _IO_PIN_ID = const(28)
-    _MUX_LOGIC_A_PIN_VALUE = const(1)
-    _MUX_LOGIC_B_PIN_VALUE = const(0)
+    _IO_PIN_ID: int = const(28)
+    _MUX_LOGIC_A_PIN_VALUE: int = const(1)
+    _MUX_LOGIC_B_PIN_VALUE: int = const(0)
 
     __MIN_VALUE_U16 = 192
     __MAX_VALUE_U16 = 65535
 
     def __init__(self):
-        super().__init__()
+        super().__init__(
+            self._IO_PIN_ID,
+            self._MUX_LOGIC_A_PIN_VALUE,
+            self._MUX_LOGIC_B_PIN_VALUE,
+        )
 
     @property
     def min_value(self) -> int:

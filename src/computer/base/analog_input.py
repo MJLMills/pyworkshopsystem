@@ -117,7 +117,7 @@ class AnalogInput(SinglePinHardwareComponent):
         as integers, 12-bit or 16-bit it doesn't care.
         """
         value = self.ranged_variable.value
-        self.ranged_variable.value = self.adc.read_u16()
+        self.ranged_variable.value = self._adc.read_u16()
 
         if abs(self.ranged_variable.value - value) > 32:
             self.value_changed.emit(ranged_variable=self.ranged_variable)

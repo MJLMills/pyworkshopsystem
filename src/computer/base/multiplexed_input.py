@@ -3,6 +3,10 @@ import machine
 from computer.base.analog_input import AnalogInput
 
 
+_MUX_IO_PIN_ONE_ID = const(28)
+_MUX_IO_PIN_TWO_ID = const(29)
+
+
 class Multiplexer(object):
     """The multiplexer attached to the Computer.
 
@@ -25,9 +29,6 @@ class Multiplexer(object):
     one will return the main knob value and pin two will return the CV 1 input
     value.
     """
-    _MUX_IO_PIN_ONE_ID = const(28)
-    _MUX_IO_PIN_TWO_ID = const(29)
-
     _MUX_LOGIC_A_PIN = machine.Pin(24, machine.Pin.OUT)
     _MUX_LOGIC_B_PIN = machine.Pin(25, machine.Pin.OUT)
 
@@ -60,9 +61,9 @@ class Multiplexer(object):
 
     def get_adc(self, pin_id: int) -> machine.ADC:
         """Get the ADC corresponding to a specified GPIO pin ID."""
-        if pin_id == self._MUX_IO_PIN_ONE_ID:
+        if pin_id == _MUX_IO_PIN_ONE_ID:
             return self._MUX_IO_ADC_ONE
-        elif pin_id == self._MUX_IO_PIN_TWO_ID:
+        elif pin_id == _MUX_IO_PIN_TWO_ID:
             return self._MUX_IO_ADC_TWO
         else:
             raise ValueError("Supplied pin ID not connected to multiplexer: ", pin_id)
@@ -93,20 +94,20 @@ class MultiplexedInput(AnalogInput):
     adc -> machine.ADC
         The analog-to-digital converter attached to this input.
     """
-    _IO_PIN_ID = None
-    _MUX_LOGIC_A_PIN_VALUE = None
-    _MUX_LOGIC_B_PIN_VALUE = None
-
-    def __init__(self):
+    def __init__(self,
+                 pin_id: int,
+                 mux_logic_a_pin_value: int,
+                 mux_logic_b_pin_value: int):
 
         super().__init__()
 
         multiplexer = Multiplexer.get_instance()
-        self._adc = getattr(multiplexer, "get_adc")
+
+        self._adc = multiplexer.get_adc(pin_id)
         self._mux_logic_set_pin_values = getattr(multiplexer, "set_logic_pin_values")
 
-        self._mux_logic_a_pin_value = self._MUX_LOGIC_A_PIN_VALUE
-        self._mux_logic_b_pin_value = self._MUX_LOGIC_B_PIN_VALUE
+        self._mux_logic_a_pin_value = mux_logic_a_pin_value
+        self._mux_logic_b_pin_value = mux_logic_b_pin_value
 
         self._analog_input_read = super().read
 

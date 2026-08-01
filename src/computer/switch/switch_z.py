@@ -12,9 +12,9 @@ class SwitchZ(MultiplexedInput):
     Middle - latching, medium value on read - ranges 32311 to 32407 over 200 secs (converged after 140 secs)
     Down - momentary, low value on read - ranges 176 to 272 over 200 secs (converged after 4 secs)
     """
-    _IO_PIN_ID = const(28)
-    _MUX_LOGIC_A_PIN_VALUE = const(1)
-    _MUX_LOGIC_B_PIN_VALUE = const(1)
+    _IO_PIN_ID: int = const(28)
+    _MUX_LOGIC_A_PIN_VALUE: int = const(1)
+    _MUX_LOGIC_B_PIN_VALUE: int = const(1)
 
     __MIN_VALUE_U16 = 0
     __MAX_VALUE_U16 = 65535
@@ -29,8 +29,11 @@ class SwitchZ(MultiplexedInput):
 
     def __init__(self):
 
-        super().__init__()
-
+        super().__init__(
+            self._IO_PIN_ID,
+            self._MUX_LOGIC_A_PIN_VALUE,
+            self._MUX_LOGIC_B_PIN_VALUE,
+        )
         self.switched_up = Signal()
         """Signal emitted when the switch is moved to the up position."""
         self.switched_up_to_middle = Signal()

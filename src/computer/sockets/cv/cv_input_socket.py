@@ -13,7 +13,7 @@ class CVInputSocket(MultiplexedInput):
     voltage_range : Tuple[float, float]
         The range of voltages accepted by this CV input socket.
     """
-    _IO_PIN_ID = const(29)
+    _IO_PIN_ID: int = const(29)
 
     __MIN_VALUE_U16 = 65535
     __MAX_VALUE_U16 = 0
@@ -29,7 +29,12 @@ class CVInputSocket(MultiplexedInput):
     def __init__(self, voltage_range: tuple = None):
 
         self.set_voltage_range(voltage_range)
-        super().__init__()
+
+        super().__init__(
+            self._IO_PIN_ID,
+            self._MUX_LOGIC_A_PIN_VALUE,
+            self._MUX_LOGIC_B_PIN_VALUE,
+        )
 
     def set_voltage_range(self,
                           voltage_range: tuple = None):  # needs to mess with the ranged variable's extrema
@@ -79,8 +84,22 @@ class CVInputSocketOne(CVInputSocket):
     _MUX_LOGIC_A_PIN_VALUE = const(0)
     _MUX_LOGIC_B_PIN_VALUE = const(1)
 
+    def __init__(self):
+        super().__init__(
+            self._IO_PIN_ID,
+            self._MUX_LOGIC_A_PIN_VALUE,
+            self._MUX_LOGIC_B_PIN_VALUE,
+        )
+
 
 class CVInputSocketTwo(CVInputSocket):
     """The second (right-most) CV input socket of the Computer."""
     _MUX_LOGIC_A_PIN_VALUE = const(1)
     _MUX_LOGIC_B_PIN_VALUE = const(0)
+
+    def __init__(self):
+        super().__init__(
+            self._IO_PIN_ID,
+            self._MUX_LOGIC_A_PIN_VALUE,
+            self._MUX_LOGIC_B_PIN_VALUE,
+        )
