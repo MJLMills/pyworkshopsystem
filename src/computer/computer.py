@@ -1,6 +1,7 @@
 import machine
 from micropython import const
 from .normalization_probe import NormalizationProbe
+from .base.multiplexed_input import Multiplexer
 
 
 class Computer(object):
@@ -92,6 +93,7 @@ class Computer(object):
 
         self._led_matrix = None
 
+        self._multiplexer = Multiplexer()
         self._normalization_probe = NormalizationProbe()
 
         self.__input_sockets = [None] * 6
@@ -341,27 +343,38 @@ class Computer(object):
         return self._led_matrix
 
     def read_analog_inputs(self):
-        # may be able to speed this up by setting multiplexer pins here
-        # each update of the two multiplexer pins takes ~0.15 ms and we're doing it 8 times each time this is called (should be 4 max)
-        """Update the current raw values of all the analog inputs."""
+        """Update the current raw values of all the analog inputs.
+
+        For optimal efficiency, this method sets the multiplexer logic pins for each state,
+        then reads initialized analog inputs from the two pins for each state. This method
+        is intended for use in the background, i.e. called from a while True loop.
+        """
+
+        set_mux_logic_pin_values = self._multiplexer.set_logic_pin_values
+
+        set_mux_logic_pin_values(value_a=0, value_b=0)  # MainKnob & CVInputSocketOne
         if self._main_knob is not None:
             self._main_knob.read()
 
         if self._cv_input_socket_one is not None and self._cv_input_socket_one.has_jack:
             self._cv_input_socket_one.read()
 
+        set_mux_logic_pin_values(value_a=1, value_b=0)  # KnobX & CVInputSocketTwo
         if self._knob_x is not None:
             self._knob_x.read()
-
-        if self._knob_y is not None:
-            self._knob_y.read()
-
-        if self._switch_z is not None:
-            self._switch_z.read()
 
         if self._cv_input_socket_two is not None and self._cv_input_socket_two.has_jack:
             self._cv_input_socket_two.read()
 
+        set_mux_logic_pin_values(value_a=0, value_b=1)  # KnobY
+        if self._knob_y is not None:
+            self._knob_y.read()
+
+        set_mux_logic_pin_values(value_a=1, value_b=1)  # SwitchZ
+        if self._switch_z is not None:
+            self._switch_z.read()
+
+        # not on multiplexer
         if self._cv_audio_input_socket_one is not None and self._cv_audio_input_socket_one.has_jack:
             self._cv_audio_input_socket_one.read()
 
