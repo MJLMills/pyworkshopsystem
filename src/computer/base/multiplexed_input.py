@@ -53,7 +53,7 @@ class Multiplexer(object):
             cls._instance = Multiplexer()
         return cls._instance
 
-    def set_logic_pin_values(self, value_a: bool, value_b: bool) -> None:
+    def set_logic_pin_values(self, value_a: int, value_b: int) -> None:
         """Set the GPIO pin values for this multiplexer."""
         self._pin_a_value(value_a)
         self._pin_b_value(value_b)
